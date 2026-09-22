@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>iin house — iOS Design Preview</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+  :root {
+    --bg: #000000;
+    --surface: #0c0c0e;
+    --surface-2: #131518;
+    --surface-3: #1a1d24;
+    --surface-4: #21252e;
+    --border: rgba(255,255,255,0.06);
+    --border-strong: rgba(255,255,255,0.1);
+    --text: #f1f1f3;
+    --text-2: #c5c6ca;
+    --text-3: #8e8f93;
+    --text-4: #6c6d70;
+    --primary: #ec4899;
+    --primary-2: #db2777;
+    --accent: #f472b6;
+    --accent-soft: rgba(244,114,182,0.1);
+    --sep: rgba(255,255,255,0.06);
+    --sep-strong: rgba(255,255,255,0.12);
+    --success: #34d399;
+    --success-bg: rgba(52,211,153,0.1);
+    --warning: #fbbf24;
+    --warning-bg: rgba(251,191,36,0.1);
+    --danger: #f87171;
+    --danger-bg: rgba(248,113,113,0.1);
+    --info: #60a5fa;
+    --info-bg: rgba(96,165,250,0.1);
+  }
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    font-weight: 400; line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Glass Header ──────────────────── */
+  .glass-header {
+    position: sticky; top: 0; z-index: 50;
+    height: 52px;
+    background: rgba(12,12,14,0.78);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-bottom: 0.5px solid var(--sep);
+  }
+  .header-inner {
+    max-width: 1200px; margin: 0 auto; height: 100%;
+    padding: 0 16px; display: flex; align-items: center; justify-content: space-between;
+  }
+
+  .gradient-text {
+    background: linear-gradient(135deg, #ec4899, #f472b6);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* ── Navigation Tabs ──────────────── */
+  .nav-tab {
+    padding: 6px 14px; border-radius: 8px; font-size: 13px; font-weight: 500;
+    color: var(--text-3); transition: all 0.2s ease; background: transparent; border: none; cursor: pointer;
+    text-decoration: none;
+  }
+  .nav-tab:hover { color: var(--text); background: var(--surface-3); }
+  .nav-tab.active { color: var(--text); background: var(--surface-3); }
+
+  /* ── Buttons ───────────────────────── */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 10px 20px; border-radius: 12px; font-size: 14px; font-weight: 600;
+    transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    border: none; cursor: pointer; white-space: nowrap; letter-spacing: -0.01em;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, #ec4899, #db2777); color: #fff;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.3), 0 0 20px rgba(236,72,153,0.2);
+  }
+  .btn-primary:hover { transform: scale(1.02); box-shadow: 0 2px 4px rgba(0,0,0,0.3), 0 0 30px rgba(236,72,153,0.3); }
+  .btn-primary:active { transform: scale(0.98); }
+  .btn-secondary { background: var(--surface-3); color: var(--text); }
+  .btn-secondary:hover { background: var(--surface-4); }
+  .btn-ghost { background: transparent; color: var(--text-3); }
+  .btn-ghost:hover { background: var(--surface-3); color: var(--text); }
+  .btn-danger { background: rgba(248,113,113,0.15); color: #f87171; }
+  .btn-danger:hover { background: rgba(248,113,113,0.25); }
+  .btn-sm { padding: 6px 14px; font-size: 13px; border-radius: 10px; }
+
+  /* ── Cards ─────────────────────────── */
+  .card {
+    background: var(--surface-2); border: 0.5px solid var(--sep);
+    border-radius: 16px; transition: all 0.25s ease;
+  }
+  .card-interactive { cursor: pointer; }
+  .card-interactive:hover { border-color: var(--sep-strong); background: var(--surface-3); }
+  .card-interactive:active { transform: scale(0.985); }
+
+  /* ── Inputs ────────────────────────── */
+  .input {
+    width: 100%; background: var(--surface-3); border: 0.5px solid var(--sep);
+    border-radius: 12px; padding: 12px 14px; font-size: 15px; color: var(--text);
+    transition: all 0.2s ease; outline: none;
+  }
+  .input::placeholder { color: var(--text-4); }
+  .input:focus { border-color: rgba(244,114,182,0.3); box-shadow: 0 0 0 3px rgba(244,114,182,0.06); }
+
+  /* ── Badges ────────────────────────── */
+  .badge {
+    display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 20px;
+    font-size: 12px; font-weight: 600; letter-spacing: 0.01em;
+  }
+  .badge-primary { background: rgba(236,72,153,0.12); color: #f472b6; }
+  .badge-success { background: var(--success-bg); color: #34d399; }
+  .badge-warning { background: var(--warning-bg); color: #fbbf24; }
+  .badge-danger { background: var(--danger-bg); color: #f87171; }
+  .badge-muted { background: var(--surface-3); color: var(--text-3); }
+
+  /* ── Avatars ───────────────────────── */
+  .avatar {
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 50%; font-weight: 600; color: #fff; flex-shrink: 0;
+  }
+  .avatar-sm { width: 32px; height: 32px; font-size: 12px; }
+  .avatar-md { width: 44px; height: 44px; font-size: 16px; }
+  .avatar-lg { width: 64px; height: 64px; font-size: 24px; }
+
+  /* ── List Row ──────────────────────── */
+  .list-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 8px; border-radius: 12px;
+    transition: background 0.15s ease; cursor: pointer;
+  }
+  .list-row:hover { background: var(--surface-3); }
+  .list-row.active { background: var(--surface-3); }
+
+  /* ── Separator ─────────────────────── */
+  .sep { height: 0.5px; background: var(--sep); }
+
+  /* ── Toggle ────────────────────────── */
+  .toggle {
+    width: 51px; height: 31px; border-radius: 31px; background: var(--surface-4);
+    position: relative; cursor: pointer; transition: background 0.3s ease; flex-shrink: 0;
+  }
+  .toggle::after {
+    content: ''; position: absolute; top: 2px; left: 2px;
+    width: 27px; height: 27px; border-radius: 50%; background: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  .toggle.active { background: #34d399; }
+  .toggle.active::after { transform: translateX(20px); }
+
+  /* ── Container ─────────────────────── */
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 16px; }
+
+  /* ── Scrollbar hide ────────────────── */
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
+  .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+  /* ── Preview sections ──────────────── */
+  .preview-section { border-bottom: 0.5px solid var(--sep); padding: 40px 24px; }
+  .preview-label {
+    font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--text-4); margin-bottom: 20px; padding-bottom: 8px; border-bottom: 0.5px solid var(--sep);
+  }
+  .demo-grid { display: grid; gap: 10px; }
+  .demo-grid-2 { grid-template-columns: repeat(2, 1fr); }
+  .demo-grid-3 { grid-template-columns: repeat(3, 1fr); }
+  .demo-grid-4 { grid-template-columns: repeat(4, 1fr); }
+
+  .progress-bar {
+    width: 100%; height: 8px; background: var(--surface-3); border-radius: 4px; overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%; border-radius: 4px;
+    background: linear-gradient(90deg, #ec4899, #db2777);
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- PREVIEW: NAVIGATION TABS -->
+<div class="preview-section">
+  <div class="preview-label">Navigation Tabs</div>
+  <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+    <span class="gradient-text" style="font-size:16px; font-weight:700;">iin house</span>
+    <div style="display:flex; gap:4px;">
+      <a class="nav-tab active">Discover</a>
+      <a class="nav-tab">Messages</a>
+      <a class="nav-tab">Verify</a>
+      <a class="nav-tab">Disputes</a>
+    </div>
+    <a class="btn btn-primary btn-sm" style="text-decoration:none;">Get started</a>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- PREVIEW: BUTTONS & BADGES -->
+<div class="preview-section">
+  <div class="preview-label">Buttons & Badges</div>
+  <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:16px;">
+    <button class="btn btn-primary">Primary</button>
+    <button class="btn btn-secondary">Secondary</button>
+    <button class="btn btn-ghost">Ghost</button>
+    <button class="btn btn-danger">Danger</button>
+    <button class="btn btn-primary btn-sm">Small</button>
+  </div>
+  <div style="display:flex; gap:8px; flex-wrap:wrap;">
+    <span class="badge badge-primary">Primary</span>
+    <span class="badge badge-success">Verified ✓</span>
+    <span class="badge badge-warning">Pending</span>
+    <span class="badge badge-danger">Rejected</span>
+    <span class="badge badge-muted">Inactive</span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- PREVIEW: FORM INPUTS -->
+<div class="preview-section">
+  <div class="preview-label">Form Inputs</div>
+  <div class="demo-grid demo-grid-2" style="max-width:600px;">
+    <div>
+      <label style="display:block; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-3); margin-bottom:6px;">Display Name</label>
+      <input class="input" placeholder="Enter your name" />
+    </div>
+    <div>
+      <label style="display:block; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-3); margin-bottom:6px;">Email</label>
+      <input class="input" placeholder="you@example.com" />
+    </div>
+    <div>
+      <label style="display:block; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-3); margin-bottom:6px;">Password</label>
+      <input class="input" type="password" placeholder="••••••••" />
+    </div>
+    <div style="display:flex; flex-direction:column; gap:10px;">
+      <label style="display:block; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-3);">Role</label>
+      <div style="display:flex; gap:6px; background:var(--surface-3); border-radius:12px; padding:3px;">
+        <button class="btn btn-primary btn-sm" style="flex:1; border-radius:10px;">Creator</button>
+        <button class="btn btn-ghost btn-sm" style="flex:1; border-radius:10px; color:var(--text-3);">Subscriber</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- PREVIEW: TOGGLE -->
+<div class="preview-section">
+  <div class="preview-label">Toggle Switch</div>
+  <div style="display:flex; gap:24px; align-items:center;">
+    <div style="display:flex; align-items:center; gap:12px;">
+      <div class="toggle" onclick="this.classList.toggle('active')"></div>
+      <span style="font-size:13px; color:var(--text-2);">Pay-per-view content</span>
+    </div>
+    <div style="display:flex; align-items:center; gap:12px;">
+      <div class="toggle active" onclick="this.classList.toggle('active')"></div>
+      <span style="font-size:13px; color:var(--text-2);">Notifications</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- PREVIEW: STAT CARDS -->
+<div class="preview-section">
+  <div class="preview-label">Stat Cards (Creator Dashboard)</div>
+  <div class="demo-grid demo-grid-4">
+    <div class="card" style="padding:18px;">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
+        <span style="font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-3);">Revenue</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-4)" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v12M9 9l3-3 3 3M9 15l3 3 3-3"/></svg>
+      </div>
+      <div style="font-size:24px; font-weight:700;">₹24.8K</div>
+      <div style="font-size:11px; color:var(--success); display:flex; align-items:center; gap:2px; margin-top:2px;">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>
+        +12.5%
+      </div>
+    </div>
+    <div class="card" style="padding:18px;">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
+        <span style="font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-3);">Subscribers</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-4)" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      </div>
+      <div style="font-size:24px; font-weight:700;">847</div>
+      <div style="font-size:11px; color:var(--success); display:flex; align-items:center; gap:2px; margin-top:2px;">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>
+        +8.2%
+      </div>
+    </div>
+    <div class="card" style="padding:18px;">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
+        <span style="font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-3);">Posts</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-4)" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      </div>
+      <div style="font-size:24px; font-weight:700;">156</div>
+      <div style="font-size:11px; color:var(--text-3); margin-top:2px;">this week</div>
+    </div>
+    <div class="card" style="padding:18px;">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
+        <span style="font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-3);">Verified</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      <div style="font-size:24px; font-weight:700; color:var(--success);">KYC ✓</div>
+      <div style="font-size:11px; color:var(--text-3); margin-top:2px;">Approved</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- PREVIEW: LIST ROWS (Messages + Subscribers) -->
+<div class="preview-section">
+  <div class="preview-label">List Rows (Messages & Subscribers)</div>
+  <div class="card" style="overflow:hidden;">
+    <div class="list-row active" style="padding:12px 16px; border-bottom:0.5px solid var(--sep);">
+      <div class="avatar avatar-md" style="background:linear-gradient(135deg,#ec4899,#db2777);">L</div>
+      <div style="flex:1; min-width:0;">
+        <div style="font-size:13px; font-weight:500;">Lena Creates</div>
+        <div style="font-size:12px; color:var(--text-3); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">Thanks for subscribing! ✨</div>
+      </div>
+      <div style="display:flex; flex-direction:column; align-items:flex-end; gap:4px;">
+        <span style="font-size:11px; color:var(--text-3);">2m</span>
+        <span class="badge badge-primary" style="padding:2px 7px; font-size:10px;">1</span>
+      </div>
+    </div>
+    <div class="list-row" style="padding:12px 16px; border-bottom:0.5px solid var(--sep);">
+      <div class="avatar avatar-md" style="background:linear-gradient(135deg,#7c3aed,#a78bfa);">R</div>
+      <div style="flex:1; min-width:0;">
+        <div style="font-size:13px; font-weight:500;">DJ Rohit</div>
+        <div style="font-size:12px; color:var(--text-3); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">Check out my latest track 🎵</div>
+      </div>
+      <span style="font-size:11px; color:var(--text-3);">1h</span>
+    </div>
+    <div class="list-row" style="padding:12px 16px;">
+      <div class="avatar avatar-md" style="background:linear-gradient(135deg,#059669,#34d399);">P</div>
+      <div style="flex:1; min-width:0;">
+        <div style="font-size:13px; font-weight:500;">Priya Fitness</div>
+        <div style="font-size:12px; color:var(--text-3); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">Workout plan ready 💪</div>
+      </div>
+      <span style="font-size:11px; color:var(--text-3);">3h</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- PREVIEW: CHAT BUBBLES -->
+<div class="preview-section">
+  <div class="preview-label">Chat Bubbles</div>
+  <div class="card" style="padding:20px; display:flex; flex-direction:column; gap:10px; min-height:200px;">
+    <div style="max-width:65%; padding:10px 14px; border-radius:18px; font-size:14px; align-self:flex-start; background:var(--surface-3); color:var(--text); border-bottom-left-radius:6px;">
+      <p>Hey, welcome! Thanks for subscribing.</p>
+      <span style="font-size:10px; display:block; margin-top:4px; color:var(--text-4);">2m</span>
+    </div>
+    <div style="max-width:65%; padding:10px 14px; border-radius:18px; font-size:14px; align-self:flex-end; background:linear-gradient(135deg,#db2777,#ec4899); color:#fff; border-bottom-right-radius:6px;">
+      <p>Thanks! Loving the content so far ✨</p>
+      <span style="font-size:10px; display:block; margin-top:4px; opacity:0.7;">1m</span>
+    </div>
+    <div style="max-width:65%; padding:10px 14px; border-radius:18px; font-size:14px; align-self:flex-start; background:var(--surface-3); color:var(--text); border-bottom-left-radius:6px;">
+      <p>Here's something exclusive just for you 🔒</p>
+      <span style="font-size:10px; display:block; margin-top:4px; color:var(--text-4);">Just now</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- PREVIEW: TIER CARDS -->
+<div class="preview-section">
+  <div class="preview-label">Tier Cards (Profile Page)</div>
+  <div class="demo-grid demo-grid-3" style="max-width:800px;">
+    <div class="card" style="padding:18px; display:flex; flex-direction:column; justify-content:space-between;">
+      <div>
+        <div style="font-size:15px; font-weight:600; margin-bottom:4px;">Starter</div>
+        <div style="font-size:12px; color:var(--text-3); line-height:1.5;">Early access to posts and community chat</div>
+      </div>
+      <div style="margin-top:12px; display:flex; align-items:baseline; gap:4px;">
+        <span style="font-size:20px; font-weight:700;">₹149</span>
+        <span style="font-size:12px; color:var(--text-3);">/ mo</span>
+      </div>
+    </div>
+    <div class="card" style="padding:18px; display:flex; flex-direction:column; justify-content:space-between; border-color:rgba(236,72,153,0.2);">
+      <div>
+        <div style="display:flex; align-items:center; gap:6px; margin-bottom:4px;">
+          <span style="font-size:15px; font-weight:600;">VIP</span>
+          <span class="badge badge-primary">Popular</span>
+        </div>
+        <div style="font-size:12px; color:var(--text-3); line-height:1.5;">All posts + DMs + exclusive content</div>
+      </div>
+      <div style="margin-top:12px; display:flex; align-items:baseline; gap:4px;">
+        <span style="font-size:20px; font-weight:700; color:var(--primary);">₹299</span>
+        <span style="font-size:12px; color:var(--text-3);">/ mo</span>
+      </div>
+    </div>
+    <div class="card" style="padding:18px; display:flex; flex-direction:column; justify-content:space-between;">
+      <div>
+        <div style="font-size:15px; font-weight:600; margin-bottom:4px;">Elite</div>
+        <div style="font-size:12px; color:var(--text-3); line-height:1.5;">Everything + monthly 1:1 calls</div>
+      </div>
+      <div style="margin-top:12px; display:flex; align-items:baseline; gap:4px;">
+        <span style="font-size:20px; font-weight:700;">₹499</span>
+        <span style="font-size:12px; color:var(--text-3);">/ mo</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- PREVIEW: FEATURE CARDS (Homepage) -->
+<div class="preview-section">
+  <div class="preview-label">Feature Cards (Homepage)</div>
+  <div class="demo-grid demo-grid-3" style="max-width:900px;">
+    <div class="card card-interactive" style="padding:22px;">
+      <div style="width:36px; height:36px; border-radius:10px; background:linear-gradient(135deg,#9d174d,#be185d); display:flex; align-items:center; justify-content:center; font-size:18px; margin-bottom:14px;">🔒</div>
+      <div style="font-size:15px; font-weight:600; margin-bottom:6px;">Content Protection</div>
+      <div style="font-size:13px; color:var(--text-3); line-height:1.55;">Server-side watermarking. Per-session forensic watermarks at playback. Signed URLs with token expiry.</div>
+    </div>
+    <div class="card card-interactive" style="padding:22px;">
+      <div style="width:36px; height:36px; border-radius:10px; background:linear-gradient(135deg,#7c3aed,#a78bfa); display:flex; align-items:center; justify-content:center; font-size:18px; margin-bottom:14px;">💰</div>
+      <div style="font-size:15px; font-weight:600; margin-bottom:6px;">Fast Payouts</div>
+      <div style="font-size:13px; color:var(--text-3); line-height:1.55;">Rolling weekly payouts via RazorpayX once verified. No 21-day holds. You earned it, you get it.</div>
+    </div>
+    <div class="card card-interactive" style="padding:22px;">
+      <div style="width:36px; height:36px; border-radius:10px; background:linear-gradient(135deg,#059669,#34d399); display:flex; align-items:center; justify-content:center; font-size:18px; margin-bottom:14px;">💬</div>
+      <div style="font-size:15px; font-weight:600; margin-bottom:6px;">Paid DMs & Unlocks</div>
+      <div style="font-size:13px; color:var(--text-3); line-height:1.55;">Charge for messages, sell PPV content, take tips. Everything inside a clean conversation flow.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- PREVIEW: CREATOR GRID (Feed) -->
+<div class="preview-section">
+  <div class="preview-label">Creator Grid (Discovery Feed)</div>
+  <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(150px, 1fr)); gap:10px; max-width:700px;">
+    <div class="card card-interactive" style="overflow:hidden;">
+      <div style="aspect-ratio:3/4; background:linear-gradient(135deg,#9d174d,#be185d); display:flex; align-items:center; justify-content:center; font-size:40px;">🎨</div>
+      <div style="padding:10px;">
+        <div style="font-size:13px; font-weight:600;">Priya Art</div>
+        <div style="font-size:11px; color:var(--text-3);">Digital artist</div>
+        <div style="margin-top:6px;"><span class="badge badge-primary">₹149/mo</span></div>
+      </div>
+    </div>
+    <div class="card card-interactive" style="overflow:hidden;">
+      <div style="aspect-ratio:3/4; background:linear-gradient(135deg,#7c3aed,#a78bfa); display:flex; align-items:center; justify-content:center; font-size:40px;">🎵</div>
+      <div style="padding:10px;">
+        <div style="font-size:13px; font-weight:600;">Rohit Beats</div>
+        <div style="font-size:11px; color:var(--text-3);">Music producer</div>
+        <div style="margin-top:6px;"><span class="badge badge-primary">₹299/mo</span></div>
+      </div>
+    </div>
+    <div class="card card-interactive" style="overflow:hidden;">
+      <div style="aspect-ratio:3/4; background:linear-gradient(135deg,#059669,#34d399); display:flex; align-items:center; justify-content:center; font-size:40px;">💪</div>
+      <div style="padding:10px;">
+        <div style="font-size:13px; font-weight:600;">Fit With Me</div>
+        <div style="font-size:11px; color:var(--text-3);">Fitness coach</div>
+        <div style="margin-top:6px;"><span class="badge badge-primary">₹199/mo</span></div>
+      </div>
+    </div>
+    <div class="card card-interactive" style="overflow:hidden;">
+      <div style="aspect-ratio:3/4; background:linear-gradient(135deg,#dc2626,#f87171); display:flex; align-items:center; justify-content:center; font-size:40px;">📷</div>
+      <div style="padding:10px;">
+        <div style="font-size:13px; font-weight:600;">Lens Life</div>
+        <div style="font-size:11px; color:var(--text-3);">Photographer</div>
+        <div style="margin-top:6px;"><span class="badge badge-primary">₹99/mo</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- PREVIEW: ADMIN STAT TILES -->
+<div class="preview-section">
+  <div class="preview-label">Admin Dashboard Stats</div>
+  <div class="demo-grid demo-grid-4" style="max-width:700px;">
+    <div class="card" style="padding:18px;">
+      <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-3); margin-bottom:6px;">Creators</div>
+      <div style="font-size:26px; font-weight:700; color:var(--primary);">1,247</div>
+    </div>
+    <div class="card" style="padding:18px;">
+      <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-3); margin-bottom:6px;">Pending KYC</div>
+      <div style="font-size:26px; font-weight:700; color:var(--warning);">23</div>
+    </div>
+    <div class="card" style="padding:18px;">
+      <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-3); margin-bottom:6px;">Open Flags</div>
+      <div style="font-size:26px; font-weight:700; color:var(--danger);">7</div>
+    </div>
+    <div class="card" style="padding:18px;">
+      <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-3); margin-bottom:6px;">Payouts</div>
+      <div style="font-size:26px; font-weight:700; color:var(--success);">₹4.2L</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- PREVIEW: KYC QUEUE ROWS -->
+<div class="preview-section">
+  <div class="preview-label">KYC Queue Rows</div>
+  <div class="card" style="overflow:hidden; max-width:700px;">
+    <div style="padding:14px 20px; border-bottom:0.5px solid var(--sep);">
+      <span style="font-size:15px; font-weight:600;">Awaiting Review</span>
+      <span class="badge badge-warning" style="margin-left:8px;">2 pending</span>
+    </div>
+    <div style="padding:14px 16px; display:flex; align-items:center; gap:14px; border-bottom:0.5px solid var(--sep);">
+      <div class="avatar avatar-md" style="background:linear-gradient(135deg,#ec4899,#db2777);">A</div>
+      <div style="flex:1; min-width:0;">
+        <div style="font-size:14px; font-weight:600;">Anika Sharma</div>
+        <div style="font-size:12px; color:var(--text-3);">anika@email.com · Applied Sep 15</div>
+      </div>
+      <div style="display:flex; gap:8px; flex-shrink:0;">
+        <button class="btn btn-primary btn-sm">Approve</button>
+        <button class="btn btn-danger btn-sm">Reject</button>
+      </div>
+    </div>
+    <div style="padding:14px 16px; display:flex; align-items:center; gap:14px;">
+      <div class="avatar avatar-md" style="background:linear-gradient(135deg,#2563eb,#60a5fa);">R</div>
+      <div style="flex:1; min-width:0;">
+        <div style="font-size:14px; font-weight:600;">Rahul Verma</div>
+        <div style="font-size:12px; color:var(--text-3);">rahul@email.com · Applied Sep 14</div>
+      </div>
+      <div style="display:flex; gap:8px; flex-shrink:0;">
+        <button class="btn btn-primary btn-sm">Approve</button>
+        <button class="btn btn-danger btn-sm">Reject</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- PREVIEW: EARNINGS BREAKDOWN -->
+<div class="preview-section">
+  <div class="preview-label">Earnings Breakdown</div>
+  <div class="card" style="padding:20px; max-width:500px;">
+    <div style="font-size:15px; font-weight:600; margin-bottom:16px;">Revenue Breakdown</div>
+    <div style="display:flex; flex-direction:column; gap:14px;">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <span style="font-size:13px; width:80px;">Subscriptions</span>
+        <div class="progress-bar"><div class="progress-fill" style="width:72%;"></div></div>
+        <span style="font-size:13px; font-weight:600; width:40px; text-align:right;">72%</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:12px;">
+        <span style="font-size:13px; width:80px;">PPV</span>
+        <div class="progress-bar"><div class="progress-fill" style="width:20%; background:linear-gradient(90deg,#7c3aed,#a78bfa);"></div></div>
+        <span style="font-size:13px; font-weight:600; width:40px; text-align:right;">20%</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:12px;">
+        <span style="font-size:13px; width:80px;">Tips</span>
+        <div class="progress-bar"><div class="progress-fill" style="width:8%; background:linear-gradient(90deg,#059669,#34d399);"></div></div>
+        <span style="font-size:13px; font-weight:600; width:40px; text-align:right;">8%</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- PREVIEW: PAYOUT HISTORY -->
+<div class="preview-section">
+  <div class="preview-label">Payout History Table</div>
+  <div class="card" style="overflow:hidden; max-width:600px;">
+    <div style="padding:14px 20px; border-bottom:0.5px solid var(--sep);">
+      <span style="font-size:15px; font-weight:600;">Payout History</span>
+    </div>
+    <div>
+      <div style="display:flex; padding:10px 20px; border-bottom:0.5px solid var(--sep); font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-3); font-weight:600;">
+        <span style="flex:1;">Date</span>
+        <span style="width:80px; text-align:right;">Amount</span>
+        <span style="width:80px; text-align:right;">Status</span>
+        <span style="width:60px; text-align:right;">Method</span>
+      </div>
+      <div style="display:flex; align-items:center; padding:12px 20px; border-bottom:0.5px solid var(--sep);">
+        <span style="flex:1; font-size:13px;">2026-08-12</span>
+        <span style="width:80px; text-align:right; font-size:13px; font-weight:600;">₹3,200</span>
+        <span style="width:80px; text-align:right;"><span class="badge badge-success">Completed</span></span>
+        <span style="width:60px; text-align:right; font-size:13px; color:var(--text-3);">UPI</span>
+      </div>
+      <div style="display:flex; align-items:center; padding:12px 20px; border-bottom:0.5px solid var(--sep);">
+        <span style="flex:1; font-size:13px;">2026-07-26</span>
+        <span style="width:80px; text-align:right; font-size:13px; font-weight:600;">₹1,850</span>
+        <span style="width:80px; text-align:right;"><span class="badge badge-success">Completed</span></span>
+        <span style="width:60px; text-align:right; font-size:13px; color:var(--text-3);">UPI</span>
+      </div>
+      <div style="display:flex; align-items:center; padding:12px 20px;">
+        <span style="flex:1; font-size:13px;">2026-07-12</span>
+        <span style="width:80px; text-align:right; font-size:13px; font-weight:600;">₹900</span>
+        <span style="width:80px; text-align:right;"><span class="badge badge-danger">Failed</span></span>
+        <span style="width:60px; text-align:right; font-size:13px; color:var(--text-3);">UPI</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- PREVIEW: COMPLIANCE CHECKLIST -->
+<div class="preview-section">
+  <div class="preview-label">Compliance Checklist</div>
+  <div class="card" style="padding:16px 20px; margin-bottom:16px; border-color:rgba(251,191,36,0.2); background:rgba(251,191,36,0.04); max-width:700px;">
+    <div style="display:flex; align-items:flex-start; gap:12px;">
+      <span style="font-size:18px; flex-shrink:0;">⚠️</span>
+      <div>
+        <div style="font-size:14px; font-weight:600; color:var(--warning);">High priority — resolve before public launch</div>
+        <div style="font-size:12px; color:var(--text-3); margin-top:4px; line-height:1.5;">These items must be completed before going live.</div>
+      </div>
+    </div>
+  </div>
+  <div class="card" style="overflow:hidden; max-width:700px;">
+    <div class="list-row" style="padding:12px 16px; border-bottom:0.5px solid var(--sep);">
+      <span style="font-size:13px; flex:1;">Grievance officer appointed</span>
+      <span class="badge badge-warning">Pending</span>
+    </div>
+    <div class="list-row" style="padding:12px 16px; border-bottom:0.5px solid var(--sep);">
+      <span style="font-size:13px; flex:1;">Age verification (subscribers)</span>
+      <span class="badge badge-warning">Pending</span>
+    </div>
+    <div class="list-row" style="padding:12px 16px; border-bottom:0.5px solid var(--sep);">
+      <span style="font-size:13px; flex:1;">KYC documentation reviewed</span>
+      <span class="badge badge-warning">Pending</span>
+    </div>
+    <div class="list-row" style="padding:12px 16px;">
+      <span style="font-size:13px; flex:1;">Data protection audit completed</span>
+      <span class="badge badge-warning">Pending</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- PREVIEW: LOGIN CARD -->
+<div class="preview-section">
+  <div class="preview-label">Login Card</div>
+  <div style="display:flex; justify-content:center;">
+    <div class="card" style="padding:28px; width:100%; max-width:340px;">
+      <div style="text-align:center; margin-bottom:24px;">
+        <div class="gradient-text" style="font-size:20px; font-weight:700; margin-bottom:4px;">iin house</div>
+        <div style="font-size:12px; color:var(--text-3);">Welcome back</div>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:14px;">
+        <div>
+          <label style="display:block; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-3); margin-bottom:6px;">Email or phone</label>
+          <input class="input" placeholder="you@example.com" />
+        </div>
+        <div>
+          <label style="display:block; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-3); margin-bottom:6px;">Password</label>
+          <input class="input" type="password" placeholder="••••••••" />
+        </div>
+        <button class="btn btn-primary" style="width:100%; margin-top:4px;">Sign in</button>
+      </div>
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-top:16px; font-size:13px;">
+        <a href="#" style="color:var(--text-3); text-decoration:none;">Forgot password?</a>
+        <a href="#" class="gradient-text" style="font-weight:500; text-decoration:none;">Sign up</a>
+      </div>
+      <div class="sep" style="margin:16px 0;"></div>
+      <a href="#" class="btn btn-secondary" style="width:100%; display:block; text-align:center; text-decoration:none; font-size:13px;">Admin Portal</a>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- PREVIEW: UPLOAD ZONE -->
+<div class="preview-section">
+  <div class="preview-label">Upload Drop Zone</div>
+  <div style="max-width:500px;">
+    <div style="padding:40px 24px; text-align:center; background:var(--surface-2); border:2px dashed rgba(255,255,255,0.15); border-radius:16px; cursor:pointer; transition:all 0.2s ease;">
+      <div style="font-size:40px; margin-bottom:10px;">📤</div>
+      <div style="font-size:14px; font-weight:500; margin-bottom:4px; color:var(--text);">Drop files here or click to browse</div>
+      <div style="font-size:12px; color:var(--text-3);">Photos, videos, audio, or documents — watermarked automatically</div>
+    </div>
+    <div style="display:flex; gap:6px; margin-top:10px;">
+      <span style="font-size:12px; padding:6px 12px; background:var(--surface-3); border-radius:10px; color:var(--text-2);">vacation_001.jpg</span>
+      <span style="font-size:12px; padding:6px 12px; background:var(--surface-3); border-radius:10px; color:var(--text-2);">video_clip.mp4</span>
+    </div>
+  </div>
+</div>
+
+<div style="padding:40px 24px; text-align:center; border-top:0.5px solid var(--sep);">
+  <span class="gradient-text" style="font-size:14px; font-weight:600;">iin house</span>
+  <span style="font-size:12px; color:var(--text-4); display:block; margin-top:4px;">iOS Design System Preview — 22 components across 21 pages</span>
+</div>
+
+</body>
+</html>

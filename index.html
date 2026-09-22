@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>iin house</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ── Design Tokens ───────────────────────────────────────── */
+:root {
+  --bg:           #000000;
+  --bg-2:         #0a0a0c;
+  --bg-3:         #111114;
+  --bg-elevated:  #1a1a1e;
+  --surface:      #1c1c1e;
+  --overlay:      rgba(28,28,30,0.92);
+
+  --text-1:  #ffffff;
+  --text-2:  rgba(255,255,255,0.78);
+  --text-3:  rgba(255,255,255,0.52);
+  --text-4:  rgba(255,255,255,0.28);
+
+  --accent:       #ec4899;
+  --accent-2:     #db2777;
+  --accent-soft:  rgba(236,72,153,0.12);
+  --accent-glow:  rgba(236,72,153,0.25);
+
+  --success:      #30d158;
+  --warning:      #ffd60a;
+  --danger:       #ff453a;
+  --info:         #64d2ff;
+
+  --sep:          rgba(255,255,255,0.08);
+  --sep-strong:   rgba(255,255,255,0.14);
+
+  --ease:    cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-s:  cubic-bezier(0.34, 1.56, 0.64, 1);
+  --dur-f:   0.15s;
+  --dur:     0.25s;
+  --dur-s:   0.4s;
+  --dur-ss:  0.6s;
+
+  --blur-lg: 24px;
+}
+
+/* ── Reset ────────────────────────────────────────────────── */
+*,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif;
+  background: var(--bg);
+  color: var(--text-1);
+  -webkit-user-select: none;
+  user-select: none;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; -webkit-tap-highlight-color: transparent; }
+input, textarea, select { font-family: inherit; font-size: inherit; color: inherit; }
+
+/* ── iOS Button System ────────────────────────────────────── */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 0 20px; height: 44px; border-radius: 9999px;
+  font-size: 14px; font-weight: 600; letter-spacing: -0.01em;
+  transition: all var(--dur-f) var(--ease);
+  position: relative; overflow: hidden; white-space: nowrap;
+}
+.btn:active { transform: scale(0.96); opacity: 0.85; }
+.btn-primary {
+  background: linear-gradient(135deg, #ec4899, #db2777); color: #fff;
+  box-shadow: 0 2px 12px rgba(236,72,153,0.35), inset 0 1px 0 rgba(255,255,255,0.12);
+}
+.btn-secondary { background: var(--bg-elevated); color: #fff; border: 1px solid var(--sep-strong); }
+.btn-secondary:hover { background: var(--surface); }
+.btn-ghost { background: transparent; color: var(--accent); padding: 0 12px; }
+.btn-ghost:hover { background: var(--accent-soft); }
+.btn-danger { background: var(--danger); color: #fff; }
+.btn-sm { height: 32px; padding: 0 14px; font-size: 12px; }
+.btn:disabled { opacity: 0.35; pointer-events: none; }
+
+/* ── iOS Card ─────────────────────────────────────────────── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--sep);
+  border-radius: 16px;
+  position: relative; overflow: hidden;
+  transition: all var(--dur) var(--ease);
+}
+.card::before {
+  content: ''; position: absolute; inset: 0; border-radius: inherit;
+  background: linear-gradient(135deg, rgba(255,255,255,0.03), transparent 60%);
+  pointer-events: none;
+}
+.card-interactive:hover { border-color: var(--sep-strong); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.5); }
+.card-interactive:active { transform: scale(0.985); transition-duration: var(--dur-f); }
+
+/* ── iOS Input ────────────────────────────────────────────── */
+.input {
+  width: 100%; background: var(--bg-elevated);
+  border: 1px solid var(--sep); border-radius: 10px;
+  padding: 12px 14px; color: var(--text-1); font-size: 14px;
+  transition: all var(--dur-f) var(--ease); outline: none;
+}
+.input::placeholder { color: var(--text-4); }
+.input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+textarea.input { resize: vertical; line-height: 1.55; }
+select.input {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12'%3E%3Cpath d='M3 4.5L6 7.5L9 4.5' stroke='rgba(255,255,255,0.4)' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px;
+}
+
+/* ── Badge ────────────────────────────────────────────────── */
+.badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 10px; border-radius: 9999px;
+  font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+}
+.badge-success { background: rgba(48,209,88,0.12); color: var(--success); }
+.badge-warning { background: rgba(255,214,10,0.12); color: var(--warning); }
+.badge-danger  { background: rgba(255,69,58,0.12); color: var(--danger); }
+.badge-info    { background: rgba(100,210,255,0.12); color: var(--info); }
+.badge-primary { background: var(--accent-soft); color: var(--accent); }
+.badge-muted   { background: rgba(255,255,255,0.06); color: var(--text-3); }
+
+/* ── Toggle Switch ────────────────────────────────────────── */
+.toggle {
+  width: 51px; height: 31px; background: var(--bg-elevated);
+  border: 1.5px solid var(--sep-strong); border-radius: 9999px;
+  position: relative; cursor: pointer; flex-shrink: 0;
+  transition: all var(--dur) var(--ease);
+}
+.toggle::after {
+  content: ''; position: absolute; top: 2px; left: 2px;
+  width: 25px; height: 25px; background: #fff; border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+  transition: all var(--dur) var(--ease);
+}
+.toggle.active { background: var(--success); border-color: var(--success); }
+.toggle.active::after { left: 22px; }
+
+/* ── Segmented Control ────────────────────────────────────── */
+.segmented {
+  display: flex; background: var(--bg-elevated);
+  border-radius: 9px; padding: 2px;
+}
+.segmented-item {
+  flex: 1; text-align: center; padding: 6px 12px; font-size: 13px;
+  font-weight: 500; color: var(--text-3); border-radius: 7px;
+  transition: all var(--dur-f) var(--ease); position: relative; z-index: 1;
+}
+.segmented-item.active { color: var(--text-1); background: var(--surface); box-shadow: 0 1px 2px rgba(0,0,0,0.3); }
+
+/* ── List Row ─────────────────────────────────────────────── */
+.list-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 16px; transition: background var(--dur-f) var(--ease); cursor: pointer;
+}
+.list-row:hover { background: rgba(255,255,255,0.03); }
+.list-row:active { background: rgba(255,255,255,0.06); }
+
+/* ── Avatar ───────────────────────────────────────────────── */
+.avatar {
+  width: 40px; height: 40px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; font-weight: 600; flex-shrink: 0;
+}
+.avatar-sm { width: 32px; height: 32px; font-size: 13px; }
+.avatar-lg { width: 56px; height: 56px; font-size: 22px; }
+
+/* ── Skeleton ─────────────────────────────────────────────── */
+.skeleton {
+  background: linear-gradient(110deg, var(--bg-elevated) 0%, var(--bg-elevated) 40%, rgba(255,255,255,0.04) 50%, var(--bg-elevated) 60%, var(--bg-elevated) 100%);
+  background-size: 200% 100%;
+  border-radius: 8px;
+  animation: shimmer 1.6s infinite;
+}
+@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+/* ── Toast ────────────────────────────────────────────────── */
+.toast-container {
+  position: fixed; top: 60px; left: 50%; transform: translateX(-50%);
+  z-index: 9999; display: flex; flex-direction: column; gap: 8px;
+  pointer-events: none;
+}
+.toast {
+  pointer-events: auto;
+  background: var(--overlay); backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 1px solid var(--sep); border-radius: 14px;
+  padding: 12px 20px; display: flex; align-items: center; gap: 10px;
+  font-size: 13px; font-weight: 500; color: var(--text-1);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+  animation: toastIn 0.5s var(--ease-s) both;
+  min-width: 280px;
+}
+@keyframes toastIn { from { opacity: 0; transform: translateY(-12px) scale(0.96); } to { opacity: 1; transform: none; } }
+
+/* ── Separator ────────────────────────────────────────────── */
+.sep { height: 0.5px; background: var(--sep); }
+.sep-strong { height: 0.5px; background: var(--sep-strong); }
+
+/* ── Glass Elements ───────────────────────────────────────── */
+.glass {
+  background: rgba(10,10,12,0.78);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+}
+
+/* ── Gradient Text ────────────────────────────────────────── */
+.gradient-text {
+  background: linear-gradient(135deg, #ec4899, #f472b6, #c084fc);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Stagger Animation ────────────────────────────────────── */
+.stagger > * { opacity: 0; animation: fadeUp 0.4s var(--ease) both; }
+.stagger > *:nth-child(1) { animation-delay: 0.00s; }
+.stagger > *:nth-child(2) { animation-delay: 0.05s; }
+.stagger > *:nth-child(3) { animation-delay: 0.10s; }
+.stagger > *:nth-child(4) { animation-delay: 0.15s; }
+.stagger > *:nth-child(5) { animation-delay: 0.20s; }
+.stagger > *:nth-child(6) { animation-delay: 0.25s; }
+.stagger > *:nth-child(7) { animation-delay: 0.30s; }
+.stagger > *:nth-child(8) { animation-delay: 0.35s; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Layout Helpers ───────────────────────────────────────── */
+.page { display: none; min-height: 100vh; }
+.page.active { display: block; }
+
+.page-section { display: none; }
+.page-section.active { display: block; }
+
+.container { max-width: 980px; margin: 0 auto; padding: 0 20px; }
+.container-wide { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+.glass-header {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(10,10,12,0.78);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border-bottom: 0.5px solid var(--sep);
+}
+
+.header-inner {
+  max-width: 1200px; margin: 0 auto; padding: 0 24px;
+  height: 52px; display: flex; align-items: center; justify-content: space-between;
+}
+
+/* ── Nav Tabs ─────────────────────────────────────────────── */
+.nav-tab {
+  padding: 6px 12px; border-radius: 8px; font-size: 13px;
+  color: var(--text-3); transition: all var(--dur-f) var(--ease);
+}
+.nav-tab:hover { color: var(--text-1); background: rgba(255,255,255,0.04); }
+.nav-tab.active { color: var(--text-1); background: var(--bg-elevated); font-weight: 500; }
+
+/* ── Sidebar ──────────────────────────────────────────────── */
+.sidebar-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 12px; border-radius: 10px; font-size: 13px;
+  color: var(--text-3); cursor: pointer; transition: all var(--dur-f) var(--ease);
+}
+.sidebar-item:hover { color: var(--text-1); background: rgba(255,255,255,0.04); }
+.sidebar-item.active { color: var(--accent); background: var(--accent-soft); font-weight: 500; }
+
+/* ── Utility Classes ──────────────────────────────────────── */
+.text-center { text-align: center; }
+.text-sm { font-size: 13px; }
+.text-xs { font-size: 11px; }
+.text-muted { color: var(--text-3); }
+.text-secondary { color: var(--text-2); }
+.font-medium { font-weight: 500; }
+.font-semibold { font-weight: 600; }
+.font-bold { font-weight: 700; }
+.font-light { font-weight: 300; }
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.gap-1 { gap: 4px; }
+.gap-2 { gap: 8px; }
+.gap-3 { gap: 12px; }
+.gap-4 { gap: 16px; }
+.flex-wrap { flex-wrap: wrap; }
+.w-full { width: 100%; }
+.max-w-3xl { max-width: 640px; }
+.mx-auto { margin-left: auto; margin-right: auto; }
+.px-4 { padding-left: 16px; padding-right: 16px; }
+.px-5 { padding-left: 20px; padding-right: 20px; }
+.px-6 { padding-left: 24px; padding-right: 24px; }
+.py-3 { padding-top: 12px; padding-bottom: 12px; }
+.p-4 { padding: 16px; }
+.p-5 { padding: 20px; }
+.p-6 { padding: 24px; }
+.mt-1 { margin-top: 8px; }
+.mt-2 { margin-top: 16px; }
+.mt-3 { margin-top: 24px; }
+.mt-4 { margin-top: 32px; }
+.mb-1 { margin-bottom: 8px; }
+.mb-2 { margin-bottom: 16px; }
+.mb-3 { margin-bottom: 24px; }
+.mb-4 { margin-bottom: 32px; }
+.h-full { height: 100%; }
+.space-y-3 > * + * { margin-top: 12px; }
+.space-y-4 > * + * { margin-top: 16px; }
+.truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rounded-full { border-radius: 9999px; }
+.relative { position: relative; }
+.absolute { position: absolute; }
+.inset-0 { inset: 0; }
+.overflow-hidden { overflow: hidden; }
+.overflow-y-auto { overflow-y: auto; }
+.flex-1 { flex: 1; }
+.min-w-0 { min-width: 0; }
+.shrink-0 { flex-shrink: 0; }
+.section-title { font-size: 22px; font-weight: 700; margin-bottom: 16px; }
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+::selection { background: var(--accent); color: #fff; }
+
+/* ── Responsive ───────────────────────────────────────────── */
+@media (min-width: 768px) {
+  .sidebar { display: block !important; }
+  .msg-sidebar { display: flex !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- PUBLIC HEADER -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<header id="public-header" class="glass-header" style="display:none">
+  <div class="header-inner">
+    <a href="#" class="font-bold text-base gradient-text" onclick="showPage('home');return false">iin house</a>
+    <nav class="flex items-center gap-1" id="public-nav">
+      <button class="nav-tab" onclick="showPage('feed')">Browse</button>
+      <button class="nav-tab" onclick="showPage('login')">Log in</button>
+      <button class="btn btn-primary btn-sm" onclick="showPage('register')">Get started</button>
+    </nav>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- CREATOR HEADER -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<header id="creator-header" class="glass-header" style="display:none">
+  <div class="header-inner">
+    <a href="#" class="font-bold text-base gradient-text" onclick="showSection('dash');return false">iin house</a>
+    <nav class="flex items-center gap-1" id="creator-nav">
+      <button class="nav-tab active" data-section="dash" onclick="showSection('dash')">Dashboard</button>
+      <button class="nav-tab" data-section="upload" onclick="showSection('upload')">Upload</button>
+      <button class="nav-tab" data-section="tiers" onclick="showSection('tiers')">Tiers</button>
+      <button class="nav-tab" data-section="earnings" onclick="showSection('earnings')">Earnings</button>
+      <button class="nav-tab" data-section="payouts" onclick="showSection('payouts')">Payouts</button>
+      <button class="nav-tab" data-section="cmessages" onclick="showSection('cmessages')">Messages</button>
+      <button class="nav-tab" data-section="contract" onclick="showSection('contract')">Contract</button>
+      <button class="nav-tab" data-section="ctools" onclick="showSection('ctools')">Tools</button>
+      <button class="btn btn-ghost btn-sm" onclick="showPage('home')">Sign out</button>
+    </nav>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- ADMIN HEADER -->
+<header id="admin-header" class="glass-header" style="display:none">
+  <div class="header-inner">
+    <span class="font-bold text-base gradient-text">iin house</span>
+    <nav class="flex items-center gap-1" id="admin-nav">
+      <button class="nav-tab active" data-section="adash" onclick="showSection('adash')">Dashboard</button>
+      <button class="nav-tab" data-section="kyc" onclick="showSection('kyc')">KYC</button>
+      <button class="nav-tab" data-section="moderation" onclick="showSection('moderation')">Moderation</button>
+      <button class="nav-tab" data-section="apayouts" onclick="showSection('apayouts')">Payouts</button>
+      <button class="nav-tab" data-section="adisputes" onclick="showSection('adisputes')">Disputes</button>
+      <button class="nav-tab" data-section="acontracts" onclick="showSection('acontracts')">Contracts</button>
+      <button class="nav-tab" data-section="aanalytics" onclick="showSection('aanalytics')">Analytics</button>
+      <button class="nav-tab" data-section="compliance" onclick="showSection('compliance')">Compliance</button>
+      <button class="btn btn-ghost btn-sm" onclick="showPage('home')">Sign out</button>
+    </nav>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- SUBSCRIBER HEADER -->
+<header id="subscriber-header" class="glass-header" style="display:none">
+  <div class="header-inner">
+    <a href="#" class="font-bold text-base gradient-text" onclick="showPage('feed');return false">iin house</a>
+    <nav class="flex items-center gap-1" id="subscriber-nav">
+      <button class="nav-tab active" onclick="showPage('feed')">Feed</button>
+      <button class="nav-tab" onclick="showPage('submessages')">Messages</button>
+      <button class="nav-tab" onclick="showPage('age-verify')">Verify</button>
+      <button class="nav-tab" onclick="showPage('disputes')">Disputes</button>
+      <button class="btn btn-ghost btn-sm" onclick="showPage('home')">Sign out</button>
+    </nav>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- HOME / LANDING -->
+<div id="page-home" class="page active">
+  <div style="padding:80px 24px 60px;text-align:center;">
+    <div style="display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border:1px solid rgba(236,72,153,0.25);border-radius:20px;background:rgba(236,72,153,0.06);color:var(--accent);font-size:12px;font-weight:600;margin-bottom:28px;letter-spacing:0.02em;">
+      ✦ Built for creators, designed for trust
+    </div>
+    <h1 style="font-size:clamp(38px,7vw,64px);font-weight:700;line-height:1.08;letter-spacing:-0.03em;margin-bottom:20px;">
+      The creator platform<br><span class="gradient-text">without the bloat.</span>
+    </h1>
+    <p style="font-size:17px;color:var(--text-3);max-width:540px;margin:0 auto 36px;line-height:1.55;font-weight:400;">
+      Subscription tiers. Pay-per-view. Direct messages. Content protection that actually protects. Fast payouts.
+    </p>
+    <div style="display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;">
+      <button class="btn btn-primary" style="padding:0 28px;height:52px;font-size:15px;" onclick="showPage('register')">Start as a creator</button>
+      <button class="btn btn-secondary" style="padding:0 28px;height:52px;font-size:15px;" onclick="showPage('register')">Join as a subscriber</button>
+    </div>
+    <div class="stagger" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;max-width:1100px;margin:80px auto 0;padding:0 24px 80px;">
+      <div class="card card-interactive" style="padding:22px;text-align:left;">
+        <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#9d174d,#be185d);display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:14px;">🔒</div>
+        <h3 style="font-size:15px;font-weight:600;margin-bottom:6px;">Content Protection</h3>
+        <p style="font-size:13px;color:var(--text-3);line-height:1.55;">Watermarked delivery, URL expiries, and download prevention keep your content safe.</p>
+      </div>
+      <div class="card card-interactive" style="padding:22px;text-align:left;">
+        <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#7c3aed,#a78bfa);display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:14px;">💰</div>
+        <h3 style="font-size:15px;font-weight:600;margin-bottom:6px;">Fast Payouts</h3>
+        <p style="font-size:13px;color:var(--text-3);line-height:1.55;">Weekly automated payouts via RazorpayX. No waiting, no chasing.</p>
+      </div>
+      <div class="card card-interactive" style="padding:22px;text-align:left;">
+        <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#059669,#34d399);display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:14px;">⚡</div>
+        <h3 style="font-size:15px;font-weight:600;margin-bottom:6px;">Subscription Tiers</h3>
+        <p style="font-size:13px;color:var(--text-3);line-height:1.55;">Flexible tier setup. Subscribers choose what fits them. Revenue is yours.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- REGISTER -->
+<div id="page-register" class="page">
+  <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;">
+    <div style="width:100%;max-width:380px;">
+      <div style="text-align:center;margin-bottom:28px;">
+        <div class="gradient-text font-bold text-xl" style="margin-bottom:4px;">iin house</div>
+        <p style="font-size:13px;color:var(--text-3);">Create your account</p>
+      </div>
+      <div class="card" style="padding:28px;">
+        <div style="display:flex;gap:8px;margin-bottom:20px;background:var(--bg-elevated);border-radius:10px;padding:3px;">
+          <button class="segmented-item active" style="flex:1;text-align:center;padding:8px;border-radius:8px;font-size:13px;font-weight:500;" onclick="this.parentElement.querySelectorAll('.segmented-item').forEach(b=>b.classList.remove('active'));this.classList.add('active')">Creator</button>
+          <button class="segmented-item" style="flex:1;text-align:center;padding:8px;border-radius:8px;font-size:13px;font-weight:500;color:var(--text-3);" onclick="this.parentElement.querySelectorAll('.segmented-item').forEach(b=>b.classList.remove('active'));this.classList.add('active')">Subscriber</button>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <input class="input" placeholder="Full name" type="text">
+          <input class="input" placeholder="Email address" type="email">
+          <input class="input" placeholder="Password" type="password">
+          <input class="input" placeholder="Confirm password" type="password">
+          <button class="btn btn-primary" style="width:100%;" onclick="showPage('login')">Create account</button>
+        </div>
+        <p style="text-align:center;margin-top:18px;font-size:13px;color:var(--text-3);">Already have an account? <a href="#" style="color:var(--accent);font-weight:500;" onclick="showPage('login');return false">Log in</a></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- LOGIN -->
+<div id="page-login" class="page">
+  <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;">
+    <div style="width:100%;max-width:380px;">
+      <div style="text-align:center;margin-bottom:28px;">
+        <div class="gradient-text font-bold text-xl" style="margin-bottom:4px;">iin house</div>
+        <p style="font-size:13px;color:var(--text-3);">Welcome back</p>
+      </div>
+      <div class="card" style="padding:28px;">
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <input class="input" placeholder="Email address" type="email">
+          <input class="input" placeholder="Password" type="password">
+          <button class="btn btn-primary" style="width:100%;" onclick="showSection('dash')">Log in</button>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:16px;font-size:13px;">
+          <a href="#" style="color:var(--text-3);">Forgot password?</a>
+          <a href="#" style="color:var(--accent);font-weight:500;" onclick="showPage('register');return false">Sign up</a>
+        </div>
+        <div class="sep" style="margin:18px 0;"></div>
+        <button class="btn btn-secondary" style="width:100%;" onclick="showPage('admin')">Admin Portal</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- SUBSCRIBER FEED -->
+<div id="page-feed" class="page">
+  <div style="padding-bottom:100px;">
+    <div style="padding:12px 16px 8px;position:sticky;top:52px;z-index:40;background:rgba(0,0,0,0.8);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);">
+      <div style="background:var(--bg-elevated);border:1px solid var(--sep);border-radius:12px;padding:10px 14px;display:flex;align-items:center;gap:8px;">
+        <span style="color:var(--text-4);font-size:16px;">🔍</span>
+        <input class="input" style="border:none;background:transparent;padding:0;" placeholder="Search creators, tiers, content…">
+      </div>
+    </div>
+    <div style="padding:4px 16px 12px;display:flex;gap:8px;overflow-x:auto;" class="scrollbar-hide">
+      <button class="btn btn-primary btn-sm" style="border-radius:20px;">All</button>
+      <button class="btn btn-secondary btn-sm" style="border-radius:20px;">Art</button>
+      <button class="btn btn-secondary btn-sm" style="border-radius:20px;">Music</button>
+      <button class="btn btn-secondary btn-sm" style="border-radius:20px;">Fitness</button>
+      <button class="btn btn-secondary btn-sm" style="border-radius:20px;">Tech</button>
+      <button class="btn btn-secondary btn-sm" style="border-radius:20px;">Writing</button>
+    </div>
+    <div class="container" style="padding-top:8px;">
+      <div class="stagger" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:14px;">
+        <div class="card card-interactive" style="overflow:hidden;" onclick="showPage('profile')">
+          <div style="aspect-ratio:3/4;background:linear-gradient(135deg,#9d174d,#be185d);display:flex;align-items:center;justify-content:center;font-size:52px;">🎨</div>
+          <div style="padding:12px;"><div style="font-size:14px;font-weight:600;margin-bottom:2px;">Lena Creates</div><div style="font-size:12px;color:var(--text-3);">Art · 1.2K subscribers</div><div style="margin-top:8px;"><span class="badge badge-primary">₹99/mo</span></div></div>
+        </div>
+        <div class="card card-interactive" style="overflow:hidden;" onclick="showPage('profile')">
+          <div style="aspect-ratio:3/4;background:linear-gradient(135deg,#7c3aed,#a78bfa);display:flex;align-items:center;justify-content:center;font-size:52px;">🎵</div>
+          <div style="padding:12px;"><div style="font-size:14px;font-weight:600;margin-bottom:2px;">DJ Rohit</div><div style="font-size:12px;color:var(--text-3);">Music · 3.4K subscribers</div><div style="margin-top:8px;"><span class="badge badge-primary">₹149/mo</span></div></div>
+        </div>
+        <div class="card card-interactive" style="overflow:hidden;" onclick="showPage('profile')">
+          <div style="aspect-ratio:3/4;background:linear-gradient(135deg,#059669,#34d399);display:flex;align-items:center;justify-content:center;font-size:52px;">💪</div>
+          <div style="padding:12px;"><div style="font-size:14px;font-weight:600;margin-bottom:2px;">Priya Fitness</div><div style="font-size:12px;color:var(--text-3);">Fitness · 890 subscribers</div><div style="margin-top:8px;"><span class="badge badge-primary">₹79/mo</span></div></div>
+        </div>
+        <div class="card card-interactive" style="overflow:hidden;" onclick="showPage('profile')">
+          <div style="aspect-ratio:3/4;background:linear-gradient(135deg,#dc2626,#f87171);display:flex;align-items:center;justify-content:center;font-size:52px;">✍️</div>
+          <div style="padding:12px;"><div style="font-size:14px;font-weight:600;margin-bottom:2px;">Arun Writes</div><div style="font-size:12px;color:var(--text-3);">Writing · 560 subscribers</div><div style="margin-top:8px;"><span class="badge badge-primary">₹49/mo</span></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- CREATOR DASHBOARD -->
+<div id="section-dash" class="page-section">
+  <div class="dashboard">
+    <aside class="sidebar" style="display:none;width:220px;border-right:0.5px solid var(--sep);padding:16px 10px;">
+      <div class="sidebar-logo gradient-text" style="font-size:15px;font-weight:700;margin-bottom:20px;padding:0 8px;">iin house</div>
+      <div class="sidebar-item active">📊 Dashboard</div>
+      <div class="sidebar-item">📤 Upload</div>
+      <div class="sidebar-item">🎫 Tiers</div>
+      <div class="sidebar-item">💰 Earnings</div>
+      <div class="sidebar-item">💸 Payouts</div>
+      <div class="sidebar-item">💬 Messages</div>
+      <div class="sidebar-item">📝 Contract</div>
+    </aside>
+    <div style="flex:1;padding:28px 20px;">
+      <div style="margin-bottom:24px;"><h1 style="font-size:22px;font-weight:700;margin-bottom:2px;">Dashboard</h1><p style="font-size:13px;color:var(--text-3);">Welcome back, Creator</p></div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:28px;" class="stagger">
+        <div class="card" style="padding:18px;"><div style="font-size:11px;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-3);margin-bottom:8px;">Revenue</div><div style="font-size:26px;font-weight:700;">₹24.5K</div><div style="font-size:12px;color:var(--success);margin-top:4px;">↑ 12.5%</div></div>
+        <div class="card" style="padding:18px;"><div style="font-size:11px;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-3);margin-bottom:8px;">Subscribers</div><div style="font-size:26px;font-weight:700;">1,847</div><div style="font-size:12px;color:var(--success);margin-top:4px;">↑ 8.2%</div></div>
+        <div class="card" style="padding:18px;"><div style="font-size:11px;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-3);margin-bottom:8px;">Posts</div><div style="font-size:26px;font-weight:700;">234</div><div style="font-size:12px;color:var(--text-3);margin-top:4px;">12 this week</div></div>
+        <div class="card" style="padding:18px;"><div style="font-size:11px;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-3);margin-bottom:8px;">Engagement</div><div style="font-size:26px;font-weight:700;">4.8%</div><div style="font-size:12px;color:var(--success);margin-top:4px;">↑ 0.3%</div></div>
+      </div>
+      <div class="card" style="padding:20px;margin-bottom:16px;">
+        <h3 style="font-size:15px;font-weight:600;margin-bottom:14px;">Recent Activity</h3>
+        <div class="list-row"><div class="avatar avatar-sm" style="background:linear-gradient(135deg,#ec4899,#db2777);">👤</div><div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:500;">New subscriber</div><div style="font-size:12px;color:var(--text-3);">Joined Gold tier</div></div><span style="font-size:12px;color:var(--text-3);">2m ago</span></div>
+        <div class="list-row"><div class="avatar avatar-sm" style="background:linear-gradient(135deg,#7c3aed,#a78bfa);">💬</div><div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:500;">New message</div><div style="font-size:12px;color:var(--text-3);">Rahul sent you a DM</div></div><span style="font-size:12px;color:var(--text-3);">15m ago</span></div>
+        <div class="list-row"><div class="avatar avatar-sm" style="background:linear-gradient(135deg,#059669,#34d399);">💰</div><div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:500;">Payout processed</div><div style="font-size:12px;color:var(--text-3);">₹12,400 sent to your bank</div></div><span style="font-size:12px;color:var(--text-3);">1h ago</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- CREATOR UPLOAD -->
+<div id="section-upload" class="page-section">
+  <div style="max-width:640px;margin:0 auto;padding:28px 20px;">
+    <h1 style="font-size:22px;font-weight:700;margin-bottom:4px;">Upload Content</h1>
+    <p style="font-size:13px;color:var(--text-3);margin-bottom:24px;">Share photos, videos, audio, or text</p>
+    <div class="card" style="padding:40px 24px;text-align:center;border:2px dashed var(--sep-strong);cursor:pointer;" onclick="this.querySelector('input').click()">
+      <div style="font-size:40px;margin-bottom:10px;">📤</div>
+      <p style="font-size:14px;font-weight:500;margin-bottom:4px;">Drop files here or tap to browse</p>
+      <p style="font-size:12px;color:var(--text-3);">Images, videos, audio, or documents</p>
+      <input type="file" multiple style="display:none;">
+    </div>
+    <div style="margin-top:16px;display:flex;flex-direction:column;gap:14px;">
+      <div><label style="display:block;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-3);margin-bottom:6px;">Caption</label><textarea class="input" rows="3" placeholder="Describe your content…"></textarea></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div><label style="display:block;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-3);margin-bottom:6px;">Type</label><select class="input"><option>Free post</option><option>Paid post</option><option>Tier locked</option></select></div>
+        <div><label style="display:block;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-3);margin-bottom:6px;">Price (₹)</label><input class="input" placeholder="199" type="number"></div>
+      </div>
+      <div><label style="display:block;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-3);margin-bottom:6px;">Schedule</label><input class="input" type="datetime-local"></div>
+      <button class="btn btn-primary" style="width:100%;margin-top:4px;" onclick="showToast('Content published!','success')">Publish now</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== CREATOR PROFILE ==================== -->
+<div id="page-profile" class="page">
+  <div>
+    <div style="height:180px;background:linear-gradient(135deg,#9d174d,#be185d);position:relative;"><div style="position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,0.6) 100%);"></div></div>
+    <div style="max-width:640px;margin:0 auto;padding:0 20px;">
+      <div style="margin-top:-40px;position:relative;z-index:2;"><div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#ec4899,#db2777);border:4px solid #000;display:flex;align-items:center;justify-content:center;font-size:32px;">🎨</div></div>
+      <div style="margin-top:12px;"><h1 style="font-size:22px;font-weight:700;">Lena Creates</h1><p style="font-size:13px;color:var(--text-3);margin-top:4px;">Digital artist · 1.2K subscribers</p><p style="font-size:14px;color:var(--text-2);margin-top:10px;line-height:1.55;">Original digital art, tutorials, and behind-the-scenes content.</p>
+        <div style="display:flex;gap:8px;margin-top:16px;"><button class="btn btn-primary btn-sm" onclick="showToast('Subscribed!','success')">Subscribe — ₹99/mo</button><button class="btn btn-secondary btn-sm">Message</button></div>
+      </div>
+      <div style="margin-top:28px;"><h2 style="font-size:18px;font-weight:700;margin-bottom:12px;">Subscription Tiers</h2>
+        <div style="display:flex;flex-direction:column;gap:10px;"><div class="card" style="padding:16px;display:flex;align-items:center;justify-content:space-between;"><div><div style="font-size:14px;font-weight:600;">Free</div><div style="font-size:12px;color:var(--text-3);">Public posts only</div></div><span class="badge badge-muted">Free</span></div>
+          <div class="card" style="padding:16px;display:flex;align-items:center;justify-content:space-between;border-color:rgba(236,72,153,0.2);"><div><div style="font-size:14px;font-weight:600;">Gold</div><div style="font-size:12px;color:var(--text-3);">All content + HD downloads</div></div><span class="badge badge-primary">₹99/mo</span></div>
+          <div class="card" style="padding:16px;display:flex;align-items:center;justify-content:space-between;"><div><div style="font-size:14px;font-weight:600;">Platinum</div><div style="font-size:12px;color:var(--text-3);">All + 1-on-1 monthly session</div></div><span class="badge badge-primary">₹299/mo</span></div></div>
+      </div>
+      <div style="margin-top:28px;"><h2 style="font-size:18px;font-weight:700;margin-bottom:12px;">Recent Posts</h2>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;"><div style="aspect-ratio:1;background:linear-gradient(135deg,#9d174d,#be185d);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:36px;" class="card-interactive">🖼️</div><div style="aspect-ratio:1;background:linear-gradient(135deg,#7c3aed,#a78bfa);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:36px;" class="card-interactive">🎬</div><div style="aspect-ratio:1;background:linear-gradient(135deg,#059669,#34d399);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:36px;" class="card-interactive">📝</div><div style="aspect-ratio:1;background:linear-gradient(135deg,#dc2626,#f87171);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:36px;" class="card-interactive">🎵</div></div>
+      </div>
+      <div style="height:40px;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== VERIFY EMAIL ==================== -->
+<div id="page-verify-email" class="page">
+  <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;">
+    <div style="width:100%;max-width:380px;text-align:center;">
+      <div class="card" style="padding:32px 24px;">
+        <div style="width:56px;height:56px;border-radius:50%;background:var(--accent-soft);display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 16px;">✉️</div>
+        <h1 style="font-size:20px;font-weight:700;margin-bottom:6px;">Verify your email</h1>
+        <p style="font-size:13px;color:var(--text-3);line-height:1.55;">We've sent a verification link to your email.</p>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-top:20px;">
+          <input class="input" placeholder="Verification code" style="text-align:center;font-size:18px;letter-spacing:0.1em;">
+          <button class="btn btn-primary" style="width:100%;" onclick="showToast('Email verified!','success')">Verify</button>
+          <button class="btn btn-ghost btn-sm" style="margin-top:4px;">Resend code</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== MESSAGES ==================== -->
+<div id="page-messages" class="page">
+  <div style="max-width:900px;margin:0 auto;height:calc(100vh - 52px);display:flex;overflow:hidden;border-bottom:0.5px solid var(--sep);">
+    <div style="width:100%;max-width:300px;border-right:0.5px solid var(--sep);display:flex;flex-direction:column;" id="msg-list-panel">
+      <div style="padding:14px 16px;border-bottom:0.5px solid var(--sep);"><input class="input" placeholder="Search messages…"></div>
+      <div style="flex:1;overflow-y:auto;" class="msg-list">
+        <div class="list-row active"><div class="avatar avatar-sm" style="background:linear-gradient(135deg,#ec4899,#db2777);">L</div><div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:500;">Lena Creates</div><div style="font-size:12px;color:var(--text-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Thanks for subscribing! 🎨</div></div><span style="font-size:11px;color:var(--text-3);">2m</span></div>
+        <div class="list-row"><div class="avatar avatar-sm" style="background:linear-gradient(135deg,#7c3aed,#a78bfa);">R</div><div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:500;">DJ Rohit</div><div style="font-size:12px;color:var(--text-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">New track dropping Friday!</div></div><span style="font-size:11px;color:var(--text-3);">1h</span></div>
+        <div class="list-row"><div class="avatar avatar-sm" style="background:linear-gradient(135deg,#059669,#34d399);">P</div><div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:500;">Priya Fitness</div><div style="font-size:12px;color:var(--text-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Check out the new workout</div></div><span style="font-size:11px;color:var(--text-3);">3h</span></div>
+        <div class="list-row"><div class="avatar avatar-sm" style="background:linear-gradient(135deg,#dc2626,#f87171);">A</div><div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:500;">Arun Writes</div><div style="font-size:12px;color:var(--text-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">New essay on AI writing</div></div><span style="font-size:11px;color:var(--text-3);">1d</span></div>
+      </div>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:column;" id="msg-chat-panel">
+      <div style="padding:12px 16px;border-bottom:0.5px solid var(--sep);display:flex;align-items:center;gap:10px;">
+        <div class="avatar avatar-sm" style="background:linear-gradient(135deg,#ec4899,#db2777);">L</div>
+        <div><div style="font-size:14px;font-weight:600;">Lena Creates</div><div style="font-size:11px;color:var(--success);">● Online</div></div>
+      </div>
+      <div style="flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:8px;">
+        <div style="max-width:65%;padding:10px 14px;border-radius:16px;font-size:14px;align-self:flex-start;background:var(--bg-elevated);color:var(--text-2);border-bottom-left-radius:4px;">Hey! Welcome to my page 🎨</div>
+        <div style="max-width:65%;padding:10px 14px;border-radius:16px;font-size:14px;align-self:flex-start;background:var(--bg-elevated);color:var(--text-2);border-bottom-left-radius:4px;">Let me know if you have any questions</div>
+        <div style="max-width:65%;padding:10px 14px;border-radius:16px;font-size:14px;align-self:flex-end;background:linear-gradient(135deg,#db2777,#ec4899);color:#fff;border-bottom-right-radius:4px;">Thanks! Loving the content so far ✨</div>
+      </div>
+      <div style="padding:10px 16px;border-top:0.5px solid var(--sep);display:flex;gap:8px;">
+        <input class="input" placeholder="Write a message…" style="flex:1;">
+        <button class="btn btn-primary" style="height:40px;padding:0 16px;font-size:13px;">Send</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== ADMIN DASHBOARD ==================== -->
+<div id="section-adash" class="page-section">
+  <div style="max-width:1100px;margin:0 auto;padding:28px 20px;">
+    <div style="margin-bottom:24px;"><h1 style="font-size:22px;font-weight:700;margin-bottom:2px;">Admin Dashboard</h1><p style="font-size:13px;color:var(--text-3);">Platform overview & management</p></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:28px;" class="stagger">
+      <div class="card" style="padding:18px;"><div style="font-size:11px;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-3);margin-bottom:8px;">Creators</div><div style="font-size:26px;font-weight:700;">2,847</div></div>
+      <div class="card" style="padding:18px;"><div style="font-size:11px;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-3);margin-bottom:8px;">Subscribers</div><div style="font-size:26px;font-weight:700;">48.2K</div></div>
+      <div class="card" style="padding:18px;"><div style="font-size:11px;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-3);margin-bottom:8px;">Revenue</div><div style="font-size:26px;font-weight:700;">₹12.4L</div></div>
+      <div class="card" style="padding:18px;"><div style="font-size:11px;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-3);margin-bottom:8px;">Disputes</div><div style="font-size:26px;font-weight:700;color:var(--warning);">23</div></div>
+      <div class="card" style="padding:18px;"><div style="font-size:11px;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-3);margin-bottom:8px;">Payouts</div><div style="font-size:26px;font-weight:700;">₹8.7L</div></div>
+    </div>
+    <div style="display:flex;gap:4px;margin-bottom:20px;overflow-x:auto;" class="scrollbar-hide">
+      <button class="btn btn-primary btn-sm" style="border-radius:8px;" onclick="showSection('kyc')">KYC Queue</button>
+      <button class="btn btn-secondary btn-sm" style="border-radius:8px;" onclick="showSection('moderation')">Moderation</button>
+      <button class="btn btn-secondary btn-sm" style="border-radius:8px;" onclick="showSection('apayouts')">Payouts</button>
+      <button class="btn btn-secondary btn-sm" style="border-radius:8px;" onclick="showSection('adisputes')">Disputes</button>
+      <button class="btn btn-secondary btn-sm" style="border-radius:8px;" onclick="showSection('compliance')">Compliance</button>
+    </div>
+    <div class="card" style="padding:20px;">
+      <h3 style="font-size:15px;font-weight:600;margin-bottom:14px;">Pending Actions</h3>
+      <div class="list-row"><div class="avatar avatar-sm" style="background:linear-gradient(135deg,#ec4899,#db2777);">L</div><div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:500;">Lena Creates — KYC</div><div style="font-size:12px;color:var(--text-3);">Aadhaar uploaded, awaiting verification</div></div><span class="badge badge-warning">Pending</span></div>
+      <div class="list-row"><div class="avatar avatar-sm" style="background:linear-gradient(135deg,#7c3aed,#a78bfa);">R</div><div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:500;">Content flag — Post #412</div><div style="font-size:12px;color:var(--text-3);">Reported by subscriber</div></div><span class="badge badge-danger">Review</span></div>
+      <div class="list-row"><div class="avatar avatar-sm" style="background:linear-gradient(135deg,#059669,#34d399);">P</div><div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:500;">Payout request — Priya Fitness</div><div style="font-size:12px;color:var(--text-3);">₹8,200 request pending approval</div></div><span class="badge badge-warning">Pending</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== ADMIN KYC ==================== -->
+<div id="section-kyc" class="page-section">
+  <div style="max-width:800px;margin:0 auto;padding:28px 20px;">
+    <h1 style="font-size:22px;font-weight:700;margin-bottom:4px;">KYC Queue</h1>
+    <p style="font-size:13px;color:var(--text-3);margin-bottom:24px;">Verify creator identities before they go live</p>
+    <div class="stagger" style="display:flex;flex-direction:column;gap:12px;">
+      <div class="card" style="padding:16px;display:flex;align-items:center;gap:14px;">
+        <div class="avatar" style="background:linear-gradient(135deg,#ec4899,#db2777);">L</div>
+        <div style="flex:1;min-width:0;"><div style="font-size:14px;font-weight:600;">Lena Creates</div><div style="font-size:12px;color:var(--text-3);">lena@example.com · 2h ago</div></div>
+        <div style="display:flex;gap:8px;"><button class="btn btn-primary btn-sm" onclick="showToast('KYC approved','success')">Approve</button><button class="btn btn-secondary btn-sm">Review</button></div>
+      </div>
+      <div class="card" style="padding:16px;display:flex;align-items:center;gap:14px;">
+        <div class="avatar" style="background:linear-gradient(135deg,#7c3aed,#a78bfa);">R</div>
+        <div style="flex:1;min-width:0;"><div style="font-size:14px;font-weight:600;">DJ Rohit</div><div style="font-size:12px;color:var(--text-3);">rohit@example.com · 5h ago</div></div>
+        <div style="display:flex;gap:8px;"><button class="btn btn-primary btn-sm" onclick="showToast('KYC approved','success')">Approve</button><button class="btn btn-secondary btn-sm">Review</button></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== ADMIN MODERATION ==================== -->
+<div id="section-moderation" class="page-section">
+  <div style="max-width:900px;margin:0 auto;padding:28px 20px;">
+    <h1 style="font-size:22px;font-weight:700;margin-bottom:4px;">Content Moderation</h1>
+    <p style="font-size:13px;color:var(--text-3);margin-bottom:24px;">Review flagged content</p>
+    <div class="stagger" style="display:flex;flex-direction:column;gap:12px;">
+      <div class="card" style="padding:16px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;"><div style="display:flex;align-items:center;gap:10px;"><span style="font-size:20px;">🖼️</span><div><div style="font-size:13px;font-weight:600;">Post #412 by Lena Creates</div><div style="font-size:12px;color:var(--text-3);">Flagged 3 times</div></div></div><span class="badge badge-danger">Flagged</span></div>
+        <div style="background:var(--bg-elevated);border-radius:10px;padding:16px;font-size:13px;color:var(--text-2);margin-bottom:12px;">Content preview hidden for moderation.</div>
+        <div style="display:flex;gap:8px;"><button class="btn btn-danger btn-sm">Remove</button><button class="btn btn-secondary btn-sm">Warn</button><button class="btn btn-ghost btn-sm">Dismiss</button></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== ADMIN PAYOUTS ==================== -->
+<div id="section-apayouts" class="page-section">
+  <div style="max-width:900px;margin:0 auto;padding:28px 20px;">
+    <h1 style="font-size:22px;font-weight:700;margin-bottom:24px;">Payout Management</h1>
+    <div class="card" style="overflow:hidden;">
+      <table style="width:100%;border-collapse:collapse;">
+        <thead><tr style="border-bottom:0.5px solid var(--sep);"><th style="text-align:left;padding:12px 16px;font-size:11px;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-3);font-weight:600;">Creator</th><th style="text-align:left;padding:12px 16px;font-size:11px;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-3);font-weight:600;">Amount</th><th style="text-align:left;padding:12px 16px;font-size:11px;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-3);font-weight:600;">Status</th><th style="text-align:left;padding:12px 16px;font-size:11px;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-3);font-weight:600;">Action</th></tr></thead>
+        <tbody>
+          <tr style="border-bottom:0.5px solid var(--sep);"><td style="padding:14px 16px;font-size:13px;">Lena Creates</td><td style="padding:14px 16px;font-size:13px;font-weight:600;">₹24,500</td><td style="padding:14px 16px;"><span class="badge badge-warning">Pending</span></td><td style="padding:14px 16px;"><button class="btn btn-primary btn-sm" onclick="showToast('Approved','success')">Approve</button></td></tr>
+          <tr><td style="padding:14px 16px;font-size:13px;">Priya Fitness</td><td style="padding:14px 16px;font-size:13px;font-weight:600;">₹12,400</td><td style="padding:14px 16px;"><span class="badge badge-success">Paid</span></td><td style="padding:14px 16px;"><button class="btn btn-ghost btn-sm">View</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== ADMIN DISPUTES ==================== -->
+<div id="section-adisputes" class="page-section">
+  <div style="max-width:900px;margin:0 auto;padding:28px 20px;">
+    <h1 style="font-size:22px;font-weight:700;margin-bottom:24px;">Disputes & Billing</h1>
+    <div class="card" style="padding:16px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;"><div><div style="font-size:14px;font-weight:600;">Dispute #1047</div><div style="font-size:12px;color:var(--text-3);">3 days ago · ₹999 chargeback</div></div><span class="badge badge-danger">Open</span></div>
+      <p style="font-size:13px;color:var(--text-2);line-height:1.55;margin-bottom:12px;">Subscriber claims content was not as described.</p>
+      <div style="display:flex;gap:8px;"><button class="btn btn-primary btn-sm">Refund</button><button class="btn btn-secondary btn-sm">Escalate</button><button class="btn btn-ghost btn-sm">Dismiss</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== ADMIN CONTRACTS ==================== -->
+<div id="section-acontracts" class="page-section">
+  <div style="max-width:900px;margin:0 auto;padding:28px 20px;">
+    <h1 style="font-size:22px;font-weight:700;margin-bottom:24px;">Creator Contracts</h1>
+    <div class="card" style="padding:20px;">
+      <div class="list-row" style="background:var(--bg-elevated);border-radius:10px;margin-bottom:8px;padding:14px 16px;"><div class="avatar" style="background:linear-gradient(135deg,#ec4899,#db2777);">L</div><div style="flex:1;"><div style="font-size:13px;font-weight:600;">Lena Creates</div><div style="font-size:12px;color:var(--text-3);">80/20 split · Signed Jan 2025</div></div><span class="badge badge-success">Active</span></div>
+      <div class="list-row" style="background:var(--bg-elevated);border-radius:10px;padding:14px 16px;"><div class="avatar" style="background:linear-gradient(135deg,#7c3aed,#a78bfa);">R</div><div style="flex:1;"><div style="font-size:13px;font-weight:600;">DJ Rohit</div><div style="font-size:12px;color:var(--text-3);">80/20 split · Signed Feb 2025</div></div><span class="badge badge-success">Active</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== ADMIN ANALYTICS ==================== -->
+<div id="section-aanalytics" class="page-section">
+  <div style="max-width:1100px;margin:0 auto;padding:28px 20px;">
+    <h1 style="font-size:22px;font-weight:700;margin-bottom:24px;">Platform Analytics</h1>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:28px;" class="stagger">
+      <div class="card" style="padding:20px;"><div style="font-size:11px;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-3);margin-bottom:8px;">Monthly Revenue</div><div style="font-size:28px;font-weight:700;">₹14.2L</div><div style="font-size:12px;color:var(--success);margin-top:4px;">↑ 18% MoM</div></div>
+      <div class="card" style="padding:20px;"><div style="font-size:11px;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-3);margin-bottom:8px;">New Creators</div><div style="font-size:28px;font-weight:700;">+342</div></div>
+      <div class="card" style="padding:20px;"><div style="font-size:11px;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-3);margin-bottom:8px;">Avg. Subscription</div><div style="font-size:28px;font-weight:700;">₹127</div></div>
+      <div class="card" style="padding:20px;"><div style="font-size:11px;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-3);margin-bottom:8px;">Churn Rate</div><div style="font-size:28px;font-weight:700;">2.1%</div><div style="font-size:12px;color:var(--success);margin-top:4px;">↓ 0.4%</div></div>
+    </div>
+    <div class="card" style="padding:24px;">
+      <h3 style="font-size:15px;font-weight:600;margin-bottom:16px;">Revenue Breakdown</h3>
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div style="display:flex;align-items:center;gap:12px;"><span style="font-size:13px;width:80px;">Subscriptions</span><div style="flex:1;height:8px;background:var(--bg-elevated);border-radius:4px;overflow:hidden;"><div style="width:72%;height:100%;background:linear-gradient(90deg,#ec4899,#db2777);border-radius:4px;"></div></div><span style="font-size:13px;font-weight:600;width:60px;text-align:right;">72%</span></div>
+        <div style="display:flex;align-items:center;gap:12px;"><span style="font-size:13px;width:80px;">PPV</span><div style="flex:1;height:8px;background:var(--bg-elevated);border-radius:4px;overflow:hidden;"><div style="width:20%;height:100%;background:linear-gradient(90deg,#7c3aed,#a78bfa);border-radius:4px;"></div></div><span style="font-size:13px;font-weight:600;width:60px;text-align:right;">20%</span></div>
+        <div style="display:flex;align-items:center;gap:12px;"><span style="font-size:13px;width:80px;">Tips</span><div style="flex:1;height:8px;background:var(--bg-elevated);border-radius:4px;overflow:hidden;"><div style="width:8%;height:100%;background:linear-gradient(90deg,#059669,#34d399);border-radius:4px;"></div></div><span style="font-size:13px;font-weight:600;width:60px;text-align:right;">8%</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== ADMIN COMPLIANCE ==================== -->
+<div id="section-compliance" class="page-section">
+  <div style="max-width:900px;margin:0 auto;padding:28px 20px;">
+    <h1 style="font-size:22px;font-weight:700;margin-bottom:24px;">Compliance & Governance</h1>
+    <div class="stagger" style="display:flex;flex-direction:column;gap:8px;">
+      <div class="card" style="padding:14px 16px;display:flex;align-items:center;justify-content:space-between;"><span style="font-size:13px;font-weight:500;">Data protection audit</span><span class="badge badge-warning">Pending</span></div>
+      <div class="card" style="padding:14px 16px;display:flex;align-items:center;justify-content:space-between;"><span style="font-size:13px;font-weight:500;">Content classification policy</span><span class="badge badge-warning">Pending</span></div>
+      <div class="card" style="padding:14px 16px;display:flex;align-items:center;justify-content:space-between;"><span style="font-size:13px;font-weight:500;">Subscriber age verification</span><span class="badge badge-warning">Pending</span></div>
+      <div class="card" style="padding:14px 16px;display:flex;align-items:center;justify-content:space-between;"><span style="font-size:13px;font-weight:500;">IT Act compliance</span><span class="badge badge-warning">Pending</span></div>
+      <div class="card" style="padding:14px 16px;display:flex;align-items:center;justify-content:space-between;"><span style="font-size:13px;font-weight:500;">Dispute resolution process</span><span class="badge badge-success">Implemented</span></div>
+      <div class="card" style="padding:14px 16px;display:flex;align-items:center;justify-content:space-between;"><span style="font-size:13px;font-weight:500;">Content watermarking</span><span class="badge badge-success">Implemented</span></div>
+      <div class="card" style="padding:14px 16px;display:flex;align-items:center;justify-content:space-between;"><span style="font-size:13px;font-weight:500;">KYC for creators</span><span class="badge badge-success">Implemented</span></div>
+    </div>
+    <div class="card" style="padding:20px;margin-top:16px;">
+      <h3 style="font-size:15px;font-weight:600;margin-bottom:10px;">Grievance Officer</h3>
+      <p style="font-size:13px;color:var(--text-2);line-height:1.55;">Email: grievances@iinhouse.com<br>Response SLA: 48 hours</p>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== CREATOR TIERS ==================== -->
+<div id="section-tiers" class="page-section">
+  <div style="max-width:640px;margin:0 auto;padding:28px 20px;">
+    <h1 style="font-size:22px;font-weight:700;margin-bottom:24px;">Subscription Tiers</h1>
+    <div class="stagger" style="display:flex;flex-direction:column;gap:10px;">
+      <div class="card" style="padding:18px;display:flex;align-items:center;justify-content:space-between;"><div><div style="font-size:14px;font-weight:600;">Free</div><div style="font-size:12px;color:var(--text-3);">Public posts only</div></div><span class="badge badge-muted">Free</span></div>
+      <div class="card" style="padding:18px;display:flex;align-items:center;justify-content:space-between;border-color:rgba(236,72,153,0.15);"><div><div style="font-size:14px;font-weight:600;">Gold</div><div style="font-size:12px;color:var(--text-3);">All content + HD · 847 subscribers</div></div><span class="badge badge-primary">₹99/mo</span></div>
+      <div class="card" style="padding:18px;display:flex;align-items:center;justify-content:space-between;"><div><div style="font-size:14px;font-weight:600;">Platinum</div><div style="font-size:12px;color:var(--text-3);">All + 1-on-1 · 1,000 subscribers</div></div><span class="badge badge-primary">₹299/mo</span></div>
+    </div>
+    <button class="btn btn-primary" style="width:100%;margin-top:16px;" onclick="showToast('New tier created','success')">+ Add tier</button>
+  </div>
+</div>
+
+<!-- ==================== CREATOR EARNINGS ==================== -->
+<div id="section-earnings" class="page-section">
+  <div style="max-width:800px;margin:0 auto;padding:28px 20px;">
+    <h1 style="font-size:22px;font-weight:700;margin-bottom:24px;">Earnings</h1>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:24px;" class="stagger">
+      <div class="card" style="padding:18px;"><div style="font-size:11px;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-3);margin-bottom:8px;">This month</div><div style="font-size:26px;font-weight:700;color:var(--success);">₹24,500</div></div>
+      <div class="card" style="padding:18px;"><div style="font-size:11px;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-3);margin-bottom:8px;">Last month</div><div style="font-size:26px;font-weight:700;">₹21,800</div></div>
+      <div class="card" style="padding:18px;"><div style="font-size:11px;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-3);margin-bottom:8px;">Total</div><div style="font-size:26px;font-weight:700;">₹2.1L</div></div>
+    </div>
+    <div class="card" style="padding:20px;">
+      <h3 style="font-size:15px;font-weight:600;margin-bottom:14px;">Transaction History</h3>
+      <div class="list-row"><div style="width:36px;height:36px;border-radius:50%;background:rgba(48,209,88,0.1);display:flex;align-items:center;justify-content:center;">💳</div><div style="flex:1;"><div style="font-size:13px;font-weight:500;">Subscriptions</div><div style="font-size:12px;color:var(--text-3);">Jan 2026 · 847 payments</div></div><span style="font-size:13px;font-weight:600;color:var(--success);">+₹18,200</span></div>
+      <div class="list-row"><div style="width:36px;height:36px;border-radius:50%;background:var(--accent-soft);display:flex;align-items:center;justify-content:center;">💎</div><div style="flex:1;"><div style="font-size:13px;font-weight:500;">PPV Purchases</div><div style="font-size:12px;color:var(--text-3);">Jan 2026 · 156 purchases</div></div><span style="font-size:13px;font-weight:600;color:var(--success);">+₹6,300</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== CREATOR PAYOUTS ==================== -->
+<div id="section-payouts" class="page-section">
+  <div style="max-width:800px;margin:0 auto;padding:28px 20px;">
+    <h1 style="font-size:22px;font-weight:700;margin-bottom:24px;">Payouts</h1>
+    <div class="card" style="padding:20px;margin-bottom:16px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;"><div><div style="font-size:13px;color:var(--text-3);">Available balance</div><div style="font-size:28px;font-weight:700;">₹24,500</div></div><button class="btn btn-primary" onclick="showToast('Payout request submitted!','success')">Request payout</button></div>
+      <div style="background:var(--bg-elevated);border-radius:10px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;"><span style="font-size:13px;color:var(--text-2);">Bank account ending 4029</span><span class="badge badge-success">Verified</span></div>
+    </div>
+    <div class="card" style="padding:20px;">
+      <h3 style="font-size:15px;font-weight:600;margin-bottom:14px;">Payout History</h3>
+      <div class="list-row"><div style="flex:1;"><div style="font-size:13px;font-weight:500;">₹21,800</div><div style="font-size:12px;color:var(--text-3);">Dec 2025 · HDFC ****4029</div></div><span class="badge badge-success">Paid</span></div>
+      <div class="list-row"><div style="flex:1;"><div style="font-size:13px;font-weight:500;">₹18,400</div><div style="font-size:12px;color:var(--text-3);">Nov 2025 · HDFC ****4029</div></div><span class="badge badge-success">Paid</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== CREATOR MESSAGES ==================== -->
+<div id="section-cmessages" class="page-section">
+  <div style="max-width:900px;margin:0 auto;height:calc(100vh - 52px);display:flex;overflow:hidden;border-bottom:0.5px solid var(--sep);">
+    <div style="width:100%;max-width:300px;border-right:0.5px solid var(--sep);display:flex;flex-direction:column;">
+      <div style="padding:14px 16px;border-bottom:0.5px solid var(--sep);"><h2 style="font-size:17px;font-weight:700;">Messages</h2></div>
+      <div style="flex:1;overflow-y:auto;">
+        <div class="list-row active"><div class="avatar avatar-sm" style="background:linear-gradient(135deg,#ec4899,#db2777);">S</div><div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:500;">Subscriber #1247</div><div style="font-size:12px;color:var(--text-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Love the new Gold content!</div></div><span style="font-size:11px;color:var(--text-3);">5m</span></div>
+        <div class="list-row"><div class="avatar avatar-sm" style="background:linear-gradient(135deg,#7c3aed,#a78bfa);">S</div><div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:500;">Subscriber #982</div><div style="font-size:12px;color:var(--text-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Can I request a tutorial?</div></div><span style="font-size:11px;color:var(--text-3);">2h</span></div>
+      </div>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:column;">
+      <div style="padding:12px 16px;border-bottom:0.5px solid var(--sep);display:flex;align-items:center;gap:10px;"><div class="avatar avatar-sm" style="background:linear-gradient(135deg,#ec4899,#db2777);">S</div><div><div style="font-size:14px;font-weight:600;">Subscriber #1247</div><div style="font-size:11px;color:var(--success);">● Online</div></div></div>
+      <div style="flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:8px;">
+        <div style="max-width:65%;padding:10px 14px;border-radius:16px;font-size:14px;align-self:flex-start;background:var(--bg-elevated);color:var(--text-2);border-bottom-left-radius:4px;">Hey! Is the Gold tier worth upgrading?</div>
+        <div style="max-width:65%;padding:10px 14px;border-radius:16px;font-size:14px;align-self:flex-end;background:linear-gradient(135deg,#db2777,#ec4899);color:#fff;border-bottom-right-radius:4px;">Absolutely! HD downloads + exclusive tutorials.</div>
+      </div>
+      <div style="padding:10px 16px;border-top:0.5px solid var(--sep);display:flex;gap:8px;"><input class="input" placeholder="Write a message…" style="flex:1;"><button class="btn btn-primary" style="height:40px;padding:0 16px;font-size:13px;">Send</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== CREATOR CONTRACT ==================== -->
+<div id="section-contract" class="page-section">
+  <div style="max-width:640px;margin:0 auto;padding:28px 20px;">
+    <h1 style="font-size:22px;font-weight:700;margin-bottom:24px;">Creator Contract</h1>
+    <div class="card" style="padding:24px;margin-bottom:16px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;"><h3 style="font-size:15px;font-weight:600;">Current Agreement</h3><span class="badge badge-success">Active</span></div>
+      <div style="background:var(--bg-elevated);border-radius:10px;padding:16px;font-size:13px;color:var(--text-2);line-height:1.8;margin-bottom:16px;">
+        <strong style="color:var(--text-1);">Standard Creator Agreement</strong><br>
+        Revenue split: <strong style="color:var(--accent);">80/20</strong> (Creator / Platform)<br>
+        Term: Indefinite, 30 days notice<br>
+        Content ownership: Retained by creator
+      </div>
+      <div style="display:flex;gap:8px;"><button class="btn btn-secondary btn-sm" style="flex:1;">Download PDF</button><button class="btn btn-ghost btn-sm" style="flex:1;">Full terms</button></div>
+    </div>
+    <div class="card" style="padding:24px;">
+      <h3 style="font-size:15px;font-weight:600;margin-bottom:14px;">Upload Custom Contract</h3>
+      <div class="card" style="padding:32px 24px;text-align:center;border:2px dashed var(--sep-strong);cursor:pointer;" onclick="this.querySelector('input').click()">
+        <div style="font-size:32px;margin-bottom:8px;">📄</div>
+        <p style="font-size:13px;color:var(--text-3);">Drop your contract PDF here</p>
+        <input type="file" accept=".pdf" style="display:none;">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== CREATOR TOOLS ==================== -->
+<div id="section-ctools" class="page-section">
+  <div style="max-width:640px;margin:0 auto;padding:28px 20px;">
+    <h1 style="font-size:22px;font-weight:700;margin-bottom:24px;">Creator Tools</h1>
+    <div class="card" style="padding:20px;margin-bottom:12px;">
+      <h3 style="font-size:15px;font-weight:600;margin-bottom:14px;">Profile</h3>
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <div><label style="display:block;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-3);margin-bottom:6px;">Display name</label><input class="input" value="Lena Creates"></div>
+        <div><label style="display:block;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-3);margin-bottom:6px;">Bio</label><textarea class="input" rows="3">Digital artist creating original work since 2019.</textarea></div>
+      </div>
+    </div>
+    <div class="card" style="padding:20px;margin-bottom:12px;">
+      <h3 style="font-size:15px;font-weight:600;margin-bottom:14px;">Security</h3>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;"><div><div style="font-size:13px;font-weight:500;">Two-factor authentication</div><div style="font-size:12px;color:var(--text-3);">Extra security for your account</div></div><div class="toggle active" onclick="this.classList.toggle('active')"></div></div>
+      <div class="sep" style="margin:12px 0;"></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;"><div><div style="font-size:13px;font-weight:500;">Email notifications</div><div style="font-size:12px;color:var(--text-3);">Subscriptions, messages, payouts</div></div><div class="toggle active" onclick="this.classList.toggle('active')"></div></div>
+    </div>
+    <button class="btn btn-primary" style="width:100%;" onclick="showToast('Settings saved','success')">Save changes</button>
+  </div>
+</div>
+  <div style="max-width:640px;margin:0 auto;padding:28px 20px;">
+    <h1 style="font-size:22px;font-weight:700;margin-bottom:24px;">Contact Us</h1>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div class="card" style="padding:18px;display:flex;align-items:center;gap:14px;"><div style="width:40px;height:40px;border-radius:50%;background:var(--accent-soft);display:flex;align-items:center;justify-content:center;font-size:18px;">📧</div><div><div style="font-size:13px;font-weight:500;">Email support</div><div style="font-size:12px;color:var(--text-3);">support@iinhouse.com</div></div></div>
+      <div class="card" style="padding:18px;display:flex;align-items:center;gap:14px;"><div style="width:40px;height:40px;border-radius:50%;background:rgba(100,210,255,0.1);display:flex;align-items:center;justify-content:center;font-size:18px;">⚖️</div><div><div style="font-size:13px;font-weight:500;">Grievance Officer</div><div style="font-size:12px;color:var(--text-3);">grievances@iinhouse.com</div></div></div>
+      <div class="card" style="padding:18px;display:flex;align-items:center;gap:14px;"><div style="width:40px;height:40px;border-radius:50%;background:rgba(48,209,88,0.1);display:flex;align-items:center;justify-content:center;font-size:18px;">🤝</div><div><div style="font-size:13px;font-weight:500;">Partnerships</div><div style="font-size:12px;color:var(--text-3);">partners@iinhouse.com</div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== CONTACT ==================== -->
+<div id="page-contact" class="page">
+  <div style="max-width:640px;margin:0 auto;padding:28px 20px;">
+    <h1 style="font-size:22px;font-weight:700;margin-bottom:24px;">Contact Us</h1>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div class="card" style="padding:18px;display:flex;align-items:center;gap:14px;"><div style="width:40px;height:40px;border-radius:50%;background:var(--accent-soft);display:flex;align-items:center;justify-content:center;font-size:18px;">📧</div><div><div style="font-size:13px;font-weight:500;">Email support</div><div style="font-size:12px;color:var(--text-3);">support@iinhouse.com</div></div></div>
+      <div class="card" style="padding:18px;display:flex;align-items:center;gap:14px;"><div style="width:40px;height:40px;border-radius:50%;background:rgba(100,210,255,0.1);display:flex;align-items:center;justify-content:center;font-size:18px;">⚖️</div><div><div style="font-size:13px;font-weight:500;">Grievance Officer</div><div style="font-size:12px;color:var(--text-3);">grievances@iinhouse.com</div></div></div>
+      <div class="card" style="padding:18px;display:flex;align-items:center;gap:14px;"><div style="width:40px;height:40px;border-radius:50%;background:rgba(48,209,88,0.1);display:flex;align-items:center;justify-content:center;font-size:18px;">🤝</div><div><div style="font-size:13px;font-weight:500;">Partnerships</div><div style="font-size:12px;color:var(--text-3);">partners@iinhouse.com</div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== AGE VERIFY ==================== -->
+<div id="page-age-verify" class="page">
+  <div style="max-width:640px;margin:0 auto;padding:28px 20px;">
+    <h1 style="font-size:22px;font-weight:700;margin-bottom:4px;">Age Verification</h1>
+    <p style="font-size:13px;color:var(--text-3);margin-bottom:24px;">Upload a government-issued ID to verify your age</p>
+    <div class="card" style="padding:40px 24px;text-align:center;border:2px dashed var(--sep-strong);cursor:pointer;" onclick="this.querySelector('input').click()">
+      <div style="font-size:40px;margin-bottom:10px;">🪪</div>
+      <p style="font-size:14px;font-weight:500;margin-bottom:4px;">Drag & drop or tap to upload</p>
+      <p style="font-size:12px;color:var(--text-3);">Aadhaar, PAN, Passport, or Driver's License</p>
+      <input type="file" accept="image/*,.pdf" style="display:none;">
+    </div>
+    <div class="card" style="padding:14px 16px;margin-top:12px;display:flex;align-items:center;gap:10px;border-color:rgba(255,214,10,0.15);background:rgba(255,214,10,0.04);">
+      <span style="font-size:18px;">🔒</span>
+      <p style="font-size:12px;color:var(--text-2);line-height:1.5;">Your document is encrypted and stored securely. Used only for age verification.</p>
+    </div>
+    <button class="btn btn-primary" style="width:100%;margin-top:16px;" onclick="showToast('Submitted for verification','success')">Submit for verification</button>
+  </div>
+</div>
+
+<!-- ==================== DISPUTES ==================== -->
+<div id="page-disputes" class="page">
+  <div style="max-width:640px;margin:0 auto;padding:28px 20px;">
+    <h1 style="font-size:22px;font-weight:700;margin-bottom:4px;">Disputes & Billing</h1>
+    <p style="font-size:13px;color:var(--text-3);margin-bottom:24px;">Report chargebacks, billing errors, or content disputes</p>
+    <div class="card" style="padding:24px;">
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <div><label style="display:block;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-3);margin-bottom:6px;">Type</label><select class="input"><option>Billing error</option><option>Chargeback</option><option>Content dispute</option><option>Subscription issue</option></select></div>
+        <div><label style="display:block;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-3);margin-bottom:6px;">Description</label><textarea class="input" rows="4" placeholder="Describe the issue…"></textarea></div>
+        <button class="btn btn-primary" style="width:100%;" onclick="showToast('Dispute submitted','success')">Submit dispute</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SUBSCRIBER MESSAGES ==================== -->
+<div id="page-submessages" class="page">
+  <div style="max-width:900px;margin:0 auto;height:calc(100vh - 52px);display:flex;overflow:hidden;border-bottom:0.5px solid var(--sep);">
+    <div style="width:100%;max-width:300px;border-right:0.5px solid var(--sep);display:flex;flex-direction:column;">
+      <div style="padding:14px 16px;border-bottom:0.5px solid var(--sep);"><h2 style="font-size:17px;font-weight:700;">Messages</h2></div>
+      <div style="flex:1;overflow-y:auto;" class="msg-list">
+        <div class="list-row active"><div class="avatar avatar-sm" style="background:linear-gradient(135deg,#ec4899,#db2777);">L</div><div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:500;">Lena Creates</div><div style="font-size:12px;color:var(--text-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Thanks for subscribing!</div></div><span style="font-size:11px;color:var(--text-3);">2m</span></div>
+      </div>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:column;">
+      <div style="padding:12px 16px;border-bottom:0.5px solid var(--sep);display:flex;align-items:center;gap:10px;"><div class="avatar avatar-sm" style="background:linear-gradient(135deg,#ec4899,#db2777);">L</div><div><div style="font-size:14px;font-weight:600;">Lena Creates</div><div style="font-size:11px;color:var(--success);">● Online</div></div></div>
+      <div style="flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:8px;">
+        <div style="max-width:65%;padding:10px 14px;border-radius:16px;font-size:14px;align-self:flex-start;background:var(--bg-elevated);color:var(--text-2);border-bottom-left-radius:4px;">Hey! Welcome 🎨</div>
+        <div style="max-width:65%;padding:10px 14px;border-radius:16px;font-size:14px;align-self:flex-end;background:linear-gradient(135deg,#db2777,#ec4899);color:#fff;border-bottom-right-radius:4px;">Thanks! Love the content ✨</div>
+      </div>
+      <div style="padding:10px 16px;border-top:0.5px solid var(--sep);display:flex;gap:8px;"><input class="input" placeholder="Write a message…" style="flex:1;"><button class="btn btn-primary" style="height:40px;padding:0 16px;font-size:13px;">Send</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== FOOTER ==================== -->
+<footer id="public-footer" style="display:none;">
+  <div style="max-width:1200px;margin:0 auto;padding:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
+    <div><span class="gradient-text font-bold">iin house</span><p style="font-size:12px;color:var(--text-3);margin-top:2px;">Built for creators, designed for trust.</p></div>
+    <div style="display:flex;gap:24px;"><a href="#" style="font-size:12px;color:var(--text-3);" onclick="showPage('contact');return false">Contact</a><a href="#" style="font-size:12px;color:var(--text-3);">Terms</a><a href="#" style="font-size:12px;color:var(--text-3);">Privacy</a><a href="#" style="font-size:12px;color:var(--text-3);">Grievance</a></div>
+  </div>
+</footer>
+
+<!-- ==================== TOAST CONTAINER ==================== -->
+<div id="toast-container" class="toast-container" style="display:none;"></div>
+
+<!-- ==================== JAVASCRIPT ==================== -->
+<script>
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('#public-header,#creator-header,#admin-header,#subscriber-header,#public-footer').forEach(h => h.style.display = 'none');
+  document.getElementById('toast-container').style.display = 'none';
+
+  const publicPages = ['home','register','contact','login','verify-email','messages','profile'];
+  const subPages = ['feed','submessages','age-verify','disputes'];
+  const creatorPages = ['dash','upload','tiers','earnings','payouts','cmessages','contract','ctools'];
+
+  let target = 'page-' + name;
+  const el = document.getElementById(target);
+
+  if (publicPages.includes(name)) {
+    document.getElementById('public-header').style.display = 'block';
+    document.getElementById('public-footer').style.display = 'block';
+  } else if (subPages.includes(name)) {
+    document.getElementById('subscriber-header').style.display = 'block';
+    document.getElementById('public-footer').style.display = 'block';
+  } else if (creatorPages.includes(name)) {
+    document.getElementById('creator-header').style.display = 'block';
+  } else if (['adash','kyc','moderation','apayouts','adisputes','acontracts','aanalytics','compliance'].includes(name)) {
+    document.getElementById('admin-header').style.display = 'block';
+  }
+
+  if (el) { el.classList.add('active'); window.scrollTo(0,0); }
+}
+
+function showSection(name) {
+  document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('#public-header,#admin-header,#subscriber-header,#public-footer').forEach(h => h.style.display = 'none');
+  document.getElementById('creator-header').style.display = 'block';
+
+  const el = document.getElementById('section-' + name);
+  if (el) { el.classList.add('active'); window.scrollTo(0,0); }
+}
+
+function showToast(message, type) {
+  const container = document.getElementById('toast-container');
+  container.style.display = 'flex';
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  const icons = { success: '✅', error: '❌', info: 'ℹ️' };
+  toast.innerHTML = '<span>' + (icons[type] || 'ℹ️') + '</span><span>' + message + '</span>';
+  container.appendChild(toast);
+  setTimeout(() => { toast.style.opacity = '0'; toast.style.transform = 'translateY(-8px)'; toast.style.transition = 'all 0.25s ease'; }, 2800);
+  setTimeout(() => toast.remove(), 3200);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.stagger').forEach(el => {
+    el.querySelectorAll(':scope > *').forEach((child, i) => {
+      child.style.animationDelay = (i * 0.05) + 's';
+    });
+  });
+});
+</script>
+</body>
+</html>

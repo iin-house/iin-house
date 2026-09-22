@@ -1,0 +1,1397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>iin house — Interactive Demo</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+  :root {
+    --bg: #000000;
+    --surface: #0c0c0e;
+    --surface-2: #131518;
+    --surface-3: #1a1d24;
+    --surface-4: #21252e;
+    --border: rgba(255,255,255,0.06);
+    --border-strong: rgba(255,255,255,0.1);
+    --text: #f1f1f3;
+    --text-2: #c5c6ca;
+    --text-3: #8e8f93;
+    --text-4: #6c6d70;
+    --primary: #ec4899;
+    --primary-2: #db2777;
+    --accent: #f472b6;
+    --accent-soft: rgba(244,114,182,0.1);
+    --sep: rgba(255,255,255,0.06);
+    --sep-strong: rgba(255,255,255,0.12);
+    --success: #34d399;
+    --success-bg: rgba(52,211,153,0.1);
+    --warning: #fbbf24;
+    --warning-bg: rgba(251,191,36,0.1);
+    --danger: #f87171;
+    --danger-bg: rgba(248,113,113,0.1);
+    --info: #60a5fa;
+    --info-bg: rgba(96,165,250,0.1);
+  }
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    font-weight: 400; line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* ── Glass Header ──────────────────── */
+  .glass-header {
+    position: sticky; top: 0; z-index: 50;
+    height: 52px;
+    background: rgba(12,12,14,0.78);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-bottom: 0.5px solid var(--sep);
+  }
+  .header-inner {
+    max-width: 1200px; margin: 0 auto; height: 100%;
+    padding: 0 16px; display: flex; align-items: center; justify-content: space-between;
+  }
+
+  .gradient-text {
+    background: linear-gradient(135deg, #ec4899, #f472b6);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* ── Navigation Tabs ──────────────── */
+  .nav-tab {
+    padding: 6px 14px; border-radius: 8px; font-size: 13px; font-weight: 500;
+    color: var(--text-3); transition: all 0.2s ease; background: transparent; border: none; cursor: pointer;
+    text-decoration: none;
+  }
+  .nav-tab:hover { color: var(--text); background: var(--surface-3); }
+  .nav-tab.active { color: var(--text); background: var(--surface-3); }
+
+  /* ── Buttons ───────────────────────── */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 10px 20px; border-radius: 12px; font-size: 14px; font-weight: 600;
+    transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    border: none; cursor: pointer; white-space: nowrap; letter-spacing: -0.01em;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, #ec4899, #db2777); color: #fff;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.3), 0 0 20px rgba(236,72,153,0.2);
+  }
+  .btn-primary:hover { transform: scale(1.02); box-shadow: 0 2px 4px rgba(0,0,0,0.3), 0 0 30px rgba(236,72,153,0.3); }
+  .btn-primary:active { transform: scale(0.98); }
+  .btn-secondary { background: var(--surface-3); color: var(--text); }
+  .btn-secondary:hover { background: var(--surface-4); }
+  .btn-ghost { background: transparent; color: var(--text-3); }
+  .btn-ghost:hover { background: var(--surface-3); color: var(--text); }
+  .btn-danger { background: rgba(248,113,113,0.15); color: #f87171; }
+  .btn-danger:hover { background: rgba(248,113,113,0.25); }
+  .btn-sm { padding: 6px 14px; font-size: 13px; border-radius: 10px; }
+
+  /* ── Cards ─────────────────────────── */
+  .card {
+    background: var(--surface-2); border: 0.5px solid var(--sep);
+    border-radius: 16px; transition: all 0.25s ease;
+  }
+  .card-interactive { cursor: pointer; }
+  .card-interactive:hover { border-color: var(--sep-strong); background: var(--surface-3); }
+  .card-interactive:active { transform: scale(0.985); }
+
+  /* ── Inputs ────────────────────────── */
+  .input {
+    width: 100%; background: var(--surface-3); border: 0.5px solid var(--sep);
+    border-radius: 12px; padding: 12px 14px; font-size: 15px; color: var(--text);
+    transition: all 0.2s ease; outline: none;
+  }
+  .input::placeholder { color: var(--text-4); }
+  .input:focus { border-color: rgba(244,114,182,0.3); box-shadow: 0 0 0 3px rgba(244,114,182,0.06); }
+
+  /* ── Badges ────────────────────────── */
+  .badge {
+    display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 20px;
+    font-size: 12px; font-weight: 600; letter-spacing: 0.01em;
+  }
+  .badge-primary { background: rgba(236,72,153,0.12); color: #f472b6; }
+  .badge-success { background: var(--success-bg); color: #34d399; }
+  .badge-warning { background: var(--warning-bg); color: #fbbf24; }
+  .badge-danger { background: var(--danger-bg); color: #f87171; }
+  .badge-muted { background: var(--surface-3); color: var(--text-3); }
+
+  /* ── Avatars ───────────────────────── */
+  .avatar {
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 50%; font-weight: 600; color: #fff; flex-shrink: 0;
+  }
+  .avatar-sm { width: 32px; height: 32px; font-size: 12px; }
+  .avatar-md { width: 44px; height: 44px; font-size: 16px; }
+  .avatar-lg { width: 64px; height: 64px; font-size: 24px; }
+
+  /* ── List Row ──────────────────────── */
+  .list-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 8px; border-radius: 12px;
+    transition: background 0.15s ease; cursor: pointer;
+  }
+  .list-row:hover { background: var(--surface-3); }
+  .list-row.active { background: var(--surface-3); }
+
+  /* ── Separator ─────────────────────── */
+  .sep { height: 0.5px; background: var(--sep); }
+
+  /* ── Toggle ────────────────────────── */
+  .toggle {
+    width: 51px; height: 31px; border-radius: 31px; background: var(--surface-4);
+    position: relative; cursor: pointer; transition: background 0.3s ease; flex-shrink: 0;
+  }
+  .toggle::after {
+    content: ''; position: absolute; top: 2px; left: 2px;
+    width: 27px; height: 27px; border-radius: 50%; background: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  .toggle.active { background: #34d399; }
+  .toggle.active::after { transform: translateX(20px); }
+
+  /* ── Container ─────────────────────── */
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 16px; }
+
+  /* ── Scrollbar hide ────────────────── */
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
+  .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+  /* ── Page sections ─────────────────── */
+  .page { display: none; animation: fadeUp 0.35s ease; }
+  .page.active { display: block; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── Progress bar ──────────────────── */
+  .progress-bar { width: 100%; height: 8px; background: var(--surface-3); border-radius: 4px; overflow: hidden; }
+  .progress-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, #ec4899, #db2777); }
+
+  /* ── Chat area ─────────────────────── */
+  .chat-area { display: flex; flex-direction: column; gap: 10px; padding: 20px; min-height: 300px; }
+  .chat-bubble-left {
+    max-width: 65%; padding: 10px 14px; border-radius: 18px; font-size: 14px; align-self: flex-start;
+    background: var(--surface-3); color: var(--text); border-bottom-left-radius: 6px;
+  }
+  .chat-bubble-right {
+    max-width: 65%; padding: 10px 14px; border-radius: 18px; font-size: 14px; align-self: flex-end;
+    background: linear-gradient(135deg, #db2777, #ec4899); color: #fff; border-bottom-right-radius: 6px;
+  }
+  .chat-time { font-size: 10px; display: block; margin-top: 4px; opacity: 0.6; }
+
+  /* ── Stagger animation ─────────────── */
+  .stagger > * { opacity: 0; animation: staggerIn 0.4s ease forwards; }
+  @keyframes staggerIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── Role selector ─────────────────── */
+  .role-selector { display: flex; gap: 6px; background: var(--surface-3); border-radius: 12px; padding: 3px; }
+  .role-btn {
+    flex: 1; text-align: center; padding: 9px; border-radius: 10px;
+    font-size: 13px; font-weight: 600; border: none; cursor: pointer; transition: all 0.2s ease;
+  }
+  .role-btn.active { background: var(--surface-2); color: var(--text); }
+  .role-btn:not(.active) { background: transparent; color: var(--text-3); }
+
+  /* ── Feed creator card ─────────────── */
+  .creator-card { border-radius: 16px; overflow: hidden; transition: all 0.25s ease; cursor: pointer; }
+  .creator-card:hover { border-color: var(--sep-strong); background: var(--surface-3); transform: scale(1.02); }
+  .creator-card:active { transform: scale(0.98); }
+
+  /* ── Table styles ──────────────────── */
+  .data-table { width: 100%; border-collapse: collapse; }
+  .data-table th {
+    text-align: left; padding: 10px 20px; font-size: 11px; text-transform: uppercase;
+    letter-spacing: 0.05em; color: var(--text-3); font-weight: 600;
+    border-bottom: 0.5px solid var(--sep);
+  }
+  .data-table td { padding: 12px 20px; font-size: 13px; border-bottom: 0.5px solid var(--sep); }
+  .data-table tr:last-child td { border-bottom: none; }
+
+  /* ── Demo credential banner ────────── */
+  .demo-banner {
+    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+    background: rgba(28, 28, 30, 0.92); backdrop-filter: blur(20px);
+    border: 0.5px solid rgba(255,255,255,0.08); border-radius: 14px;
+    padding: 12px 20px; z-index: 200; font-size: 13px; color: var(--text-2);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4); max-width: calc(100% - 32px);
+  }
+  .demo-banner strong { color: var(--primary); }
+  .demo-banner .cred { color: var(--text-3); font-family: monospace; font-size: 12px; }
+
+  /* Login screen centering */
+  .login-center { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; }
+  .login-card { width: 100%; max-width: 380px; }
+
+  /* Toast */
+  .toast {
+    position: fixed; top: 64px; right: 16px; z-index: 300;
+    background: rgba(28, 28, 30, 0.92); backdrop-filter: blur(20px);
+    border: 0.5px solid rgba(255,255,255,0.08); border-radius: 14px;
+    padding: 14px 16px; font-size: 14px; font-weight: 500;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    animation: slideIn 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    max-width: 340px;
+  }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(-12px) scale(0.96); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  /* Cover image for profile */
+  .profile-cover { height: 160px; background: linear-gradient(135deg, #9d174d, #be185d); }
+  .profile-avatar {
+    width: 80px; height: 80px; border-radius: 50%;
+    border: 4px solid var(--bg);
+    background: linear-gradient(135deg, #ec4899, #db2777);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 32px; font-weight: 700; color: #fff;
+  }
+
+  /* Upload dropzone */
+  .dropzone {
+    padding: 40px 24px; text-align: center; cursor: pointer;
+    background: var(--surface-2); border: 2px dashed rgba(255,255,255,0.15);
+    border-radius: 16px; transition: all 0.2s ease;
+  }
+  .dropzone:hover { border-color: rgba(236,72,153,0.3); }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- DEMO CREDENTIAL BANNER -->
+<div class="demo-banner" id="demoBanner">
+  <div style="display:flex; flex-wrap:wrap; gap:8px 16px; align-items:center; justify-content:center;">
+    <span><strong>Demo credentials:</strong></span>
+    <span>Creator: <span class="cred">demo@iinhouse.com</span> / <span class="cred">password123</span></span>
+    <span>Sub: <span class="cred">user@iinhouse.com</span> / <span class="cred">password123</span></span>
+    <span>Admin: <span class="cred">admin@iinhouse.com</span> / <span class="cred">admin123</span></span>
+    <button onclick="fillDemo('creator')" style="font-size:11px; padding:3px 10px; border-radius:8px; background:var(--surface-3); color:var(--text-2); border:none; cursor:pointer;">Fill Creator</button>
+    <button onclick="fillDemo('subscriber')" style="font-size:11px; padding:3px 10px; border-radius:8px; background:var(--surface-3); color:var(--text-2); border:none; cursor:pointer;">Fill Sub</button>
+    <button onclick="fillDemo('admin')" style="font-size:11px; padding:3px 10px; border-radius:8px; background:var(--surface-3); color:var(--text-2); border:none; cursor:pointer;">Fill Admin</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- PAGE: LANDING (HOME) -->
+<div id="page-landing" class="page active">
+  <header class="glass-header">
+    <div class="header-inner">
+      <span class="gradient-text" style="font-size:16px; font-weight:700;">iin house</span>
+      <nav style="display:flex; gap:4px;">
+        <a class="nav-tab" onclick="navigateTo('feed')">Browse</a>
+        <a class="nav-tab" onclick="navigateTo('login')">Log in</a>
+        <a class="btn btn-primary btn-sm" style="text-decoration:none;" onclick="navigateTo('register')">Get started</a>
+      </nav>
+    </div>
+  </header>
+
+  <section style="padding:80px 24px 60px; text-align:center;">
+    <div style="display:inline-flex; align-items:center; gap:6px; padding:6px 14px; border-radius:20px; margin-bottom:28px; border:1px solid rgba(236,72,153,0.2); background:rgba(236,72,153,0.06); color:#f472b6; font-size:13px; font-weight:600; letter-spacing:0.02em;">
+      ✨ Built for creators, designed for trust
+    </div>
+
+    <h1 style="font-size:clamp(40px,7vw,64px); font-weight:700; line-height:1.08; letter-spacing:-0.03em; margin-bottom:20px;">
+      The creator platform<br>
+      <span class="gradient-text">without the bloat.</span>
+    </h1>
+
+    <p style="font-size:17px; color:var(--text-3); max-width:540px; margin:0 auto 36px; line-height:1.55;">
+      Subscription tiers. Pay-per-view. Direct messages. Content protection that actually protects. Fast payouts.
+    </p>
+
+    <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+      <a class="btn btn-primary" style="padding:0 28px; height:52px; font-size:15px; text-decoration:none;" onclick="navigateTo('register')">Start as a creator</a>
+      <a class="btn btn-secondary" style="padding:0 28px; height:52px; font-size:15px; text-decoration:none;" onclick="navigateTo('register')">Join as a subscriber</a>
+    </div>
+
+    <!-- Feature grid -->
+    <div class="container" style="margin-top:80px; padding-bottom:80px;">
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:14px; max-width:1100px; margin:0 auto;">
+        <div class="card card-interactive" style="padding:22px; text-align:left;">
+          <div style="width:36px; height:36px; border-radius:10px; background:linear-gradient(135deg,#9d174d,#be185d); display:flex; align-items:center; justify-content:center; font-size:18px; margin-bottom:14px;">🔒</div>
+          <div style="font-size:15px; font-weight:600; margin-bottom:6px;">Content Protection</div>
+          <div style="font-size:13px; color:var(--text-3); line-height:1.55;">Server-side watermarking. Per-session forensic watermarks at playback. Signed URLs with token expiry.</div>
+        </div>
+        <div class="card card-interactive" style="padding:22px; text-align:left;">
+          <div style="width:36px; height:36px; border-radius:10px; background:linear-gradient(135deg,#7c3aed,#a78bfa); display:flex; align-items:center; justify-content:center; font-size:18px; margin-bottom:14px;">💰</div>
+          <div style="font-size:15px; font-weight:600; margin-bottom:6px;">Fast Payouts</div>
+          <div style="font-size:13px; color:var(--text-3); line-height:1.55;">Rolling weekly payouts via RazorpayX once verified. No 21-day holds. You earned it, you get it.</div>
+        </div>
+        <div class="card card-interactive" style="padding:22px; text-align:left;">
+          <div style="width:36px; height:36px; border-radius:10px; background:linear-gradient(135deg,#059669,#34d399); display:flex; align-items:center; justify-content:center; font-size:18px; margin-bottom:14px;">💬</div>
+          <div style="font-size:15px; font-weight:600; margin-bottom:6px;">Paid DMs & Unlocks</div>
+          <div style="font-size:13px; color:var(--text-3); line-height:1.55;">Charge for messages, sell PPV content, take tips. Everything inside a clean conversation flow.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- PAGE: LOGIN -->
+<div id="page-login" class="page">
+  <div class="login-center" style="background:var(--bg);">
+    <div class="login-card">
+      <div style="text-align:center; margin-bottom:28px;">
+        <div class="gradient-text" style="font-size:20px; font-weight:700; margin-bottom:4px;">iin house</div>
+        <div style="font-size:12px; color:var(--text-3);">Welcome back</div>
+      </div>
+      <div class="card" style="padding:28px;">
+        <form id="loginForm" style="display:flex; flex-direction:column; gap:14px;" onsubmit="handleLogin(event)">
+          <div>
+            <label style="display:block; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-3); margin-bottom:6px;">Email or phone</label>
+            <input class="input" id="loginEmail" placeholder="you@example.com" required />
+          </div>
+          <div>
+            <label style="display:block; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-3); margin-bottom:6px;">Password</label>
+            <input class="input" type="password" id="loginPassword" placeholder="••••••••" required />
+          </div>
+          <button type="submit" class="btn btn-primary" style="width:100%; margin-top:4px;" id="loginBtn">Sign in</button>
+        </form>
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-top:16px; font-size:13px;">
+          <a href="#" style="color:var(--text-3); text-decoration:none;">Forgot password?</a>
+          <a href="#" class="gradient-text" style="font-weight:500; text-decoration:none;" onclick="navigateTo('register')">Sign up</a>
+        </div>
+        <div class="sep" style="margin:16px 0;"></div>
+        <a href="#" class="btn btn-secondary" style="width:100%; display:block; text-align:center; text-decoration:none; font-size:13px;" onclick="handleAdminLogin()">Admin Portal</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- PAGE: REGISTER -->
+<div id="page-register" class="page">
+  <div class="login-center" style="background:var(--bg);">
+    <div style="width:100%; max-width:380px;">
+      <div style="text-align:center; margin-bottom:28px;">
+        <div class="gradient-text" style="font-size:20px; font-weight:700; margin-bottom:4px;">iin house</div>
+        <div style="font-size:12px; color:var(--text-3);">Create your account</div>
+      </div>
+      <div class="card" style="padding:28px;">
+        <div class="role-selector" style="margin-bottom:20px;">
+          <button class="role-btn active" id="roleCreator" onclick="selectRole('CREATOR')">Creator</button>
+          <button class="role-btn" id="roleSubscriber" onclick="selectRole('SUBSCRIBER')">Subscriber</button>
+        </div>
+        <form onsubmit="handleRegister(event)" style="display:flex; flex-direction:column; gap:14px;">
+          <div>
+            <label style="display:block; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-3); margin-bottom:6px;">Display name</label>
+            <input class="input" id="regName" placeholder="Your name" required />
+          </div>
+          <div>
+            <label style="display:block; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-3); margin-bottom:6px;">Email</label>
+            <input class="input" type="email" id="regEmail" placeholder="you@example.com" />
+          </div>
+          <div>
+            <label style="display:block; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-3); margin-bottom:6px;">Phone (+91…)</label>
+            <input class="input" id="regPhone" placeholder="optional" />
+          </div>
+          <div>
+            <label style="display:block; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-3); margin-bottom:6px;">Password (min 8 chars)</label>
+            <input class="input" type="password" id="regPassword" placeholder="••••••••" required minlength="8" />
+          </div>
+          <div>
+            <label style="display:block; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-3); margin-bottom:6px;">Confirm password</label>
+            <input class="input" type="password" id="regConfirm" placeholder="••••••••" required />
+          </div>
+          <button type="submit" class="btn btn-primary" style="width:100%; margin-top:4px;">Create account</button>
+        </form>
+        <p style="text-align:center; margin-top:16px; font-size:13px; color:var(--text-3);">
+          Already have an account? <a href="#" class="gradient-text" style="font-weight:500; text-decoration:none;" onclick="navigateTo('login')">Sign in</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- PAGE: FEED -->
+<div id="page-feed" class="page">
+  <header class="glass-header">
+    <div class="header-inner">
+      <span class="gradient-text" style="font-size:16px; font-weight:700;">iin house</span>
+      <nav style="display:flex; gap:4px;">
+        <a class="nav-tab active">Feed</a>
+        <a class="nav-tab" onclick="navigateTo('messages')">Messages</a>
+        <a class="nav-tab" onclick="navigateTo('age-verify')">Verify</a>
+        <a class="nav-tab" onclick="navigateTo('disputes')">Disputes</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Search -->
+  <div style="padding:12px 16px 8px; position:sticky; top:52px; z-index:40; background:rgba(0,0,0,0.8); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);">
+    <div style="background:var(--surface-3); border:0.5px solid var(--sep); border-radius:12px; padding:10px 14px; display:flex; align-items:center; gap:8px;">
+      <span style="color:var(--text-4);">🔍</span>
+      <input class="input" style="border:none; background:transparent; padding:0;" placeholder="Search creators, tiers, content…" />
+    </div>
+  </div>
+
+  <!-- Categories -->
+  <div style="padding:4px 16px 12px; display:flex; gap:8px; overflow-x:auto;" class="scrollbar-hide">
+    <button class="btn btn-primary btn-sm" style="border-radius:20px;">All</button>
+    <button class="btn btn-secondary btn-sm" style="border-radius:20px;">Art</button>
+    <button class="btn btn-secondary btn-sm" style="border-radius:20px;">Music</button>
+    <button class="btn btn-secondary btn-sm" style="border-radius:20px;">Fitness</button>
+    <button class="btn btn-secondary btn-sm" style="border-radius:20px;">Tech</button>
+  </div>
+
+  <main class="container" style="padding-top:8px; padding-bottom:60px;">
+    <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(170px, 1fr)); gap:14px;" id="creatorGrid">
+      <!-- Populated by JS -->
+    </div>
+  </main>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- PAGE: PROFILE -->
+<div id="page-profile" class="page">
+  <header class="glass-header">
+    <div class="header-inner">
+      <a style="font-size:13px; color:var(--text-3); cursor:pointer;" onclick="navigateTo('feed')">← Back</a>
+      <span class="gradient-text" style="font-size:16px; font-weight:700;">iin house</span>
+      <div style="width:40px;"></div>
+    </div>
+  </header>
+
+  <div class="profile-cover"></div>
+  <div class="container" style="position:relative; z-index:2; margin-top:-40px; padding-bottom:40px;">
+    <div class="profile-avatar" id="profileAvatar">P</div>
+    <div style="margin-top:12px;">
+      <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+        <h1 style="font-size:22px; font-weight:700;" id="profileName">Priya Art</h1>
+        <span class="badge badge-success">✓ Verified</span>
+      </div>
+      <p style="font-size:13px; color:var(--text-3); margin-top:4px;" id="profileMeta">847 subscribers · 156 posts · Digital creator</p>
+      <p style="font-size:14px; color:var(--text-2); margin-top:10px; line-height:1.55;" id="profileBio">Creating digital art and tutorials. Subscribe for exclusive content, early access, and behind-the-scenes!</p>
+      <div style="display:flex; gap:8px; margin-top:16px;">
+        <button class="btn btn-primary btn-sm">Subscribe — ₹149/mo</button>
+        <button class="btn btn-secondary btn-sm">Message</button>
+      </div>
+    </div>
+
+    <!-- Tiers -->
+    <div style="margin-top:32px;">
+      <h2 style="font-size:18px; font-weight:700; margin-bottom:12px;">Membership tiers</h2>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:10px;" id="profileTiers">
+        <div class="card" style="padding:18px; display:flex; flex-direction:column; justify-content:space-between;">
+          <div>
+            <h3 style="font-size:15px; font-weight:600; margin-bottom:4px;">Starter</h3>
+            <p style="font-size:12px; color:var(--text-3); line-height:1.5;">Early access to posts and community chat</p>
+          </div>
+          <div style="margin-top:12px; display:flex; align-items:baseline; gap:4px;">
+            <span style="font-size:20px; font-weight:700;">₹149</span>
+            <span style="font-size:12px; color:var(--text-3);">/ mo</span>
+          </div>
+        </div>
+        <div class="card" style="padding:18px; display:flex; flex-direction:column; justify-content:space-between; border-color:rgba(236,72,153,0.2);">
+          <div>
+            <div style="display:flex; align-items:center; gap:6px; margin-bottom:4px;">
+              <span style="font-size:15px; font-weight:600;">VIP</span>
+              <span class="badge badge-primary">Popular</span>
+            </div>
+            <p style="font-size:12px; color:var(--text-3); line-height:1.5;">All posts + DMs + exclusive content</p>
+          </div>
+          <div style="margin-top:12px; display:flex; align-items:baseline; gap:4px;">
+            <span style="font-size:20px; font-weight:700; color:var(--primary);">₹299</span>
+            <span style="font-size:12px; color:var(--text-3);">/ mo</span>
+          </div>
+        </div>
+        <div class="card" style="padding:18px; display:flex; flex-direction:column; justify-content:space-between;">
+          <div>
+            <h3 style="font-size:15px; font-weight:600; margin-bottom:4px;">Elite</h3>
+            <p style="font-size:12px; color:var(--text-3); line-height:1.5;">Everything + monthly 1:1 calls</p>
+          </div>
+          <div style="margin-top:12px; display:flex; align-items:baseline; gap:4px;">
+            <span style="font-size:20px; font-weight:700;">₹499</span>
+            <span style="font-size:12px; color:var(--text-3);">/ mo</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Posts -->
+    <div style="margin-top:36px;">
+      <h2 style="font-size:18px; font-weight:700; margin-bottom:12px;">Recent Posts</h2>
+      <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(160px, 1fr)); gap:6px;" id="profilePosts">
+        <div style="aspect-ratio:1; border-radius:12px; background:linear-gradient(135deg,#9d174d,#be185d); display:flex; align-items:center; justify-content:center; font-size:36px;">🎨</div>
+        <div style="aspect-ratio:1; border-radius:12px; background:linear-gradient(135deg,#7c3aed,#a78bfa); display:flex; align-items:center; justify-content:center; font-size:36px;">✏️</div>
+        <div style="aspect-ratio:1; border-radius:12px; background:linear-gradient(135deg,#059669,#34d399); display:flex; align-items:center; justify-content:center; font-size:36px;">📸</div>
+        <div style="aspect-ratio:1; border-radius:12px; background:linear-gradient(135deg,#dc2626,#f87171); display:flex; align-items:center; justify-content:center; font-size:36px;">🔥</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- PAGE: CREATOR DASHBOARD -->
+<div id="page-dashboard" class="page">
+  <header class="glass-header">
+    <div class="header-inner">
+      <span class="gradient-text" style="font-size:16px; font-weight:700;">iin house</span>
+      <nav style="display:flex; gap:1px;">
+        <a class="nav-tab active">Dashboard</a>
+        <a class="nav-tab" onclick="navigateTo('upload')">Upload</a>
+        <a class="nav-tab" onclick="navigateTo('tiers')">Tiers</a>
+        <a class="nav-tab" onclick="navigateTo('earnings')">Earnings</a>
+        <a class="nav-tab" onclick="navigateTo('messages')">Messages</a>
+        <a class="nav-tab" onclick="navigateTo('payouts')">Payouts</a>
+        <a class="nav-tab" style="color:var(--danger);" onclick="logout()">Sign out</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container" style="padding:28px 20px;">
+    <div style="margin-bottom:24px;">
+      <h1 style="font-size:22px; font-weight:700; margin-bottom:2px;">Dashboard</h1>
+      <p style="font-size:13px; color:var(--text-3);">Welcome back, Creator</p>
+    </div>
+
+    <!-- Stats -->
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:10px; margin-bottom:28px;" class="stagger">
+      <div class="card" style="padding:18px;">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
+          <span style="font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-3);">Revenue</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-4)" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v12M9 9l3-3 3 3M9 15l3 3 3-3"/></svg>
+        </div>
+        <div style="font-size:24px; font-weight:700;">₹24.8K</div>
+        <div style="font-size:11px; color:var(--success); display:flex; align-items:center; gap:2px; margin-top:2px;">↑ +12.5%</div>
+      </div>
+      <div class="card" style="padding:18px;">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
+          <span style="font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-3);">Subscribers</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-4)" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <div style="font-size:24px; font-weight:700;">847</div>
+        <div style="font-size:11px; color:var(--success); display:flex; align-items:center; gap:2px; margin-top:2px;">↑ +8.2%</div>
+      </div>
+      <div class="card" style="padding:18px;">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
+          <span style="font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-3);">Posts</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-4)" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <div style="font-size:24px; font-weight:700;">156</div>
+        <div style="font-size:11px; color:var(--text-3); margin-top:2px;">this week</div>
+      </div>
+      <div class="card" style="padding:18px;">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
+          <span style="font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-3);">Verified</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div style="font-size:24px; font-weight:700; color:var(--success);">KYC ✓</div>
+        <div style="font-size:11px; color:var(--text-3); margin-top:2px;">Approved</div>
+      </div>
+    </div>
+
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:14px;">
+      <!-- Recent subscribers -->
+      <div class="card" style="padding:20px;">
+        <h3 style="font-size:15px; font-weight:600; margin-bottom:14px;">Recent subscribers</h3>
+        <div class="list-row">
+          <div class="avatar avatar-sm" style="background:linear-gradient(135deg,#ec4899,#db2777);">A</div>
+          <div style="flex:1; min-width:0;">
+            <div style="font-size:13px; font-weight:500;">anika@email.com</div>
+            <div style="font-size:12px; color:var(--text-3);">Joined Gold tier</div>
+          </div>
+          <span style="font-size:11px; color:var(--text-3);">2m ago</span>
+        </div>
+        <div class="list-row">
+          <div class="avatar avatar-sm" style="background:linear-gradient(135deg,#7c3aed,#a78bfa);">R</div>
+          <div style="flex:1; min-width:0;">
+            <div style="font-size:13px; font-weight:500;">rahul@email.com</div>
+            <div style="font-size:12px; color:var(--text-3);">Joined VIP tier</div>
+          </div>
+          <span style="font-size:11px; color:var(--text-3);">1h ago</span>
+        </div>
+        <div class="list-row">
+          <div class="avatar avatar-sm" style="background:linear-gradient(135deg,#059669,#34d399);">S</div>
+          <div style="flex:1; min-width:0;">
+            <div style="font-size:13px; font-weight:500;">sneha@email.com</div>
+            <div style="font-size:12px; color:var(--text-3);">Joined Starter tier</div>
+          </div>
+          <span style="font-size:11px; color:var(--text-3);">3h ago</span>
+        </div>
+      </div>
+
+      <!-- Quick actions -->
+      <div class="card" style="padding:20px;">
+        <h3 style="font-size:15px; font-weight:600; margin-bottom:14px;">Quick actions</h3>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(120px, 1fr)); gap:8px; margin-bottom:16px;">
+          <a class="btn btn-primary btn-sm" style="width:100%; text-decoration:none;" onclick="navigateTo('upload')">+ New post</a>
+          <a class="btn btn-secondary btn-sm" style="width:100%; text-decoration:none;" onclick="navigateTo('tiers')">Manage tiers</a>
+          <a class="btn btn-secondary btn-sm" style="width:100%; text-decoration:none;" onclick="navigateTo('earnings')">Earnings</a>
+          <a class="btn btn-secondary btn-sm" style="width:100%; text-decoration:none;" onclick="navigateTo('payouts')">Payouts</a>
+        </div>
+        <div class="sep" style="margin:12px 0;"></div>
+        <div class="list-row" onclick="navigateTo('messages')" style="cursor:pointer;">
+          <div class="avatar avatar-sm" style="background:linear-gradient(135deg,#7c3aed,#a78bfa);">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          </div>
+          <div style="flex:1;">
+            <div style="font-size:13px; font-weight:500;">Messages</div>
+            <div style="font-size:12px; color:var(--text-3);">3 unread</div>
+          </div>
+          <span class="badge badge-primary">3</span>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- PAGE: UPLOAD -->
+<div id="page-upload" class="page">
+  <header class="glass-header">
+    <div class="header-inner">
+      <span class="gradient-text" style="font-size:16px; font-weight:700;">iin house</span>
+      <nav style="display:flex; gap:1px;">
+        <a class="nav-tab" onclick="navigateTo('dashboard')">Dashboard</a>
+        <a class="nav-tab active">Upload</a>
+        <a class="nav-tab" onclick="navigateTo('tiers')">Tiers</a>
+        <a class="nav-tab" onclick="navigateTo('earnings')">Earnings</a>
+        <a class="nav-tab" onclick="navigateTo('messages')">Messages</a>
+        <a class="nav-tab" style="color:var(--danger);" onclick="logout()">Sign out</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container" style="max-width:640px; padding:28px 20px; padding-bottom:60px;">
+    <div style="margin-bottom:24px;">
+      <h1 style="font-size:22px; font-weight:700; margin-bottom:2px;">Upload Content</h1>
+      <p style="font-size:13px; color:var(--text-3);">Share photos, videos, audio, or text with your subscribers</p>
+    </div>
+
+    <div class="dropzone" onclick="simulateUpload()">
+      <div style="font-size:40px; margin-bottom:10px;">📤</div>
+      <div style="font-size:14px; font-weight:500; margin-bottom:4px; color:var(--text);">Drop files here or click to browse</div>
+      <div style="font-size:12px; color:var(--text-3);">Photos, videos, audio, or documents — watermarked automatically</div>
+    </div>
+    <div style="display:flex; gap:6px; margin-top:10px;" id="uploadedFiles"></div>
+
+    <div class="card" style="padding:20px; display:flex; flex-direction:column; gap:14px; margin-top:14px;">
+      <div>
+        <label style="display:block; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-3); margin-bottom:6px;">Content type</label>
+        <select class="input">
+          <option>📷 Photo</option>
+          <option>🎬 Video</option>
+          <option>🎵 Audio</option>
+          <option>📝 Text</option>
+        </select>
+      </div>
+      <div>
+        <label style="display:block; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-3); margin-bottom:6px;">Caption</label>
+        <textarea class="input" rows="3" style="resize:vertical;" placeholder="Tell your subscribers what this is about…"></textarea>
+      </div>
+      <div style="display:flex; align-items:center; gap:12px; padding:8px 0;">
+        <div class="toggle" id="ppvToggle" onclick="this.classList.toggle('active')"></div>
+        <div style="flex:1;">
+          <div style="font-size:13px; font-weight:500;">Pay-per-view content</div>
+          <div style="font-size:12px; color:var(--text-3);">Subscribers pay to unlock this post</div>
+        </div>
+      </div>
+      <div>
+        <label style="display:block; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-3); margin-bottom:6px;">Schedule (optional)</label>
+        <input type="datetime-local" class="input" />
+      </div>
+      <button class="btn btn-primary" style="width:100%; margin-top:4px;" onclick="simulatePublish()">Publish now</button>
+    </div>
+  </main>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- PAGE: TIERS -->
+<div id="page-tiers" class="page">
+  <header class="glass-header">
+    <div class="header-inner">
+      <span class="gradient-text" style="font-size:16px; font-weight:700;">iin house</span>
+      <nav style="display:flex; gap:1px;">
+        <a class="nav-tab" onclick="navigateTo('dashboard')">Dashboard</a>
+        <a class="nav-tab" onclick="navigateTo('upload')">Upload</a>
+        <a class="nav-tab active">Tiers</a>
+        <a class="nav-tab" onclick="navigateTo('earnings')">Earnings</a>
+        <a class="nav-tab" style="color:var(--danger);" onclick="logout()">Sign out</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container" style="max-width:640px; padding:28px 20px;">
+    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px;">
+      <h1 style="font-size:22px; font-weight:700;">Subscription Tiers</h1>
+      <button class="btn btn-primary btn-sm" onclick="showToast('New tier form would appear here')">+ New tier</button>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:8px;" id="tiersList">
+      <div class="card" style="padding:16px; display:flex; align-items:center; justify-content:space-between;">
+        <div>
+          <p style="font-size:14px; font-weight:600;">Starter</p>
+          <p style="font-size:12px; color:var(--text-3); margin-top:2px;">Early access to posts</p>
+        </div>
+        <div style="display:flex; align-items:center; gap:10px;">
+          <span style="font-size:16px; font-weight:700; color:var(--primary);">₹149</span>
+          <span class="badge badge-success">Active</span>
+        </div>
+      </div>
+      <div class="card" style="padding:16px; display:flex; align-items:center; justify-content:space-between;">
+        <div>
+          <p style="font-size:14px; font-weight:600;">VIP</p>
+          <p style="font-size:12px; color:var(--text-3); margin-top:2px;">All posts + DMs</p>
+        </div>
+        <div style="display:flex; align-items:center; gap:10px;">
+          <span style="font-size:16px; font-weight:700; color:var(--primary);">₹299</span>
+          <span class="badge badge-success">Active</span>
+        </div>
+      </div>
+      <div class="card" style="padding:16px; display:flex; align-items:center; justify-content:space-between;">
+        <div>
+          <p style="font-size:14px; font-weight:600;">Elite</p>
+          <p style="font-size:12px; color:var(--text-3); margin-top:2px;">Everything + monthly calls</p>
+        </div>
+        <div style="display:flex; align-items:center; gap:10px;">
+          <span style="font-size:16px; font-weight:700; color:var(--primary);">₹499</span>
+          <span class="badge badge-muted">Inactive</span>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- PAGE: EARNINGS -->
+<div id="page-earnings" class="page">
+  <header class="glass-header">
+    <div class="header-inner">
+      <span class="gradient-text" style="font-size:16px; font-weight:700;">iin house</span>
+      <nav style="display:flex; gap:1px;">
+        <a class="nav-tab" onclick="navigateTo('dashboard')">Dashboard</a>
+        <a class="nav-tab" onclick="navigateTo('upload')">Upload</a>
+        <a class="nav-tab" onclick="navigateTo('tiers')">Tiers</a>
+        <a class="nav-tab active">Earnings</a>
+        <a class="nav-tab" style="color:var(--danger);" onclick="logout()">Sign out</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container" style="max-width:800px; padding:28px 20px;">
+    <h1 style="font-size:22px; font-weight:700; margin-bottom:4px;">Earnings</h1>
+    <p style="font-size:13px; color:var(--text-3); margin-bottom:24px;">Revenue breakdown and analytics</p>
+
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:10px; margin-bottom:24px;">
+      <div class="card" style="padding:18px;">
+        <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-3); margin-bottom:8px;">This month</div>
+        <div style="font-size:24px; font-weight:700;">₹18.2K</div>
+      </div>
+      <div class="card" style="padding:18px;">
+        <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-3); margin-bottom:8px;">Last month</div>
+        <div style="font-size:24px; font-weight:700;">₹21.8K</div>
+      </div>
+      <div class="card" style="padding:18px;">
+        <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-3); margin-bottom:8px;">Total earned</div>
+        <div style="font-size:24px; font-weight:700;">₹2.1L</div>
+      </div>
+    </div>
+
+    <div class="card" style="padding:20px; margin-bottom:14px;">
+      <h3 style="font-size:15px; font-weight:600; margin-bottom:14px;">Revenue Breakdown</h3>
+      <div style="display:flex; flex-direction:column; gap:14px;">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <span style="font-size:13px; width:80px;">Subscriptions</span>
+          <div class="progress-bar"><div class="progress-fill" style="width:72%;"></div></div>
+          <span style="font-size:13px; font-weight:600; width:40px; text-align:right;">72%</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:12px;">
+          <span style="font-size:13px; width:80px;">PPV</span>
+          <div class="progress-bar"><div class="progress-fill" style="width:20%; background:linear-gradient(90deg,#7c3aed,#a78bfa);"></div></div>
+          <span style="font-size:13px; font-weight:600; width:40px; text-align:right;">20%</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:12px;">
+          <span style="font-size:13px; width:80px;">Tips</span>
+          <div class="progress-bar"><div class="progress-fill" style="width:8%; background:linear-gradient(90deg,#059669,#34d399);"></div></div>
+          <span style="font-size:13px; font-weight:600; width:40px; text-align:right;">8%</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="overflow:hidden;">
+      <div style="padding:16px 20px; border-bottom:0.5px solid var(--sep);">
+        <h3 style="font-size:15px; font-weight:600;">Transaction History</h3>
+      </div>
+      <table class="data-table">
+        <thead><tr><th>Source</th><th>Period</th><th style="text-align:right;">Amount</th></tr></thead>
+        <tbody>
+          <tr>
+            <td style="font-weight:500;">Subscriptions</td>
+            <td style="color:var(--text-3);">Jan 2026 · 847 payments</td>
+            <td style="text-align:right; font-weight:600; color:var(--success);">+₹18,200</td>
+          </tr>
+          <tr>
+            <td style="font-weight:500;">PPV Purchases</td>
+            <td style="color:var(--text-3);">Jan 2026 · 156 purchases</td>
+            <td style="text-align:right; font-weight:600; color:var(--success);">+₹6,300</td>
+          </tr>
+          <tr>
+            <td style="font-weight:500;">Tips</td>
+            <td style="color:var(--text-3);">Jan 2026 · 42 tips</td>
+            <td style="text-align:right; font-weight:600; color:var(--success);">+₹2,100</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- PAGE: PAYOUTS -->
+<div id="page-payouts" class="page">
+  <header class="glass-header">
+    <div class="header-inner">
+      <span class="gradient-text" style="font-size:16px; font-weight:700;">iin house</span>
+      <nav style="display:flex; gap:1px;">
+        <a class="nav-tab" onclick="navigateTo('dashboard')">Dashboard</a>
+        <a class="nav-tab active">Payouts</a>
+        <a class="nav-tab" style="color:var(--danger);" onclick="logout()">Sign out</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container" style="max-width:800px; padding:28px 20px;">
+    <h1 style="font-size:22px; font-weight:700; margin-bottom:4px;">Payouts</h1>
+    <p style="font-size:13px; color:var(--text-3); margin-bottom:24px;">Request and track your payouts</p>
+
+    <div class="card" style="padding:20px; margin-bottom:14px;">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
+        <div>
+          <div style="font-size:12px; color:var(--text-3);">Available balance</div>
+          <div style="font-size:28px; font-weight:700;">₹24,500</div>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="showToast('Payout request submitted!')">Request payout</button>
+      </div>
+      <div style="background:var(--surface-3); border-radius:12px; padding:12px 14px; display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-size:13px; color:var(--text-2);">Bank account ending 4029</span>
+        <span class="badge badge-success">✓ Verified</span>
+      </div>
+    </div>
+
+    <div class="card" style="overflow:hidden;">
+      <div style="padding:14px 20px; border-bottom:0.5px solid var(--sep);">
+        <h3 style="font-size:15px; font-weight:600;">Payout History</h3>
+      </div>
+      <table class="data-table">
+        <thead><tr><th>Date</th><th>Amount</th><th style="text-align:right;">Status</th><th style="text-align:right;">Method</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>2026-08-12</td>
+            <td style="font-weight:600;">₹3,200</td>
+            <td style="text-align:right;"><span class="badge badge-success">Completed</span></td>
+            <td style="text-align:right; color:var(--text-3);">UPI</td>
+          </tr>
+          <tr>
+            <td>2026-07-26</td>
+            <td style="font-weight:600;">₹1,850</td>
+            <td style="text-align:right;"><span class="badge badge-success">Completed</span></td>
+            <td style="text-align:right; color:var(--text-3);">UPI</td>
+          </tr>
+          <tr>
+            <td>2026-07-12</td>
+            <td style="font-weight:600;">₹900</td>
+            <td style="text-align:right;"><span class="badge badge-danger">Failed</span></td>
+            <td style="text-align:right; color:var(--text-3);">UPI</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- PAGE: MESSAGES -->
+<div id="page-messages" class="page">
+  <header class="glass-header">
+    <div class="header-inner">
+      <span class="gradient-text" style="font-size:16px; font-weight:700;">iin house</span>
+      <nav style="display:flex; gap:1px;">
+        <a class="nav-tab">Feed</a>
+        <a class="nav-tab active">Messages</a>
+        <a class="nav-tab" style="color:var(--danger);" onclick="logout()">Sign out</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container" style="max-width:900px; padding:28px 0;">
+    <div style="display:flex; height:calc(100vh - 52px - 56px); overflow:hidden; border:0.5px solid var(--sep); border-radius:16px;">
+      <!-- Conversation list -->
+      <aside style="width:100%; max-width:300px; border-right:0.5px solid var(--sep); display:flex; flex-direction:column;">
+        <div style="padding:14px 16px; border-bottom:0.5px solid var(--sep);">
+          <input class="input" placeholder="Search messages…" />
+        </div>
+        <div style="flex:1; overflow-y:auto;" id="convList"></div>
+      </aside>
+
+      <!-- Chat area -->
+      <div style="flex:1; display:flex; flex-direction:column; min-width:0;">
+        <div style="padding:12px 16px; border-bottom:0.5px solid var(--sep); display:flex; align-items:center; gap:10px;" id="chatHeader">
+          <div class="avatar avatar-md" style="background:linear-gradient(135deg,#ec4899,#db2777);">L</div>
+          <div>
+            <div style="font-size:14px; font-weight:600;" id="chatName">Lena Creates</div>
+            <div style="font-size:11px; color:var(--success);">● Online</div>
+          </div>
+        </div>
+        <div class="chat-area" id="chatArea" style="flex:1; overflow-y:auto;"></div>
+        <div style="padding:10px 16px; border-top:0.5px solid var(--sep); display:flex; gap:8px;">
+          <input class="input" placeholder="Write a message…" id="chatInput" style="flex:1;" onkeydown="if(event.key==='Enter')sendMessage()" />
+          <button class="btn btn-primary btn-sm" onclick="sendMessage()">Send</button>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- PAGE: CONTRACT -->
+<div id="page-contract" class="page">
+  <header class="glass-header">
+    <div class="header-inner">
+      <span class="gradient-text" style="font-size:16px; font-weight:700;">iin house</span>
+      <nav style="display:flex; gap:1px;">
+        <a class="nav-tab" onclick="navigateTo('dashboard')">Dashboard</a>
+        <a class="nav-tab active">Contract</a>
+        <a class="nav-tab" style="color:var(--danger);" onclick="logout()">Sign out</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container" style="max-width:640px; padding:28px 20px;">
+    <h1 style="font-size:22px; font-weight:700; margin-bottom:4px;">Creator Contract</h1>
+    <p style="font-size:13px; color:var(--text-3); margin-bottom:24px;">Manage your agreement and revenue split</p>
+
+    <div class="card" style="padding:24px; margin-bottom:14px;">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;">
+        <h3 style="font-size:15px; font-weight:600;">Current Agreement</h3>
+        <span class="badge badge-success">Active</span>
+      </div>
+      <div style="background:var(--surface-3); border-radius:12px; padding:16px; font-size:13px; color:var(--text-2); line-height:1.8; margin-bottom:16px;">
+        <strong style="color:var(--text);">Standard Creator Agreement</strong><br>
+        Revenue split: <strong style="color:var(--primary);">80/20</strong> (Creator / Platform)<br>
+        Term: Indefinite, 30 days notice for termination<br>
+        Content ownership: Retained by creator<br>
+        Platform license: Non-exclusive, worldwide
+      </div>
+      <div style="display:flex; gap:8px;">
+        <button class="btn btn-secondary btn-sm" style="flex:1;">Download PDF</button>
+        <button class="btn btn-ghost btn-sm" style="flex:1;">View full terms</button>
+      </div>
+    </div>
+
+    <div class="card" style="padding:24px;">
+      <h3 style="font-size:15px; font-weight:600; margin-bottom:14px;">Upload Custom Contract</h3>
+      <div class="dropzone" onclick="showToast('Contract uploaded successfully!')">
+        <div style="font-size:32px; margin-bottom:8px;">📄</div>
+        <p style="font-size:14px; font-weight:500; color:var(--text-3);">Drop your contract PDF here or click to browse</p>
+        <p style="font-size:12px; color:var(--text-4);">PDF, DOC, or DOCX</p>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- PAGE: ADMIN DASHBOARD -->
+<div id="page-admin" class="page">
+  <header class="glass-header">
+    <div class="header-inner">
+      <span class="gradient-text" style="font-size:16px; font-weight:700;">iin house</span>
+      <nav style="display:flex; gap:1px;">
+        <a class="nav-tab active">Dashboard</a>
+        <a class="nav-tab">KYC</a>
+        <a class="nav-tab">Moderation</a>
+        <a class="nav-tab">Contracts</a>
+        <a class="nav-tab">Payouts</a>
+        <a class="nav-tab">Analytics</a>
+        <a class="nav-tab" style="color:var(--danger);" onclick="logout()">Sign out</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container" style="max-width:1100px; padding:28px 20px;">
+    <div style="margin-bottom:24px;">
+      <h1 style="font-size:22px; font-weight:700; margin-bottom:2px;">Admin Dashboard</h1>
+      <p style="font-size:13px; color:var(--text-3);">Platform overview & management</p>
+    </div>
+
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(160px, 1fr)); gap:10px; margin-bottom:28px;">
+      <div class="card" style="padding:18px; text-decoration:none; color:inherit;">
+        <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-3); margin-bottom:6px;">Creators</div>
+        <div style="font-size:26px; font-weight:700; color:var(--primary);">1,247</div>
+      </div>
+      <div class="card" style="padding:18px; text-decoration:none; color:inherit;">
+        <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-3); margin-bottom:6px;">Pending KYC</div>
+        <div style="font-size:26px; font-weight:700; color:var(--warning);">23</div>
+      </div>
+      <div class="card" style="padding:18px; text-decoration:none; color:inherit;">
+        <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-3); margin-bottom:6px;">Open Flags</div>
+        <div style="font-size:26px; font-weight:700; color:var(--danger);">7</div>
+      </div>
+      <div class="card" style="padding:18px; text-decoration:none; color:inherit;">
+        <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-3); margin-bottom:6px;">Payouts</div>
+        <div style="font-size:26px; font-weight:700; color:var(--success);">₹4.2L</div>
+      </div>
+    </div>
+
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:14px;">
+      <div class="card card-interactive" style="padding:20px; cursor:pointer;">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+          <div style="width:32px; height:32px; border-radius:8px; background:var(--warning-bg); display:flex; align-items:center; justify-content:center; color:var(--warning);">📋</div>
+          <h3 style="font-size:15px; font-weight:600;">KYC Queue</h3>
+        </div>
+        <p style="font-size:13px; color:var(--text-3); line-height:1.55;">23 pending verifications. Review creator documents and approve or reject.</p>
+      </div>
+      <div class="card card-interactive" style="padding:20px; cursor:pointer;">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+          <div style="width:32px; height:32px; border-radius:8px; background:var(--danger-bg); display:flex; align-items:center; justify-content: center; color:var(--danger);">🛡️</div>
+          <h3 style="font-size:15px; font-weight:600;">Content Moderation</h3>
+        </div>
+        <p style="font-size:13px; color:var(--text-3); line-height:1.55;">7 open flags. Review, remove, warn, or dismiss flagged content.</p>
+      </div>
+      <div class="card card-interactive" style="padding:20px; cursor:pointer;">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+          <div style="width:32px; height:32px; border-radius:8px; background:var(--accent-soft); display:flex; align-items:center; justify-content:center; color:var(--accent);">📄</div>
+          <h3 style="font-size:15px; font-weight:600;">Creator Contracts</h3>
+        </div>
+        <p style="font-size:13px; color:var(--text-3); line-height:1.55;">Review and manage creator agreements and revenue splits.</p>
+      </div>
+      <div class="card card-interactive" style="padding:20px; cursor:pointer;">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+          <div style="width:32px; height:32px; border-radius:8px; background:var(--success-bg); display:flex; align-items:center; justify-content:center; color:var(--success);">📊</div>
+          <h3 style="font-size:15px; font-weight:600;">Platform Analytics</h3>
+        </div>
+        <p style="font-size:13px; color:var(--text-3); line-height:1.55;">Revenue, growth, retention, and engagement metrics.</p>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- PAGE: CONTACT -->
+<div id="page-contact" class="page">
+  <header class="glass-header">
+    <div class="header-inner">
+      <a style="font-size:13px; color:var(--text-3); cursor:pointer;" onclick="navigateTo('landing')">← Back</a>
+      <span class="gradient-text" style="font-size:16px; font-weight:700;">iin house</span>
+      <div style="width:40px;"></div>
+    </div>
+  </header>
+
+  <main class="container" style="max-width:720px; padding:28px 20px;">
+    <div style="margin-bottom:24px;">
+      <h1 style="font-size:28px; font-weight:700; margin-bottom:4px;">Contact Us</h1>
+      <p style="font-size:14px; color:var(--text-3);">We're here to help. Reach out through any channel below.</p>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:10px;">
+      <div class="card card-interactive" style="padding:18px; display:flex; align-items:center; gap:14px;">
+        <div style="width:40px; height:40px; border-radius:50%; background:rgba(244,114,182,0.1); display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0;">📧</div>
+        <div style="flex:1;">
+          <h3 style="font-size:14px; font-weight:600; margin-bottom:2px;">Email support</h3>
+          <p style="font-size:12px; color:var(--text-3);">For account issues, billing, and general questions.</p>
+          <a href="mailto:support@iinhouse.com" style="font-size:13px; color:var(--accent); margin-top:4px; display:inline-block;">support@iinhouse.com</a>
+        </div>
+      </div>
+      <div class="card card-interactive" style="padding:18px; display:flex; align-items:center; gap:14px;">
+        <div style="width:40px; height:40px; border-radius:50%; background:rgba(96,165,250,0.1); display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0;">⚖️</div>
+        <div style="flex:1;">
+          <h3 style="font-size:14px; font-weight:600; margin-bottom:2px;">Grievance Officer</h3>
+          <p style="font-size:12px; color:var(--text-3);">Required under IT Rules 2021. Response within 48 hours.</p>
+          <a href="mailto:grievances@iinhouse.com" style="font-size:13px; color:var(--accent); margin-top:4px; display:inline-block;">grievances@iinhouse.com</a>
+        </div>
+      </div>
+      <div class="card card-interactive" style="padding:18px; display:flex; align-items:center; gap:14px;">
+        <div style="width:40px; height:40px; border-radius:50%; background:rgba(52,211,153,0.1); display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0;">🤝</div>
+        <div style="flex:1;">
+          <h3 style="font-size:14px; font-weight:600; margin-bottom:2px;">Partnerships</h3>
+          <p style="font-size:12px; color:var(--text-3);">Creator relations, onboarding, and partnership inquiries.</p>
+          <a href="mailto:partners@iinhouse.com" style="font-size:13px; color:var(--accent); margin-top:4px; display:inline-block;">partners@iinhouse.com</a>
+        </div>
+      </div>
+      <div class="card card-interactive" style="padding:18px; display:flex; align-items:center; gap:14px;">
+        <div style="width:40px; height:40px; border-radius:50%; background:rgba(251,191,36,0.1); display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0;">🔒</div>
+        <div style="flex:1;">
+          <h3 style="font-size:14px; font-weight:600; margin-bottom:2px;">Privacy & data requests</h3>
+          <p style="font-size:12px; color:var(--text-3);">Data access, deletion, and privacy inquiries.</p>
+          <a href="mailto:privacy@iinhouse.com" style="font-size:13px; color:var(--accent); margin-top:4px; display:inline-block;">privacy@iinhouse.com</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="padding:20px; margin-top:24px;">
+      <h3 style="font-size:14px; font-weight:600; margin-bottom:8px;">Business address</h3>
+      <p style="font-size:13px; color:var(--text-3); line-height:1.6;">iin house (registered business name)<br>India — update with your registered address before launch</p>
+    </div>
+  </main>
+</div>
+
+<!-- Toast container -->
+<div id="toastContainer"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════════════════
+let currentRole = 'CREATOR';
+let currentUser = null;
+
+function navigateTo(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const target = document.getElementById('page-' + page);
+  if (target) target.classList.add('active');
+  window.scrollTo(0, 0);
+
+  // Init page-specific content
+  if (page === 'feed') initFeed();
+  if (page === 'messages') initMessages();
+  if (page === 'profile') initProfile();
+}
+
+// ═══════════════════════════════════════════════════════════════
+// ROLE SELECTOR
+// ═══════════════════════════════════════════════════════════════
+function selectRole(role) {
+  currentRole = role;
+  document.getElementById('roleCreator').classList.toggle('active', role === 'CREATOR');
+  document.getElementById('roleSubscriber').classList.toggle('active', role === 'SUBSCRIBER');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// DEMO CREDENTIAL FILLER
+// ═══════════════════════════════════════════════════════════════
+function fillDemo(type) {
+  if (type === 'creator') {
+    document.getElementById('loginEmail').value = 'demo@iinhouse.com';
+    document.getElementById('loginPassword').value = 'password123';
+  } else if (type === 'subscriber') {
+    document.getElementById('loginEmail').value = 'user@iinhouse.com';
+    document.getElementById('loginPassword').value = 'password123';
+  } else if (type === 'admin') {
+    document.getElementById('loginEmail').value = 'admin@iinhouse.com';
+    document.getElementById('loginPassword').value = 'admin123';
+  }
+  showToast('Demo credentials filled ✓');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// AUTH
+// ═══════════════════════════════════════════════════════════════
+function handleLogin(e) {
+  e.preventDefault();
+  const email = document.getElementById('loginEmail').value;
+  const pw = document.getElementById('loginPassword').value;
+
+  if (email === 'demo@iinhouse.com' && pw === 'password123') {
+    currentUser = { role: 'CREATOR', name: 'Demo Creator' };
+    showToast('Welcome back, Creator! 👋');
+    setTimeout(() => navigateTo('dashboard'), 600);
+  } else if (email === 'user@iinhouse.com' && pw === 'password123') {
+    currentUser = { role: 'SUBSCRIBER', name: 'Demo Subscriber' };
+    showToast('Welcome back! 👋');
+    setTimeout(() => navigateTo('feed'), 600);
+  } else if (email === 'admin@iinhouse.com' && pw === 'admin123') {
+    currentUser = { role: 'ADMIN', name: 'Admin' };
+    showToast('Welcome, Admin! 👋');
+    setTimeout(() => navigateTo('admin'), 600);
+  } else {
+    showToast('Invalid credentials. Use the demo buttons below.', true);
+  }
+}
+
+function handleAdminLogin() {
+  document.getElementById('loginEmail').value = 'admin@iinhouse.com';
+  document.getElementById('loginPassword').value = 'admin123';
+  showToast('Admin credentials filled — tap Sign in');
+}
+
+function handleRegister(e) {
+  e.preventDefault();
+  showToast('Account created! Redirecting to login…');
+  setTimeout(() => navigateTo('login'), 1200);
+}
+
+function logout() {
+  currentUser = null;
+  showToast('Signed out successfully');
+  setTimeout(() => navigateTo('landing'), 600);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// FEED
+// ═══════════════════════════════════════════════════════════════
+const creators = [
+  { name: 'Priya Art', desc: 'Digital artist', price: '₹149/mo', emoji: '🎨', gradient: 'linear-gradient(135deg,#9d174d,#be185d)' },
+  { name: 'Rohit Beats', desc: 'Music producer', price: '₹299/mo', emoji: '🎵', gradient: 'linear-gradient(135deg,#7c3aed,#a78bfa)' },
+  { name: 'Fit With Me', desc: 'Fitness coach', price: '₹199/mo', emoji: '💪', gradient: 'linear-gradient(135deg,#059669,#34d399)' },
+  { name: 'Lens Life', desc: 'Photographer', price: '₹99/mo', emoji: '📷', gradient: 'linear-gradient(135deg,#dc2626,#f87171)' },
+  { name: 'Code With Raj', desc: 'Developer', price: '₹249/mo', emoji: '💻', gradient: 'linear-gradient(135deg,#2563eb,#60a5fa)' },
+  { name: 'Bake With Amy', desc: 'Baker & chef', price: '₹149/mo', emoji: '🧁', gradient: 'linear-gradient(135deg,#ea580c,#fb923c)' },
+];
+
+function initFeed() {
+  const grid = document.getElementById('creatorGrid');
+  if (!grid) return;
+  grid.innerHTML = creators.map(c => `
+    <div class="creator-card" style="background:var(--surface-2); border:0.5px solid var(--sep);" onclick="openProfile('${c.name}')">
+      <div style="aspect-ratio:3/4; background:${c.gradient}; display:flex; align-items:center; justify-content:center; font-size:52px;">
+        ${c.emoji}
+      </div>
+      <div style="padding:12px;">
+        <div style="font-size:14px; font-weight:600; margin-bottom:2px;">${c.name}</div>
+        <div style="font-size:12px; color:var(--text-3);">${c.desc}</div>
+        <div style="margin-top:8px;"><span class="badge badge-primary">${c.price}</span></div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openProfile(name) {
+  document.getElementById('profileName').textContent = name;
+  document.getElementById('profileAvatar').textContent = name[0];
+  navigateTo('profile');
+}
+
+function initProfile() {
+  // Profile is mostly static, but we update avatar/name in openProfile
+}
+
+// ═══════════════════════════════════════════════════════════════
+// MESSAGES
+// ═══════════════════════════════════════════════════════════════
+const conversations = [
+  { id: '1', name: 'Lena Creates', avatar: 'L', color: 'linear-gradient(135deg,#ec4899,#db2777)', last: 'Thanks for subscribing! ✨', time: '2m', unread: 1 },
+  { id: '2', name: 'DJ Rohit', avatar: 'R', color: 'linear-gradient(135deg,#7c3aed,#a78bfa)', last: 'Check out my latest track 🎵', time: '1h', unread: 0 },
+  { id: '3', name: 'Priya Fitness', avatar: 'P', color: 'linear-gradient(135deg,#059669,#34d399)', last: 'Workout plan ready 💪', time: '3h', unread: 0 },
+];
+
+const messagesData = {
+  '1': [
+    { sender: 'them', text: 'Hey, welcome! Thanks for subscribing.', time: '2m' },
+    { sender: 'me', text: 'Thanks! Loving the content so far ✨', time: '1m' },
+  ],
+  '2': [
+    { sender: 'them', text: 'New track dropping this Friday! 🎵', time: '1h' },
+    { sender: 'me', text: 'Can\'t wait! Will there be a PPV?', time: '45m' },
+  ],
+  '3': [
+    { sender: 'them', text: 'Your workout plan is ready! 💪', time: '3h' },
+    { sender: 'me', text: 'Awesome, let me check it out', time: '2h' },
+  ],
+};
+
+let activeConv = '1';
+
+function initMessages() {
+  const list = document.getElementById('convList');
+  if (!list) return;
+  list.innerHTML = conversations.map(c => `
+    <div class="list-row ${c.id === activeConv ? 'active' : ''}" onclick="switchConv('${c.id}')" style="width:100%; border:none; background:transparent; text-align:left;">
+      <div class="avatar avatar-md" style="background:${c.color};">${c.avatar}</div>
+      <div style="flex:1; min-width:0;">
+        <div style="font-size:13px; font-weight:500; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${c.name}</div>
+        <div style="font-size:12px; color:var(--text-3); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${c.last}</div>
+      </div>
+      <div style="display:flex; flex-direction:column; align-items:flex-end; gap:4px;">
+        <span style="font-size:11px; color:var(--text-3);">${c.time}</span>
+        ${c.unread > 0 ? `<span class="badge badge-primary" style="padding:2px 7px; font-size:10px;">${c.unread}</span>` : ''}
+      </div>
+    </div>
+  `).join('');
+  renderChat();
+}
+
+function switchConv(id) {
+  activeConv = id;
+  const conv = conversations.find(c => c.id === id);
+  if (conv) {
+    document.getElementById('chatName').textContent = conv.name;
+    document.querySelector('#chatHeader .avatar').style.background = conv.color;
+    document.querySelector('#chatHeader .avatar').textContent = conv.avatar;
+  }
+  initMessages();
+}
+
+function renderChat() {
+  const area = document.getElementById('chatArea');
+  if (!area) return;
+  const msgs = messagesData[activeConv] || [];
+  area.innerHTML = msgs.map(m => {
+    if (m.sender === 'me') {
+      return `<div class="chat-bubble-right"><p>${m.text}</p><span class="chat-time">${m.time}</span></div>`;
+    } else {
+      return `<div class="chat-bubble-left"><p>${m.text}</p><span class="chat-time" style="color:var(--text-4);">${m.time}</span></div>`;
+    }
+  }).join('');
+  area.scrollTop = area.scrollHeight;
+}
+
+function sendMessage() {
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if (!text) return;
+  const msgs = messagesData[activeConv] || [];
+  msgs.push({ sender: 'me', text, time: 'Just now' });
+  messagesData[activeConv] = msgs;
+  input.value = '';
+  renderChat();
+}
+
+// ═══════════════════════════════════════════════════════════════
+// UPLOAD SIMULATION
+// ═══════════════════════════════════════════════════════════════
+function simulateUpload() {
+  const container = document.getElementById('uploadedFiles');
+  if (!container) return;
+  const names = ['vacation_001.jpg', 'video_clip.mp4'];
+  container.innerHTML = names.map(n =>
+    `<span style="font-size:12px; padding:6px 12px; background:var(--surface-3); border-radius:10px; color:var(--text-2);">${n}</span>`
+  ).join('');
+  showToast('Files selected ✓');
+}
+
+function simulatePublish() {
+  showToast('🎉 Post published successfully!');
+  setTimeout(() => {
+    document.getElementById('uploadedFiles').innerHTML = '';
+  }, 1000);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════════════════════════
+function showToast(message, isError) {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.style.borderColor = isError ? 'rgba(248,113,113,0.2)' : 'rgba(255,255,255,0.08)';
+  toast.innerHTML = `<span style="color:${isError ? 'var(--danger)' : 'var(--text)'};">${message}</span>`;
+  container.appendChild(toast);
+  setTimeout(() => { toast.style.opacity = '0'; toast.style.transition = 'opacity 0.3s'; setTimeout(() => toast.remove(), 300); }, 3000);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════
+// Show landing by default
+navigateTo('landing');
+</script>
+
+</body>
+</html>
