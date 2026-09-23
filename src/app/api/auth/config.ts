@@ -20,20 +20,24 @@ const DEMO_SESSIONS: Record<string, { id: string; role: "CREATOR" | "SUBSCRIBER"
   "admin:1234:ADMIN":      { id: "demo-admin",      role: "ADMIN",      email: "admin@iinhouse.com" },
 };
 
+const isDemoMode = process.env.DEMO_MODE === "true";
+
 export const authOptions = {
   providers: [
     CredentialsProvider({
       name: "Account",
       credentials: {
-        identifier: { label: "Email or phone", placeholder: "admin" },
+        identifier: { label: "Email or phone", placeholder: "you@example.com" },
         password: { label: "Password", type: "password" },
         role: { label: "Role (demo)", type: "text" },
       },
       async authorize(credentials: any) {
         if (!credentials?.identifier || !credentials?.password) return null;
+
         const requestedRole = (credentials.role as "CREATOR" | "SUBSCRIBER" | "ADMIN") || "SUBSCRIBER";
 
-        if (process.env.DEMO_MODE === "true" && credentials.identifier === "admin" && credentials.password === "1234") {
+        // Demo credentials (only enabled in DEMO_MODE)
+        if (isDemoMode && credentials.identifier === "admin" && credentials.password === "1234") {
           const session = DEMO_SESSIONS[`admin:1234:${requestedRole}`];
           if (session) return { id: session.id, email: session.email, role: session.role, name: session.email };
           const fallback = DEMO_SESSIONS["admin:1234:SUBSCRIBER"];

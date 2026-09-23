@@ -6,6 +6,7 @@ import { CreatorNav } from "@/components/CreatorNav";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { tierSchema } from "@/lib/validation";
 
 const DEMO_TIERS = [
   { id: "1", name: "Starter", price: 149, currency: "INR", perks: "Early access to posts", active: true },
@@ -19,6 +20,7 @@ export default function TiersPage() {
   const [tiers, setTiers] = useState(DEMO_TIERS);
   const [newTier, setNewTier] = useState({ name: "", price: "", perks: "", currency: "INR" });
   const [showNew, setShowNew] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   useEffect(() => { if (status === "unauthenticated") router.push("/login"); }, [status, router]);
 
@@ -28,8 +30,25 @@ export default function TiersPage() {
   };
 
   const addTier = () => {
-    if (!newTier.name || !newTier.price) return toast.error("Name and price required");
-    setTiers([...tiers, { id: String(Date.now()), name: newTier.name, price: Number(newTier.price), currency: newTier.currency, perks: newTier.perks, active: true }]);
+    const price = Number(newTier.price);
+    const result = tierSchema.safeParse({
+      name: newTier.name,
+      description: newTier.perks,
+      price: isNaN(price) ? -1 : price,
+      interval: "MONTHLY" as const,
+    });
+    if (!result.success) {
+      const fieldErrors: Record<string, string> = {};
+      result.error.issues.forEach((issue) => {
+        const field = issue.path[0]?.toString() ?? "form";
+        fieldErrors[field] = issue.message;
+      });
+      setErrors(fieldErrors);
+      toast.error("Please fix the errors above");
+      return;
+    }
+    setErrors({});
+    setTiers([...tiers, { id: String(Date.now()), name: newTier.name, price: price, currency: newTier.currency, perks: newTier.perks, active: true }]);
     setNewTier({ name: "", price: "", perks: "", currency: "INR" });
     setShowNew(false);
     toast.success("Tier created");
@@ -50,13 +69,16 @@ export default function TiersPage() {
         {showNew && (
           <div className="card" style={{ padding: '16px', marginBottom: '14px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-              <input className="input" placeholder="Tier name" value={newTier.name} onChange={e => setNewTier(f => ({ ...f, name: e.target.value }))} />
-              <input className="input" placeholder="Price (₹)" type="number" value={newTier.price} onChange={e => setNewTier(f => ({ ...f, price: e.target.value }))} />
+              <input className="input" placeholder="Tier name" value={newTier.name} onChange={e => setNewTier(f => ({ ...f, name: e.target.value }))} aria-invalid={!!errors.name} />
+              {errors.name && <p style={{ fontSize: '12px', color: 'var(--danger)' }}>{errors.name}</p>}
+              <input className="input" placeholder="Price (₹)" type="number" value={newTier.price} onChange={e => setNewTier(f => ({ ...f, price: e.target.value }))} aria-invalid={!!errors.price} />
+              {errors.price && <p style={{ fontSize: '12px', color: 'var(--danger)' }}>{errors.price}</p>}
             </div>
-            <input className="input" placeholder="Perks description" value={newTier.perks} onChange={e => setNewTier(f => ({ ...f, perks: e.target.value }))} />
+            <input className="input" placeholder="Perks description" value={newTier.perks} onChange={e => setNewTier(f => ({ ...f, perks: e.target.value }))} aria-invalid={!!errors.description} />
+            {errors.description && <p style={{ fontSize: '12px', color: 'var(--danger)' }}>{errors.description}</p>}
             <div style={{ display: 'flex', gap: '8px' }}>
               <button onClick={addTier} className="btn btn-primary btn-sm">Save tier</button>
-              <button onClick={() => setShowNew(false)} className="btn btn-secondary btn-sm">Cancel</button>
+              <button onClick={() => { setShowNew(false); setErrors({}); }} className="btn btn-secondary btn-sm">Cancel</button>
             </div>
           </div>
         )}

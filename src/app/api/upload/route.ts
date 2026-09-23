@@ -5,7 +5,7 @@ import { randomUUID } from "crypto";
 import { applyWatermark } from "@/lib/watermark";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/config";
-import { generateUploadUrl } from "@/lib/storage";
+import { getSignedUploadUrl } from "@/lib/storage";
 
 const LOCAL_UPLOAD_DIR = join(process.cwd(), "..", "uploads");
 
@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
       const ext = fileName.split(".").pop() || "bin";
       const key = `uploads/${(session.user as any).id}/${randomUUID()}.${ext}`;
 
-      const uploadUrl = await generateUploadUrl(key, fileType);
+      const uploadUrl = await getSignedUploadUrl(key, fileType);
       if (uploadUrl) {
         return NextResponse.json({ ok: true, key, uploadUrl });
       }

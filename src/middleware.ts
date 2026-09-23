@@ -1,64 +1,42 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+import { getToken } from "next-auth/jwt";
 
-const PUBLIC_PATHS = new Set([
-  "/",
-  "/feed",
-  "/login",
-  "/register",
-  "/verify-email",
-  "/contact",
-  "/terms",
-  "/privacy",
-  "/demo",
-  "/api/auth",
-  "/api/health",
-  "/api/media",
-]);
+const PROTECTED_PREFIXES = ["/creator", "/admin", "/subscriber"];
+const AUTH_PAGES = ["/login", "/register"];
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  if (
-    PUBLIC_PATHS.has(pathname) ||
-    pathname.startsWith("/api/auth") ||
-    pathname.startsWith("/api/health") ||
-    pathname.startsWith("/api/media") ||
-    pathname.startsWith("/_next") ||
-    pathname.startsWith("/favicon") ||
-    pathname.endsWith(".ico") ||
-    pathname.endsWith(".png") ||
-    pathname.endsWith(".svg")
-  ) {
-    return NextResponse.next();
+  const token = await getToken({
+    req,
+    secret: process.env.NEXTAUTH_SECRET,
+  });
+
+  const isProtected = PROTECTED_PREFIXES.some(
+    (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`)
+  );
+  const isAuthPage = AUTH_PAGES.includes(pathname);
+
+  if (isProtected && !token) {
+    const loginUrl = new URL("/login", req.url);
+    loginUrl.searchParams.set("callbackUrl", pathname);
+    return NextResponse.redirect(loginUrl);
   }
 
-  // Role-based guard using session cookie
-  const sessionToken = req.cookies.get("next-auth.session-token")?.value ||
-                       req.cookies.get("__Secure-next-auth.session-token")?.value;
-
-  if (!sessionToken) {
-    return NextResponse.redirect(new URL("/login", req.url));
-  }
-
-  // Decode JWT payload to check role without importing next-auth internals
-  try {
-    const [, payload] = sessionToken.split(".");
-    const decoded = JSON.parse(Buffer.from(payload.replace(/-/g, "+").replace(/_/g, "/"), "base64").toString());
-    const role = decoded?.role;
-
-    if (pathname.startsWith("/admin") && role !== "ADMIN") {
-      return NextResponse.redirect(new URL("/feed", req.url));
-    }
-    if (pathname.startsWith("/creator") && role !== "CREATOR") {
-      return NextResponse.redirect(new URL("/feed", req.url));
-    }
-  } catch {
-    // If we can't decode the token, let the page handle auth
+  if (isAuthPage && token) {
+    return NextResponse.redirect(new URL("/feed", req.url));
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|uploads).*)"],
+  matcher: [
+    "/creator/:path*",
+    "/admin/:path*",
+    "/subscriber/:path*",
+    "/login",
+    "/register",
+  ],
 };

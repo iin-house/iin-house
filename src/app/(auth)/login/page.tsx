@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import toast from "react-hot-toast";
+import { loginSchema } from "@/lib/validation";
 
 function LoginForm() {
   const router = useRouter();
@@ -12,9 +13,36 @@ function LoginForm() {
   const error = params.get("error");
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({ identifier: "admin", password: "1234", role: "SUBSCRIBER" });
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const validate = () => {
+    const result = loginSchema.safeParse({
+      identifier: form.identifier,
+      password: form.password,
+    });
+    if (!result.success) {
+      const fieldErrors: Record<string, string> = {};
+      result.error.issues.forEach((issue) => {
+        const field = issue.path[0]?.toString() ?? "form";
+        fieldErrors[field] = issue.message;
+      });
+      setErrors(fieldErrors);
+      return false;
+    }
+    setErrors({});
+    return true;
+  };
+
+  useEffect(() => {
+    validate();
+  }, [form.identifier, form.password]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validate()) {
+      toast.error("Please fix the errors above");
+      return;
+    }
     setLoading(true);
     const res = await signIn("credentials", { redirect: false, identifier: form.identifier, password: form.password, role: form.role });
     setLoading(false);
@@ -32,13 +60,20 @@ function LoginForm() {
         </div>
       )}
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+        {error === "CredentialsSignin" && (
+          <div style={{ background: "var(--danger-bg)", color: "var(--danger)", padding: "10px 14px", borderRadius: "12px", fontSize: "13px", marginBottom: "16px" }}>
+            Invalid email or password.
+          </div>
+        )}
         <div>
           <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, textTransform: 'uppercase' as const, letterSpacing: '0.05em', color: 'var(--text-3)', marginBottom: '6px' }}>Email or phone</label>
-          <input className="input" value={form.identifier} onChange={e => setForm(f => ({ ...f, identifier: e.target.value }))} required />
+          <input className="input" value={form.identifier} onChange={e => setForm(f => ({ ...f, identifier: e.target.value }))} aria-invalid={!!errors.identifier} />
+          {errors.identifier && <p style={{ fontSize: '12px', color: 'var(--danger)', marginTop: '4px' }}>{errors.identifier}</p>}
         </div>
         <div>
           <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, textTransform: 'uppercase' as const, letterSpacing: '0.05em', color: 'var(--text-3)', marginBottom: '6px' }}>Password</label>
-          <input type="password" className="input" value={form.password} onChange={e => setForm(f => ({ ...f, password: e.target.value }))} required />
+          <input type="password" className="input" value={form.password} onChange={e => setForm(f => ({ ...f, password: e.target.value }))} aria-invalid={!!errors.password} />
+          {errors.password && <p style={{ fontSize: '12px', color: 'var(--danger)', marginTop: '4px' }}>{errors.password}</p>}
         </div>
         <button className="btn btn-primary" style={{ width: '100%', marginTop: '4px' }} type="submit" disabled={loading}>
           {loading ? "Signing in…" : "Sign in"}
@@ -71,7 +106,7 @@ function LoginForm() {
         </div>
       </form>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '18px', fontSize: '13px' }}>
-        <a href="#" style={{ color: 'var(--text-3)' }}>Forgot password?</a>
+        <a href="/forgot-password" style={{ color: 'var(--text-3)', textDecoration: 'none' }}>Forgot password?</a>
         <a href="/register" className="gradient-text" style={{ fontWeight: 500 }}>Sign up</a>
       </div>
       <div className="sep" style={{ margin: '18px 0' }} />
