@@ -10,3 +10,4 @@ prisma/dev.db
 uploads/
 
 .vercel
+.coverage
