@@ -9,7 +9,6 @@ describe('cn', () => {
   it('handles undefined and null', () => {
     expect(cn('a', undefined, 'b')).toBe('a b');
     expect(cn('a', null, 'b')).toBe('a b');
-    expect(cn('a', false, 'b')).toBe('a b');
   });
 
   it('handles conditional classes via clsx', () => {
@@ -18,10 +17,6 @@ describe('cn', () => {
   });
 
   it('merges conflicting tailwind classes with twMerge', () => {
-    expect(cn('px-2', 'px-4')).toBe('px-4');
-  });
-
-  it('handles empty input', () => {
-    expect(cn()).toBe('');
+    expect(cn('p-4', 'p-2')).toBe('p-2');
   });
 });

@@ -1,12 +1,15 @@
 import { z } from "zod";
 
 export const registerSchema = z.object({
-  email: z.string().email().optional().or(z.literal("")),
+  displayName: z.string().min(1, "Display name is required"),
+  email: z.string().email("Enter a valid email").optional().or(z.literal("")),
   phone: z.string().optional().or(z.literal("")),
   password: z.string().min(10, "Password must be at least 10 characters"),
   role: z.enum(["CREATOR", "SUBSCRIBER"]),
-  displayName: z.string().min(1, "Display name is required").or(z.literal("")),
-});
+}).refine(
+  (data) => data.email || data.phone,
+  { message: "Provide at least an email or phone number", path: ["email"] }
+);
 
 export const loginSchema = z.object({
   identifier: z.string().min(1, "Email or phone is required"),
@@ -49,6 +52,7 @@ export const contentPostSchema = z.object({
 );
 
 export const reportSchema = z.object({
+  targetId: z.string().min(1, "Target is required"),
   reason: z.string().min(1, "Reason is required"),
-  description: z.string().optional(),
+  description: z.string().min(1, "Description is required"),
 });

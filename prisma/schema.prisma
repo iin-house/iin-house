@@ -85,6 +85,8 @@ model Subscription {
   startedAt     DateTime            @default(now())
   renewedAt     DateTime?
   cancelledAt   DateTime?
+  periodStart   DateTime?
+  periodEnd     DateTime?
 
   subscriber User             @relation("Subscriber", fields: [subscriberId], references: [id], onDelete: Cascade)
   creator    CreatorProfile   @relation(fields: [creatorId], references: [id], onDelete: Cascade)
@@ -161,6 +163,28 @@ model MessageRead {
 
   @@index([userId])
   @@index([messageId])
+}
+
+model Payment {
+  id              String    @id @default(cuid())
+  userId          String
+  amount          Decimal
+  currency        String    @default("INR")
+  status          String    @default("PENDING") // PENDING, SUCCESS, FAILED, REFUNDED
+  provider        String    @default("RAZORPAY")
+  providerOrderId String?
+  providerPaymentId String?
+  providerSignature String?
+  subscriptionId  String?
+  contentId       String?
+  metadata        Json?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([userId, status])
+  @@index([providerOrderId])
+  @@index([subscriptionId])
+  @@index([contentId])
 }
 
 model Payout {
