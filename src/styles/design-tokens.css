@@ -1,4 +1,109 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,800;0,9..144,900;1,9..144,400;1,9..144,500&display=swap');
+
+:root {
+  /* ── Color System ────────────────────────────────────────── */
+  --bg:                #0c0c0e;
+  --bg-warm:           #0c0c0e;
+  --surface:           #141416;
+  --surface-elevated:  #1a1a1d;
+  --surface-hover:     #1f1f23;
+  --border:            rgba(255, 255, 255, 0.06);
+  --border-strong:     rgba(255, 255, 255, 0.10);
+
+  --text:              #fafafa;
+  --text-secondary:    rgba(255, 255, 255, 0.60);
+  --text-tertiary:     rgba(255, 255, 255, 0.38);
+  --text-quaternary:   rgba(255, 255, 255, 0.22);
+
+  --accent:            #f59e0b;
+  --accent-soft:       rgba(245, 158, 11, 0.10);
+  --accent-medium:     rgba(245, 158, 11, 0.20);
+
+  --success:           #22c55e;
+  --success-soft:      rgba(34, 197, 94, 0.10);
+  --danger:            #ef4444;
+  --danger-soft:       rgba(239, 68, 68, 0.10);
+  --warning:           #eab308;
+  --warning-soft:      rgba(234, 179, 8, 0.10);
+  --info:              #3b82f6;
+  --info-soft:         rgba(59, 130, 246, 0.10);
+
+  /* ── Typography ──────────────────────────────────────────── */
+  --font-display:      'Fraunces', Georgia, 'Times New Roman', serif;
+  --font-body:         'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono:         'SF Mono', 'Menlo', 'Monaco', monospace;
+
+  --text-xs:           11px;
+  --text-sm:           13px;
+  --text-base:         15px;
+  --text-md:           16px;
+  --text-lg:           19px;
+  --text-xl:           24px;
+  --text-2xl:          32px;
+  --text-3xl:          44px;
+  --text-4xl:          64px;
+  --text-5xl:          80px;
+
+  --leading-display:   1.05;
+  --leading-tight:     1.25;
+  --leading-normal:    1.55;
+  --leading-relaxed:   1.7;
+
+  --tracking-tight:    -0.025em;
+  --tracking-normal:   -0.01em;
+  --tracking-wide:     0.02em;
+
+  --weight-regular:    400;
+  --weight-medium:     500;
+  --weight-semibold:   600;
+  --weight-bold:       700;
+
+  /* ── Spacing ─────────────────────────────────────────────── */
+  --sp-1:  4px;
+  --sp-2:  8px;
+  --sp-3:  12px;
+  --sp-4:  16px;
+  --sp-5:  20px;
+  --sp-6:  24px;
+  --sp-8:  32px;
+  --sp-10: 40px;
+  --sp-12: 48px;
+  --sp-16: 64px;
+  --sp-20: 80px;
+  --sp-24: 96px;
+
+  /* ── Border Radius ───────────────────────────────────────── */
+  --radius-xs:   4px;
+  --radius-sm:   8px;
+  --radius-md:   12px;
+  --radius-lg:   16px;
+  --radius-xl:   20px;
+  --radius-full: 9999px;
+
+  /* ── Shadows ─────────────────────────────────────────────── */
+  --shadow-sm:    0 1px 2px rgba(0,0,0,0.5);
+  --shadow-md:    0 4px 16px rgba(0,0,0,0.6);
+  --shadow-lg:    0 8px 32px rgba(0,0,0,0.7);
+  --shadow-glow:  0 0 24px rgba(245, 158, 11, 0.15);
+
+  /* ── Animation ───────────────────────────────────────────── */
+  --ease-out:     cubic-bezier(0, 0, 0.2, 1);
+  --ease-spring:  cubic-bezier(0.34, 1.56, 0.64, 1);
+  --duration-fast:   150ms;
+  --duration-normal: 250ms;
+  --duration-slow:   400ms;
+
+  /* ── Layout ──────────────────────────────────────────────── */
+  --max-content:   720px;
+  --max-wide:      1100px;
+  --header-height: 56px;
+
+  /* ── Z-Index ─────────────────────────────────────────────── */
+  --z-base:    0;
+  --z-sticky:  50;
+  --z-overlay: 100;
+  --z-modal:   200;
+  --z-toast:   300;
 
 /* ============================================================
    iIN HOUSE — iOS-Grade Design Token System
