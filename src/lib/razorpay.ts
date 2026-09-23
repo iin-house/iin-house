@@ -106,6 +106,26 @@ export async function verifyRazorpaySignature({
 }
 
 /**
+ * Verify Razorpay webhook signature using webhook secret
+ * HMAC-SHA256 of the raw body using the webhook secret
+ */
+export async function verifyRazorpayWebhook(
+  body: string,
+  signature: string,
+  webhookSecret: string
+): Promise<boolean> {
+  try {
+    const { createHmac } = await import("crypto");
+    const hmac = createHmac("sha256", webhookSecret);
+    hmac.update(body);
+    const computed = hmac.digest("hex");
+    return computed === signature;
+  } catch {
+    return false;
+  }
+}
+
+/**
  * Fetch a Razorpay payment by ID
  */
 export async function fetchRazorpayPayment(paymentId: string): Promise<any> {
@@ -128,4 +148,68 @@ export async function fetchRazorpayPayment(paymentId: string): Promise<any> {
 
 export function isRazorpayConfigured(): boolean {
   return !!(process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET);
+}
+
+/**
+ * Create a refund on Razorpay
+ */
+export async function createRazorpayRefund(
+  paymentId: string,
+  amountPaise: number,
+  notes?: Record<string, string>
+): Promise<any | null> {
+  const creds = getCredentials();
+  if (!creds) return null;
+
+  try {
+    const response = await fetch(`https://api.razorpay.com/v1/payments/${paymentId}/refund`, {
+      method: "POST",
+      headers: {
+        Authorization: `Basic ${Buffer.from(`${creds.keyId}:${creds.keySecret}`).toString("base64")}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        amount: amountPaise,
+        notes: notes ?? {},
+        speed: "normal",
+      }),
+    });
+
+    if (!response.ok) {
+      const err = await response.json();
+      console.error("[razorpay] Refund failed:", err);
+      return null;
+    }
+
+    return await response.json();
+  } catch (e) {
+    console.error("[razorpay] Refund error:", e);
+    return null;
+  }
+}
+
+/**
+ * List Razorpay subscriptions (for admin dashboard)
+ */
+export async function fetchRazorpaySubscriptions(params?: { count?: number; skip?: number }): Promise<any[]> {
+  const creds = getCredentials();
+  if (!creds) return [];
+
+  try {
+    const url = new URL("https://api.razorpay.com/v1/subscriptions");
+    if (params?.count) url.searchParams.set("count", String(params.count));
+    if (params?.skip) url.searchParams.set("skip", String(params.skip));
+
+    const response = await fetch(url.toString(), {
+      headers: {
+        Authorization: `Basic ${Buffer.from(`${creds.keyId}:${creds.keySecret}`).toString("base64")}`,
+      },
+    });
+
+    if (!response.ok) return [];
+    const data = await response.json();
+    return data.items ?? [];
+  } catch {
+    return [];
+  }
 }

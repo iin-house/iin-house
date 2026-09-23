@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/config";
 import { prisma } from "@/lib/db";
 import { verifyRazorpaySignature } from "@/lib/razorpay";
+import { logAudit } from "@/lib/audit";
 
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
@@ -28,7 +29,7 @@ export async function POST(req: NextRequest) {
 
   try {
     if (type === "subscription" && creatorId && tierId) {
-      await prisma.subscription.create({
+      const sub = await prisma.subscription.create({
         data: {
           subscriberId: session.user.id,
           creatorId,
@@ -38,6 +39,13 @@ export async function POST(req: NextRequest) {
           renewedAt: new Date(),
         },
       });
+      // Track payment for refund support
+      await logAudit({
+        userId: session.user.id,
+        action: "SUBSCRIPTION_PAYMENT_VERIFIED",
+        target: sub.id,
+        metadata: { orderId: razorpay_order_id, paymentId: razorpay_payment_id, tierId: sub.tierId },
+      });
     } else if (type === "content" && contentId) {
       const post = await prisma.contentPost.findUnique({ where: { id: contentId } });
       if (post) {
@@ -46,6 +54,7 @@ export async function POST(req: NextRequest) {
             subscriberId: session.user.id,
             contentId,
             amount: post.ppvPrice ?? 0,
+            paymentId: razorpay_payment_id,
           },
         });
       }

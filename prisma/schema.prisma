@@ -25,6 +25,7 @@ enum SubscriptionStatus {
   ACTIVE
   CANCELLED
   EXPIRED
+  PAST_DUE
   TRIAL
 }
 
@@ -192,6 +193,9 @@ model PPVPurchase {
   subscriberId String
   contentId    String
   amount       Decimal
+  paymentId    String?
+  refunded     Boolean  @default(false)
+  refundedAt   DateTime?
   purchasedAt  DateTime @default(now())
 
   subscriber User        @relation(fields: [subscriberId], references: [id], onDelete: Cascade)
@@ -199,6 +203,7 @@ model PPVPurchase {
 
   @@unique([subscriberId, contentId])
   @@index([contentId])
+  @@index([paymentId])
 }
 
 // ── Message ─────────────────────────────────────────────────────────────────
