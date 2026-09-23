@@ -3,7 +3,9 @@
 import { prisma } from "@/lib/db";
 import { hashPassword } from "@/lib/auth";
 import { sendEmail, passwordResetEmail } from "@/lib/email";
+import { limitPasswordReset } from "@/lib/rate-limit";
 import { z } from "zod";
+import { headers } from "next/headers";
 
 const requestSchema = z.object({
   email: z.string().email(),
@@ -17,6 +19,19 @@ const resetSchema = z.object({
 export async function requestPasswordReset(formData: FormData) {
   const parsed = requestSchema.safeParse({ email: formData.get("email") });
   if (!parsed.success) return { error: "Enter a valid email" };
+
+  // IP-based rate limiting — same pattern as other auth actions
+  const headerList = headers();
+  const ip =
+    headerList.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+    headerList.get("x-real-ip") ||
+    "unknown";
+  const rl = await limitPasswordReset(ip);
+  if (!rl.success) {
+    return {
+      error: `Too many reset requests. Try again in ${rl.retryAfter ?? 3600} seconds.`,
+    };
+  }
 
   const { email } = parsed.data;
   const user = await prisma.user.findUnique({ where: { email } });

@@ -82,9 +82,9 @@ export default async function SubscriberFeed() {
 
         {creators.length === 0 && (
           <div style={{ textAlign: 'center', padding: '80px 24px', color: 'var(--text-3)' }}>
-            <div style={{ fontSize: '48px', marginBottom: '12px' }}>🎨</div>
-            <p style={{ fontSize: '15px', fontWeight: 500, color: 'var(--text)' }}>No creators yet</p>
-            <p style={{ fontSize: '13px', marginTop: '6px' }}>Check back soon — new creators go live regularly.</p>
+            <div style={{ fontSize: '48px', marginBottom: '12px' }}>🔍</div>
+            <p style={{ fontSize: '15px', fontWeight: 500, color: 'var(--text)' }}>No creators found</p>
+            <p style={{ fontSize: '13px', marginTop: '6px' }}>Try browsing categories or check back later — new creators go live regularly.</p>
           </div>
         )}
       </main>

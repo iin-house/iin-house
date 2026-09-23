@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { verifyEmail as verifyEmailToken } from "@/app/(auth)/register/actions";
+import { limitEmailVerificationResend } from "@/lib/rate-limit";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -20,6 +21,21 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  // Rate limit by IP: 3 resend requests per 10 minutes
+  const ip =
+    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+    req.headers.get("x-real-ip") ||
+    "unknown";
+  const rateLimitResult = await limitEmailVerificationResend(ip);
+  if (!rateLimitResult.success) {
+    return NextResponse.json(
+      {
+        error: `Too many resend requests. Try again in ${rateLimitResult.retryAfter ?? 600} seconds.`,
+      },
+      { status: 429 }
+    );
+  }
+
   const body = await req.json().catch(() => ({}));
   const { email } = body;
 

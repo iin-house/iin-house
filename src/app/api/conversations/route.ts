@@ -12,15 +12,17 @@ export async function GET(req: NextRequest) {
 
   const userId = (session.user as any).id;
   const messages = await prisma.message.findMany({
-    where: { OR: [{ senderId: userId }, { recipientId: userId }] },
-    orderBy: { sentAt: "desc" },
+    where: {
+      OR: [{ senderId: userId }, { receiverId: userId }],
+    },
+    orderBy: { createdAt: "desc" },
     take: 50,
   });
 
   const otherIds = new Set<string>();
   for (const m of messages) {
     if (m.senderId !== userId) otherIds.add(m.senderId);
-    if (m.recipientId !== userId) otherIds.add(m.recipientId);
+    if (m.receiverId !== userId) otherIds.add(m.receiverId);
   }
 
   const users = await prisma.user.findMany({
@@ -39,19 +41,19 @@ export async function GET(req: NextRequest) {
   }> = [];
 
   for (const m of messages) {
-    const otherId = m.senderId === userId ? m.recipientId : m.senderId;
+    const otherId = m.senderId === userId ? m.receiverId : m.senderId;
     if (seen.has(otherId)) continue;
     seen.add(otherId);
 
     const unread = await prisma.message.count({
-      where: { senderId: otherId, recipientId: userId, readAt: null },
+      where: { senderId: otherId, receiverId: userId, read: false },
     });
 
     result.push({
       otherId,
       name: nameMap.get(otherId) ?? "Unknown",
-      lastMessage: m.content.slice(0, 60),
-      time: m.sentAt.toLocaleDateString(),
+      lastMessage: m.body.slice(0, 60),
+      time: m.createdAt.toLocaleDateString(),
       unread,
     });
   }

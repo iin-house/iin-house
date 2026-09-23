@@ -2,7 +2,7 @@
 
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { LogOut } from "lucide-react";
+import { Shield, LogOut } from "lucide-react";
 import { usePathname } from "next/navigation";
 
 export function CreatorNav() {
@@ -16,6 +16,7 @@ export function CreatorNav() {
     { href: "/creator/tiers", label: "Tiers" },
     { href: "/creator/earnings", label: "Earnings" },
     { href: "/creator/messages", label: "Messages" },
+    { href: "/creator/kyc", label: "KYC" },
   ];
 
   return (

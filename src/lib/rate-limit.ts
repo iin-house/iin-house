@@ -141,6 +141,10 @@ export async function limitEmailVerification(identifier: string) {
   return rateLimit(`emailverify:${identifier}`, 5, 3600); // 5 per hour
 }
 
+export async function limitEmailVerificationResend(identifier: string) {
+  return rateLimit(`emailverify:resend:${identifier}`, 3, 600); // 3 per 10 min
+}
+
 export async function limitContentCreate(userId: string) {
   return rateLimit(`content:create:${userId}`, 30, 3600); // 30 posts per hour
 }

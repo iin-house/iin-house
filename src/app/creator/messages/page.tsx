@@ -14,6 +14,20 @@ const DEMO_MESSAGES = [
   { id: "3", sender: "them", text: "Do you do custom requests?", time: "Just now" },
 ];
 
+function EmptyMessagesState() {
+  return (
+    <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px' }}>
+      <div style={{ textAlign: 'center', maxWidth: '300px' }}>
+        <div style={{ fontSize: '56px', marginBottom: '16px' }}>💬</div>
+        <p style={{ fontSize: '15px', fontWeight: 500, color: 'var(--text)', marginBottom: '6px' }}>No messages yet</p>
+        <p style={{ fontSize: '13px', color: 'var(--text-3)', lineHeight: 1.5 }}>
+          Engage your subscribers to start conversations.
+        </p>
+      </div>
+    </div>
+  );
+}
+
 export default function MessagesPage() {
   const [messages, setMessages] = useState(DEMO_MESSAGES);
   const [text, setText] = useState("");
@@ -41,48 +55,60 @@ export default function MessagesPage() {
                 <input className="input pl-8 text-sm" placeholder="Search conversations…" />
               </div>
             </div>
-            <div className="divide-y divide-dark-300">
-              {DEMO_CONVERSATIONS.map(c => (
-                <button key={c.id} className="w-full flex items-center gap-3 p-3 hover:bg-dark-200 transition-colors text-left">
-                  <span className="w-10 h-10 rounded-full bg-dark-200 flex items-center justify-center text-lg">{c.avatar}</span>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between">
-                      <p className="font-medium text-sm truncate">{c.name}</p>
-                      <span className="text-xs text-dark-500">{c.time}</span>
+            {DEMO_CONVERSATIONS.length === 0 ? (
+              <div style={{ textAlign: 'center', padding: '60px 20px', color: 'var(--text-3)' }}>
+                <div style={{ fontSize: '40px', marginBottom: '10px' }}>💬</div>
+                <p style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text)' }}>No messages yet</p>
+                <p style={{ fontSize: '12px', marginTop: '6px' }}>Your conversations will appear here.</p>
+              </div>
+            ) : (
+              <div className="divide-y divide-dark-300">
+                {DEMO_CONVERSATIONS.map(c => (
+                  <button key={c.id} className="w-full flex items-center gap-3 p-3 hover:bg-dark-200 transition-colors text-left">
+                    <span className="w-10 h-10 rounded-full bg-dark-200 flex items-center justify-center text-lg">{c.avatar}</span>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between">
+                        <p className="font-medium text-sm truncate">{c.name}</p>
+                        <span className="text-xs text-dark-500">{c.time}</span>
+                      </div>
+                      <p className="text-xs text-dark-500 truncate">{c.last}</p>
                     </div>
-                    <p className="text-xs text-dark-500 truncate">{c.last}</p>
-                  </div>
-                  {c.unread > 0 && <span className="badge badge-primary">{c.unread}</span>}
-                </button>
-              ))}
-            </div>
+                    {c.unread > 0 && <span className="badge badge-primary">{c.unread}</span>}
+                  </button>
+                ))}
+              </div>
+            )}
           </aside>
 
-          {/* Chat area */}
-          <div className="flex-1 flex flex-col">
-            <div className="flex-1 overflow-y-auto p-6 space-y-3">
-              {messages.map(m => (
-                <div key={m.id} className={`flex ${m.sender === "me" ? "justify-end" : "justify-start"}`}>
-                  <div className={`max-w-[70%] px-4 py-2 rounded-2xl text-sm ${m.sender === "me" ? "bg-primary-600 text-white" : "bg-dark-200 text-white"}`}>
-                    <p>{m.text}</p>
-                    <span className={`text-xs mt-1 block ${m.sender === "me" ? "text-primary-200" : "text-dark-500"}`}>{m.time}</span>
+          {/* Chat area or empty state */}
+          {DEMO_CONVERSATIONS.length === 0 ? (
+            <EmptyMessagesState />
+          ) : (
+            <div className="flex-1 flex flex-col">
+              <div className="flex-1 overflow-y-auto p-6 space-y-3">
+                {messages.map(m => (
+                  <div key={m.id} className={`flex ${m.sender === "me" ? "justify-end" : "justify-start"}`}>
+                    <div className={`max-w-[70%] px-4 py-2 rounded-2xl text-sm ${m.sender === "me" ? "bg-primary-600 text-white" : "bg-dark-200 text-white"}`}>
+                      <p>{m.text}</p>
+                      <span className={`text-xs mt-1 block ${m.sender === "me" ? "text-primary-200" : "text-dark-500"}`}>{m.time}</span>
+                    </div>
                   </div>
+                ))}
+              </div>
+              <div className="p-4 border-t border-dark-300">
+                <div className="flex gap-2">
+                  <input
+                    className="input flex-1"
+                    placeholder="Write a message…"
+                    value={text}
+                    onChange={e => setText(e.target.value)}
+                    onKeyDown={e => e.key === "Enter" && send()}
+                  />
+                  <button onClick={send} className="btn btn-primary"><Send size={18} /></button>
                 </div>
-              ))}
-            </div>
-            <div className="p-4 border-t border-dark-300">
-              <div className="flex gap-2">
-                <input
-                  className="input flex-1"
-                  placeholder="Write a message…"
-                  value={text}
-                  onChange={e => setText(e.target.value)}
-                  onKeyDown={e => e.key === "Enter" && send()}
-                />
-                <button onClick={send} className="btn btn-primary"><Send size={18} /></button>
               </div>
             </div>
-          </div>
+          )}
         </div>
       </main>
     </div>
