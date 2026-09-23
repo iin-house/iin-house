@@ -26,8 +26,21 @@ async function main() {
       displayName: "Demo Creator",
       bio: "Welcome to my exclusive content! Subscribe for photos, videos, and live chats.",
       verificationStatus: "VERIFIED",
+      revenueSplitPct: 80,
     },
   });
+
+  // Seed subscription tiers
+  const profile = await prisma.creatorProfile.findUnique({ where: { userId: creator.id } });
+  if (profile) {
+    await prisma.subscriptionTier.createMany({
+      data: [
+        { creatorId: profile.id, name: "Starter", price: 149, currency: "INR", perksDescription: "Early access to posts", active: true },
+        { creatorId: profile.id, name: "VIP", price: 299, currency: "INR", perksDescription: "All posts + DMs + exclusive content", active: true },
+      ],
+      skipDuplicates: true,
+    });
+  }
 
   // Seed demo subscriber
   const subPw = await bcrypt.hash("sub123", 12);

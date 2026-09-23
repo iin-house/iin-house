@@ -51,7 +51,8 @@ enum ContentType {
 
 enum Visibility {
   PUBLIC
-  TIER_GATED
+  SUBSCRIBERS
+  PPV
 }
 
 enum VerificationStatus {

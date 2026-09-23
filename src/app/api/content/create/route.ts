@@ -12,7 +12,7 @@ const createSchema = z.object({
   isPPV: z.boolean().optional(),
   ppvPrice: z.number().positive().optional(),
   scheduledAt: z.string().datetime().optional(),
-  tierVisibility: z.enum(["PUBLIC", "SUBSCRIBERS", "PPV"]).optional(),
+  visibility: z.enum(["PUBLIC", "SUBSCRIBERS", "PPV"]).optional(),
 });
 
 export async function POST(req: NextRequest) {
@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid input", issues: parsed.error.issues }, { status: 400 });
     }
 
-    const { type, mediaUrl, thumbnailUrl, caption, isPPV, ppvPrice, scheduledAt, tierVisibility } = parsed.data;
+    const { type, mediaUrl, thumbnailUrl, caption, isPPV, ppvPrice, scheduledAt, visibility } = parsed.data;
 
     const profile = await prisma.creatorProfile.findUnique({
       where: { userId: (session.user as any).id },
@@ -52,7 +52,7 @@ export async function POST(req: NextRequest) {
         ppvPrice: isPPV ? ppvPrice : null,
         scheduledAt: scheduledAt ? new Date(scheduledAt) : null,
         publishedAt: scheduledAt ? null : new Date(),
-        tierVisibility: tierVisibility ?? "PUBLIC",
+        visibility: visibility as any ?? "PUBLIC",
       },
     });
 

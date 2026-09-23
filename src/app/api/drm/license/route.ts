@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
       where: { contentId: post.id, subscriberId: session.user.id },
     });
     if (!purchased) return NextResponse.json({ error: "PPV unlock required" }, { status: 403 });
-  } else if (post.tierVisibility !== "PUBLIC") {
+  } else if (post.visibility !== "PUBLIC") {
     const subscribed = await prisma.subscription.findFirst({
       where: {
         subscriberId: session.user.id,

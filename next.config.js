@@ -1,14 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: "standalone",
   reactStrictMode: true,
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "**" },
-      { protocol: "http", hostname: "**" },
     ],
   },
-  // Trust proxy for proper rate limiting
-  // Set NODE_ENV=production in production
+  experimental: {
+    serverActions: { bodySizeLimit: "10mb" },
+  },
 };
-
 module.exports = nextConfig;

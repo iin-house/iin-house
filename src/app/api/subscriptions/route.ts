@@ -66,6 +66,25 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  const subscriberId = (session.user as any).id;
+
+  // Accept ?id=<subscriptionId> or body { creatorId }
+  const subId = new URL(req.url).searchParams.get("id");
+  if (subId) {
+    try {
+      const sub = await prisma.subscription.findUnique({ where: { id: subId } });
+      if (sub) {
+        await prisma.subscription.update({
+          where: { id: subId },
+          data: { status: "CANCELLED", cancelledAt: new Date() },
+        });
+      }
+    } catch {
+      // already cancelled or not found
+    }
+    return NextResponse.json({ ok: true });
+  }
+
   try {
     const body = await req.json();
     const parsed = unsubscribeSchema.safeParse(body);
@@ -73,13 +92,10 @@ export async function DELETE(req: NextRequest) {
       return NextResponse.json({ error: "Invalid input" }, { status: 400 });
     }
     const { creatorId } = parsed.data;
-    const subscriberId = (session.user as any).id;
-
     await prisma.subscription.updateMany({
       where: { subscriberId, creatorId, status: "ACTIVE" },
       data: { status: "CANCELLED", cancelledAt: new Date() },
     });
-
     return NextResponse.json({ ok: true });
   } catch (e: any) {
     return NextResponse.json({ error: e.message ?? "Failed" }, { status: 500 });
@@ -99,5 +115,5 @@ export async function GET(req: NextRequest) {
     orderBy: { startedAt: "desc" },
   });
 
-  return NextResponse.json(subs);
+  return NextResponse.json({ subscriptions: subs });
 }
