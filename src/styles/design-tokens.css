@@ -13,6 +13,25 @@
   --bg-surface:        #1c1c1e;
   --bg-overlay:        rgba(28, 28, 30, 0.92);
 
+  /* Short aliases used throughout the app */
+  --bg:                var(--bg-primary);
+  --surface:           var(--bg-surface);
+  --surface-2:         var(--bg-elevated);
+  --surface-3:         var(--bg-tertiary);
+  --surface-4:         #21252e;
+  --text:              var(--text-primary);
+  --text-1:            var(--text-primary);
+  --text-2:            var(--text-secondary);
+  --text-3:            var(--text-tertiary);
+  --text-4:            var(--text-quaternary);
+  --primary:           var(--accent);
+  --primary-bg:        var(--accent-soft);
+  --sep:               var(--separator);
+  --sep-strong:        var(--separator-strong);
+  --danger-bg:         var(--danger-soft);
+  --warning-bg:        var(--warning-soft);
+  --success-bg:        var(--success-soft);
+
   /* Text hierarchy — designed for legibility on dark */
   --text-primary:      #ffffff;
   --text-secondary:    rgba(255, 255, 255, 0.78);
@@ -23,6 +42,7 @@
   /* Accent — hot pink brand color */
   --accent:            #ec4899;
   --accent-2:          #db2777;
+  --accent-3:          #c084fc;
   --accent-soft:       rgba(236, 72, 153, 0.12);
   --accent-glow:       rgba(236, 72, 153, 0.25);
 
