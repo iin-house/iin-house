@@ -12,6 +12,7 @@ const registerSchema = z.object({
   password: z.string().min(10),
   role: z.enum(["CREATOR", "SUBSCRIBER"]),
   displayName: z.string().optional().or(z.literal("")),
+  termsVersion: z.string().optional(),
 });
 
 export async function register(data: {
@@ -20,13 +21,14 @@ export async function register(data: {
   password: string;
   role: "CREATOR" | "SUBSCRIBER";
   displayName?: string;
+  termsVersion?: string;
 }) {
   const parsed = registerSchema.safeParse(data);
   if (!parsed.success) {
     return { error: parsed.error.issues[0]?.message ?? "Invalid input" };
   }
 
-  const { email, phone, password, role, displayName } = parsed.data;
+  const { email, phone, password, role, displayName, termsVersion } = parsed.data;
   const cleanEmail = email || undefined;
   const cleanPhone = phone || undefined;
 
@@ -42,6 +44,8 @@ export async function register(data: {
         phone: cleanPhone,
         passwordHash,
         role,
+        termsVersion: termsVersion || "2026-01",
+        termsAcceptedAt: new Date(),
         creatorProfile: role === "CREATOR" ? {
           create: { displayName: displayName || cleanEmail || cleanPhone || "Creator" },
         } : undefined,

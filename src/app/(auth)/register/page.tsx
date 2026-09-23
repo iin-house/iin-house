@@ -59,6 +59,7 @@ function RegisterForm() {
       password: form.password,
       role,
       displayName: form.displayName,
+      termsVersion: "2026-01",
     });
     setLoading(false);
     if ("error" in res) { toast.error(res.error); return; }
@@ -127,6 +128,7 @@ function RegisterForm() {
           {errors.confirm && <p style={{ fontSize: '12px', color: 'var(--danger)', marginTop: '4px' }}>{errors.confirm}</p>}
         </div>
         <input type="hidden" value={form.role || role} name="role" />
+        <input type="hidden" value="2026-01" name="termsVersion" />
         <button className="btn btn-primary" style={{ width: '100%', marginTop: '4px' }} type="submit" disabled={loading}>
           {loading ? "Creating…" : "Create account"}
         </button>

@@ -21,7 +21,8 @@ export default function ContentFeedPage() {
       .catch(() => setLoading(false));
   }, []);
 
-  const creatorPosts = posts.filter((p: any) => !p.isPPV || p.visibility === "PUBLIC");
+  // API already filters by visibility based on viewer's subscriptions
+  const visiblePosts = posts;
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg)' }}>
@@ -49,7 +50,7 @@ export default function ContentFeedPage() {
 
         {loading && <p style={{ color: 'var(--text-3)' }}>Loading…</p>}
 
-        {!loading && creatorPosts.length === 0 && (
+        {!loading && visiblePosts.length === 0 && (
           <div className="card" style={{ padding: '60px 20px', textAlign: 'center' }}>
             <div style={{ fontSize: '48px', marginBottom: '12px' }}>📭</div>
             <p style={{ fontSize: '15px', fontWeight: 500 }}>No posts yet</p>
@@ -59,7 +60,7 @@ export default function ContentFeedPage() {
         )}
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '14px' }}>
-          {creatorPosts.map((post: any) => (
+          {visiblePosts.map((post: any) => (
             <div key={post.id} className="card card-interactive" style={{ overflow: 'hidden' }}>
               {post.thumbnailUrl ? (
                 <div style={{ aspectRatio: '1/1', background: `url(${post.thumbnailUrl}) center/cover` }} />

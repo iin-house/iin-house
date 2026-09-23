@@ -75,6 +75,10 @@ model User {
   twoFAEnabled  Boolean        @default(false)
   twoFASecret   String?
   emailVerified Boolean        @default(false)
+  termsVersion String?
+  termsAcceptedAt DateTime?
+  dataExportRequestedAt DateTime?
+  deletionScheduledAt DateTime?
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
 
@@ -106,6 +110,7 @@ model CreatorProfile {
   coverImageUrl      String?
   verificationStatus VerificationStatus @default(PENDING)
   revenueSplitPct    Decimal            @default(80)
+  gstin              String?
   contractId         String?
   contract           Contract?          @relation(fields: [contractId], references: [id])
   createdAt          DateTime           @default(now())
