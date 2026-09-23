@@ -31,9 +31,9 @@ export default async function SubscriberFeed() {
           <Link href="/" className="font-bold text-base gradient-text">iin house</Link>
           <nav style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
             <a className="nav-tab active">Feed</a>
+            <a href="/content-feed" className="nav-tab">Posts</a>
             <a href="/subscriber/messages" className="nav-tab">Messages</a>
-            <a href="/subscriber/age-verify" className="nav-tab">Verify</a>
-            <a href="/subscriber/disputes" className="nav-tab">Disputes</a>
+            <a href="/subscriber/subscriptions" className="nav-tab">My Subs</a>
           </nav>
         </div>
       </header>
