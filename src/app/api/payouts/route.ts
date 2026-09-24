@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/config";
 import { isDemoUser } from "@/lib/demo-data";
+import { onPayoutRequested } from "@/lib/email-events";
 
 export async function GET(req: NextRequest) {
   const session = await getServerSession(authOptions);
@@ -72,6 +73,14 @@ export async function POST(req: NextRequest) {
         status: "PENDING",
       },
     });
+
+    // Notify creator via email
+    const creatorEmail = (session.user as any).email;
+    if (creatorEmail) {
+      await onPayoutRequested(creatorEmail, payout.amount.toString()).catch(
+        (e: any) => console.error("[payouts] email failed:", e.message),
+      );
+    }
 
     return NextResponse.json(payout);
   } catch (e: any) {

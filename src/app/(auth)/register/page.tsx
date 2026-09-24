@@ -53,18 +53,26 @@ function RegisterForm() {
       return;
     }
     setLoading(true);
-    const res = await register({
-      email: form.email || undefined,
-      phone: form.phone || undefined,
-      password: form.password,
-      role,
-      displayName: form.displayName,
-      termsVersion: "2026-01",
-    });
-    setLoading(false);
-    if ("error" in res) { toast.error(res.error); return; }
-    toast.success("Account created! Redirecting…");
-    setTimeout(() => router.push("/login"), 800);
+    try {
+      const res = await register({
+        email: form.email || undefined,
+        phone: form.phone || undefined,
+        password: form.password,
+        role,
+        displayName: form.displayName,
+        termsVersion: "2026-01",
+      });
+      if ("error" in res) {
+        toast.error(res.error);
+        setLoading(false);
+      } else {
+        toast.success("Account created!");
+        setTimeout(() => router.push("/login"), 1500);
+      }
+    } catch {
+      toast.error("Registration failed");
+      setLoading(false);
+    }
   };
 
   return (
@@ -103,28 +111,28 @@ function RegisterForm() {
 
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
         <div>
-          <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, textTransform: 'uppercase' as const, letterSpacing: '0.05em', color: 'var(--text-3)', marginBottom: '6px' }}>Display name</label>
-          <input className="input" value={form.displayName} onChange={e => setForm(f => ({ ...f, displayName: e.target.value }))} aria-invalid={!!errors.displayName} />
+          <label htmlFor="register-displayName" style={{ display: 'block', fontSize: '12px', fontWeight: 600, textTransform: 'uppercase' as const, letterSpacing: '0.05em', color: 'var(--text-3)', marginBottom: '6px' }}>Display name</label>
+          <input id="register-displayName" name="displayName" className="input" value={form.displayName} onChange={e => setForm(f => ({ ...f, displayName: e.target.value }))} aria-invalid={!!errors.displayName} />
           {errors.displayName && <p style={{ fontSize: '12px', color: 'var(--danger)', marginTop: '4px' }}>{errors.displayName}</p>}
         </div>
         <div>
-          <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, textTransform: 'uppercase' as const, letterSpacing: '0.05em', color: 'var(--text-3)', marginBottom: '6px' }}>Email</label>
-          <input type="email" className="input" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} placeholder="optional" aria-invalid={!!errors.email} />
+          <label htmlFor="register-email" style={{ display: 'block', fontSize: '12px', fontWeight: 600, textTransform: 'uppercase' as const, letterSpacing: '0.05em', color: 'var(--text-3)', marginBottom: '6px' }}>Email</label>
+          <input id="register-email" name="email" type="email" className="input" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} placeholder="optional" aria-invalid={!!errors.email} />
           {errors.email && <p style={{ fontSize: '12px', color: 'var(--danger)', marginTop: '4px' }}>{errors.email}</p>}
         </div>
         <div>
-          <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, textTransform: 'uppercase' as const, letterSpacing: '0.05em', color: 'var(--text-3)', marginBottom: '6px' }}>Phone (+91…)</label>
-          <input className="input" value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} placeholder="optional" aria-invalid={!!errors.phone} />
+          <label htmlFor="register-phone" style={{ display: 'block', fontSize: '12px', fontWeight: 600, textTransform: 'uppercase' as const, letterSpacing: '0.05em', color: 'var(--text-3)', marginBottom: '6px' }}>Phone (+91…)</label>
+          <input id="register-phone" name="phone" className="input" value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} placeholder="optional" aria-invalid={!!errors.phone} />
           {errors.phone && <p style={{ fontSize: '12px', color: 'var(--danger)', marginTop: '4px' }}>{errors.phone}</p>}
         </div>
         <div>
-          <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, textTransform: 'uppercase' as const, letterSpacing: '0.05em', color: 'var(--text-3)', marginBottom: '6px' }}>Password (min 10 chars)</label>
-          <input type="password" className="input" value={form.password} onChange={e => setForm(f => ({ ...f, password: e.target.value }))} aria-invalid={!!errors.password} />
+          <label htmlFor="register-password" style={{ display: 'block', fontSize: '12px', fontWeight: 600, textTransform: 'uppercase' as const, letterSpacing: '0.05em', color: 'var(--text-3)', marginBottom: '6px' }}>Password (min 10 chars)</label>
+          <input id="register-password" name="password" type="password" className="input" value={form.password} onChange={e => setForm(f => ({ ...f, password: e.target.value }))} aria-invalid={!!errors.password} />
           {errors.password && <p style={{ fontSize: '12px', color: 'var(--danger)', marginTop: '4px' }}>{errors.password}</p>}
         </div>
         <div>
-          <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, textTransform: 'uppercase' as const, letterSpacing: '0.05em', color: 'var(--text-3)', marginBottom: '6px' }}>Confirm password</label>
-          <input type="password" className="input" value={form.confirm} onChange={e => setForm(f => ({ ...f, confirm: e.target.value }))} aria-invalid={!!errors.confirm} />
+          <label htmlFor="register-confirm" style={{ display: 'block', fontSize: '12px', fontWeight: 600, textTransform: 'uppercase' as const, letterSpacing: '0.05em', color: 'var(--text-3)', marginBottom: '6px' }}>Confirm password</label>
+          <input id="register-confirm" name="confirm" type="password" className="input" value={form.confirm} onChange={e => setForm(f => ({ ...f, confirm: e.target.value }))} aria-invalid={!!errors.confirm} />
           {errors.confirm && <p style={{ fontSize: '12px', color: 'var(--danger)', marginTop: '4px' }}>{errors.confirm}</p>}
         </div>
         <input type="hidden" value={form.role || role} name="role" />

@@ -5,7 +5,14 @@ import toast from "react-hot-toast";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
-type Dispute = { id: string; type: string; description: string; status: string; createdAt: string; resolution?: string };
+type Dispute = {
+  id: string;
+  type: string;
+  description: string;
+  status: string;
+  createdAt: string;
+  resolution?: string;
+};
 
 export default function DisputesPage() {
   const { data: session, status } = useSession();
@@ -13,29 +20,57 @@ export default function DisputesPage() {
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({ type: "billing", description: "" });
   const [submitting, setSubmitting] = useState(false);
+  const [history, setHistory] = useState<Dispute[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => { if (status === "unauthenticated") router.push("/login"); }, [status]);
+  useEffect(() => {
+    if (status === "unauthenticated") router.push("/login");
+  }, [status]);
+
+  // Load user's disputes
+  useEffect(() => {
+    if (!session) return;
+    fetch("/api/subscriber/disputes")
+      .then(r => r.ok ? r.json() : { disputes: [] })
+      .then(data => {
+        setHistory(data.disputes ?? []);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, [session]);
 
   const submit = async () => {
     if (!form.description.trim()) return toast.error("Describe your issue");
     setSubmitting(true);
-    await new Promise(r => setTimeout(r, 800));
-    toast.success("Dispute submitted — we'll review within 48 hours");
-    setShowForm(false);
-    setForm({ type: "billing", description: "" });
-    setSubmitting(false);
+    try {
+      const res = await fetch("/api/subscriber/disputes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Submission failed");
+      toast.success("Dispute submitted — we'll review within 48 hours");
+      setShowForm(false);
+      setForm({ type: "billing", description: "" });
+      // Refresh the list
+      const refreshed = await fetch("/api/subscriber/disputes").then(r => r.json());
+      setHistory(refreshed.disputes ?? []);
+    } catch (err: any) {
+      toast.error(err.message || "Failed to submit dispute");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   if (status === "loading") return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}><p style={{ color: 'var(--text-3)' }}>Loading…</p></div>;
   if (!session) return null;
 
-  const history: Dispute[] = [];
-
   return (
     <div style={{ minHeight: '100vh', background: 'var(--bg)' }}>
       <header className="glass-header">
         <div className="header-inner">
-          <a href="/feed" style={{ fontSize: '13px', color: 'var(--text-3)' }}>← Back</a>
+          <a href="/subscriber/subscriptions" style={{ fontSize: '13px', color: 'var(--text-3)' }}>← Back</a>
           <span className="gradient-text font-bold text-base">iin house</span>
           <div style={{ width: '40px' }} />
         </div>
@@ -73,8 +108,11 @@ export default function DisputesPage() {
           </div>
         )}
 
-        {history.length === 0 ? (
+        {loading ? (
+          <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-3)' }}>Loading disputes…</div>
+        ) : history.length === 0 ? (
           <div className="card" style={{ padding: '48px 20px', textAlign: 'center' }}>
+            <div style={{ fontSize: '36px', marginBottom: '8px' }}>📋</div>
             <p style={{ fontSize: '14px', color: 'var(--text-3)' }}>No disputes yet. If you have an issue, tap "New Dispute" above.</p>
           </div>
         ) : (
@@ -82,11 +120,16 @@ export default function DisputesPage() {
             {history.map(d => (
               <div key={d.id} className="card" style={{ padding: '16px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
-                  <span style={{ fontSize: '14px', fontWeight: 600 }}>{d.type}</span>
-                  <span className="badge badge-info">{d.status}</span>
+                  <span style={{ fontSize: '14px', fontWeight: 600, textTransform: 'capitalize' }}>{d.type}</span>
+                  <span className={`badge ${d.status === 'RESOLVED' ? 'badge-success' : d.status === 'OPEN' ? 'badge-warn' : 'badge-info'}`}>{d.status}</span>
                 </div>
                 <p style={{ fontSize: '13px', color: 'var(--text-3)', lineHeight: 1.5 }}>{d.description}</p>
-                <span style={{ fontSize: '11px', color: 'var(--text-4)', marginTop: '8px', display: 'block' }}>Submitted {d.createdAt}</span>
+                {d.resolution && (
+                  <div style={{ marginTop: '8px', padding: '8px 10px', background: 'var(--surface-3)', borderRadius: '8px', fontSize: '12px', color: 'var(--text-2)' }}>
+                    <strong>Resolution:</strong> {d.resolution}
+                  </div>
+                )}
+                <span style={{ fontSize: '11px', color: 'var(--text-4)', marginTop: '8px', display: 'block' }}>Submitted {new Date(d.createdAt).toLocaleDateString()}</span>
               </div>
             ))}
           </div>

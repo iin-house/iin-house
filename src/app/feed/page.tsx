@@ -2,13 +2,15 @@ import { prisma } from "@/lib/db";
 import Link from "next/link";
 import { isDemoUser, getDemoCreators } from "@/lib/demo-data";
 
+const CATEGORIES = ["All", "Art", "Music", "Fitness", "Tech", "Lifestyle", "Photography"];
+
 export default async function SubscriberFeed() {
   let creators: any[] = [];
   try {
     creators = await prisma.creatorProfile.findMany({
       where: { verificationStatus: "VERIFIED" },
       include: { tiers: { where: { active: true } }, user: true, posts: { where: { publishedAt: { not: null } }, take: 3, orderBy: { publishedAt: "desc" } } },
-      take: 20,
+      take: 24,
       orderBy: { createdAt: "desc" },
     });
   } catch {

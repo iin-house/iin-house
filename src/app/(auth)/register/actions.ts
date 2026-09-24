@@ -81,7 +81,7 @@ export async function register(data: {
       }
     }
 
-    redirect("/login?registered=true");
+    return { success: true, email: cleanEmail };
   } catch (e: any) {
     if (e.code === "P2002") {
       return { error: "Email or phone already registered" };

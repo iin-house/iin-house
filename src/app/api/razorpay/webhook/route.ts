@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { logAudit } from "@/lib/audit";
 import { verifyRazorpayWebhook } from "@/lib/razorpay";
+import { sendSubscriptionCreatedEmail } from "@/lib/email-events";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -63,7 +64,7 @@ export async function POST(req: NextRequest) {
               data: { renewedAt: new Date() },
             });
           } else {
-            await prisma.subscription.create({
+            const sub = await prisma.subscription.create({
               data: {
                 subscriberId: userId,
                 creatorId: notes.creatorId,
@@ -73,6 +74,10 @@ export async function POST(req: NextRequest) {
                 renewedAt: new Date(),
               },
             });
+            // Notify subscriber
+            sendSubscriptionCreatedEmail(sub.subscriberId, sub.creatorId, sub.tierId).catch(
+              (e: any) => console.error("[webhook] subscription email failed:", e.message),
+            );
           }
         } else if (type === "content" && notes.contentId) {
           const post = await prisma.contentPost.findUnique({ where: { id: notes.contentId } });
@@ -107,13 +112,17 @@ export async function POST(req: NextRequest) {
           },
         });
 
+        let subscriberId: string | null = null;
+        let creatorId: string | null = null;
+        let tierId: string | null = null;
+
         if (existing) {
           await prisma.subscription.update({
             where: { id: existing.id },
             data: { renewedAt: new Date(), status: "ACTIVE" },
           });
         } else {
-          await prisma.subscription.create({
+          const sub = await prisma.subscription.create({
             data: {
               subscriberId: subscription.notes.userId,
               creatorId: subscription.notes.creatorId,
@@ -123,6 +132,15 @@ export async function POST(req: NextRequest) {
               renewedAt: new Date(),
             },
           });
+          subscriberId = sub.subscriberId;
+          creatorId = sub.creatorId;
+          tierId = sub.tierId;
+        }
+
+        if (subscriberId && creatorId && tierId) {
+          sendSubscriptionCreatedEmail(subscriberId, creatorId, tierId).catch(
+            (e: any) => console.error("[webhook] subscription email failed:", e.message),
+          );
         }
 
         await logAudit({

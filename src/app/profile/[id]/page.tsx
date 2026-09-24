@@ -87,10 +87,15 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
       const orderRes = await fetch("/api/razorpay/order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount: Number(selectedTier.price) }),
+        body: JSON.stringify({
+          type: "subscription",
+          amount: Number(selectedTier.price),
+          creatorId: profile!.creatorProfile.userId,
+          tierId: selectedTier.id,
+        }),
       });
       const order = await orderRes.json();
-      if (!order.id) throw new Error("Failed to create payment order");
+      if (!order.id) throw new Error(order.error || "Failed to create payment order");
 
       // Open Razorpay checkout
       const { openRazorpayCheckout } = await import("@/lib/razorpay-client");
@@ -99,7 +104,7 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
         amount: order.amount,
         currency: order.currency || "INR",
         onSuccess: async (payment: any) => {
-          // Verify payment
+          // Verify payment — the verify endpoint creates the subscription
           const verifyRes = await fetch("/api/razorpay/verify", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -107,18 +112,13 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
               orderId: payment.razorpay_order_id,
               paymentId: payment.razorpay_payment_id,
               signature: payment.razorpay_signature,
+              type: "subscription",
+              creatorId: profile!.creatorProfile.userId,
+              tierId: selectedTier.id,
             }),
           });
           const verify = await verifyRes.json();
-          if (!verify.ok) throw new Error("Payment verification failed");
-
-          // Create subscription
-          const subRes = await fetch("/api/subscriptions", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ creatorId: profile!.creatorProfile.userId, tierId: selectedTier.id }),
-          });
-          if (!subRes.ok) throw new Error("Failed to create subscription");
+          if (!verify.success) throw new Error(verify.error || "Payment verification failed");
 
           toast.success("Subscribed successfully!");
           setShowSubscribe(false);

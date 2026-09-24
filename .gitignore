@@ -11,3 +11,6 @@ uploads/
 
 .vercel
 .coverage
+playwright-report/
+test-results/
+playwright/.cache/

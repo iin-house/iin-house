@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
@@ -12,7 +13,7 @@ function LoginForm() {
   const params = useSearchParams();
   const error = params.get("error");
   const [loading, setLoading] = useState(false);
-  const [form, setForm] = useState({ identifier: "admin", password: "1234", role: "SUBSCRIBER" });
+  const [form, setForm] = useState({ identifier: "", password: "", role: "SUBSCRIBER" });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const validate = () => {
@@ -50,8 +51,6 @@ function LoginForm() {
     else toast.error("Invalid credentials");
   };
 
-  const isDemo = form.identifier === "admin" && form.password === "1234";
-
   return (
     <>
       {error === "CredentialsSignin" && (
@@ -60,59 +59,24 @@ function LoginForm() {
         </div>
       )}
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-        {error === "CredentialsSignin" && (
-          <div style={{ background: "var(--danger-bg)", color: "var(--danger)", padding: "10px 14px", borderRadius: "12px", fontSize: "13px", marginBottom: "16px" }}>
-            Invalid email or password.
-          </div>
-        )}
         <div>
-          <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, textTransform: 'uppercase' as const, letterSpacing: '0.05em', color: 'var(--text-3)', marginBottom: '6px' }}>Email or phone</label>
-          <input className="input" value={form.identifier} onChange={e => setForm(f => ({ ...f, identifier: e.target.value }))} aria-invalid={!!errors.identifier} />
+          <label htmlFor="login-identifier" style={{ display: 'block', fontSize: '12px', fontWeight: 600, textTransform: 'uppercase' as const, letterSpacing: '0.05em', color: 'var(--text-3)', marginBottom: '6px' }}>Email or phone</label>
+          <input id="login-identifier" name="identifier" className="input" value={form.identifier} onChange={e => setForm(f => ({ ...f, identifier: e.target.value }))} aria-invalid={!!errors.identifier} />
           {errors.identifier && <p style={{ fontSize: '12px', color: 'var(--danger)', marginTop: '4px' }}>{errors.identifier}</p>}
         </div>
         <div>
-          <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, textTransform: 'uppercase' as const, letterSpacing: '0.05em', color: 'var(--text-3)', marginBottom: '6px' }}>Password</label>
-          <input type="password" className="input" value={form.password} onChange={e => setForm(f => ({ ...f, password: e.target.value }))} aria-invalid={!!errors.password} />
+          <label htmlFor="login-password" style={{ display: 'block', fontSize: '12px', fontWeight: 600, textTransform: 'uppercase' as const, letterSpacing: '0.05em', color: 'var(--text-3)', marginBottom: '6px' }}>Password</label>
+          <input id="login-password" name="password" type="password" className="input" value={form.password} onChange={e => setForm(f => ({ ...f, password: e.target.value }))} aria-invalid={!!errors.password} />
           {errors.password && <p style={{ fontSize: '12px', color: 'var(--danger)', marginTop: '4px' }}>{errors.password}</p>}
         </div>
         <button className="btn btn-primary" style={{ width: '100%', marginTop: '4px' }} type="submit" disabled={loading}>
           {loading ? "Signing in…" : "Sign in"}
         </button>
-        {isDemo && (
-          <div>
-            <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, textTransform: 'uppercase' as const, letterSpacing: '0.05em', color: 'var(--primary)', marginBottom: '6px' }}>Login as role</label>
-            <div style={{ display: 'flex', gap: 6, background: 'var(--surface-3, #1a1d24)', borderRadius: 12, padding: 3 }}>
-              {(['CREATOR','SUBSCRIBER','ADMIN'] as const).map((r) => (
-                <button key={r} type="button" onClick={() => setForm(f => ({ ...f, role: r }))} style={{
-                  flex: 1, padding: '8px', borderRadius: 10, fontSize: 12, fontWeight: 600, border: 'none', cursor: 'pointer',
-                  background: form.role === r ? 'var(--surface-4, #21252e)' : 'transparent',
-                  color: form.role === r ? 'var(--text-1, #f1f1f3)' : 'var(--text-3, #8e8f93)',
-                  transition: 'all 0.2s ease',
-                }}>{r[0]}{r.slice(1).toLowerCase()}</button>
-              ))}
-            </div>
-          </div>
-        )}
-        <div style={{ background: 'var(--surface-3, #1a1d24)', borderRadius: 12, padding: '12px 14px', fontSize: '12px', color: 'var(--text-3)', textAlign: 'center', marginTop: '4px' }}>
-          <div style={{ marginBottom: 6, fontWeight: 600, color: 'var(--text-2, #c5c6ca)' }}>Demo credentials</div>
-          <div style={{ display: 'flex', gap: 8, justifyContent: 'center', flexWrap: 'wrap', marginBottom: 8 }}>
-            <span style={{ background: 'var(--surface-4, #21252e)', padding: '4px 10px', borderRadius: 8 }}>
-              <strong style={{ color: 'var(--primary, #ec4899)' }}>admin</strong> / <strong style={{ color: 'var(--primary, #ec4899)' }}>1234</strong>
-            </span>
-          </div>
-          <button type="button" className="btn btn-ghost btn-sm" style={{ fontSize: 11, padding: '4px 12px' }} onClick={() => { setForm(f => ({ ...f, identifier: 'admin', password: '1234' })); }}>
-            Auto-fill credentials
-          </button>
-        </div>
       </form>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '18px', fontSize: '13px' }}>
-        <a href="/forgot-password" style={{ color: 'var(--text-3)', textDecoration: 'none' }}>Forgot password?</a>
-        <a href="/register" className="gradient-text" style={{ fontWeight: 500 }}>Sign up</a>
+        <Link href="/forgot-password" style={{ color: 'var(--text-3)', textDecoration: 'none' }}>Forgot password?</Link>
+        <Link href="/register" className="gradient-text" style={{ fontWeight: 500 }}>Sign up</Link>
       </div>
-      <div className="sep" style={{ margin: '18px 0' }} />
-      <a href="/admin/dashboard" className="btn btn-secondary" style={{ width: '100%', display: 'block', textAlign: 'center' }}>
-        Admin Portal
-      </a>
     </>
   );
 }
