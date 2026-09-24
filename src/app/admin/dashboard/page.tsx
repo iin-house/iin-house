@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/db";
 import { AdminNav } from "@/components/AdminNav";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminDashboard() {
   const stats = await prisma.user.count({ where: { role: "CREATOR" } });
   const subs = await prisma.user.count({ where: { role: "SUBSCRIBER" } });

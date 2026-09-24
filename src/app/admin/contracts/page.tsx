@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/db";
 import { AdminNav } from "@/components/AdminNav";
 
+export const dynamic = "force-dynamic";
+
 export default async function ContractsPage() {
   const contracts = await prisma.contract.findMany({
     include: { creators: { select: { displayName: true, verificationStatus: true } } },

@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/db";
 import { AdminNav } from "@/components/AdminNav";
 
+export const dynamic = "force-dynamic";
+
 export default async function PayoutsPage() {
   const payouts = await prisma.payout.findMany({
     orderBy: { requestedAt: "desc" },

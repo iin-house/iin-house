@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/db";
 import { AdminNav } from "@/components/AdminNav";
 
+export const dynamic = "force-dynamic";
+
 const STATUS_BADGE: Record<string, string> = {
   OPEN: "badge-warning",
   APPROVED: "badge-success",

@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/db";
 import { AdminNav } from "@/components/AdminNav";
 
+export const dynamic = "force-dynamic";
+
 export default async function AnalyticsPage() {
   const [creators, subscribers, totalContent, totalRevenue, pendingPayouts, disputes] = await Promise.all([
     prisma.user.count({ where: { role: "CREATOR" } }),

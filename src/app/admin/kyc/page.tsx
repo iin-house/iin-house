@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/db";
 import { AdminNav } from "@/components/AdminNav";
 
+export const dynamic = "force-dynamic";
+
 const docTypeLabels: Record<string, string> = {
   passport: "Passport",
   drivers_license: "Driver's License",

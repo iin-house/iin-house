@@ -2,6 +2,8 @@ import { prisma } from "@/lib/db";
 import Link from "next/link";
 import { isDemoUser, getDemoCreators } from "@/lib/demo-data";
 
+export const dynamic = "force-dynamic";
+
 const CATEGORIES = ["All", "Art", "Music", "Fitness", "Tech", "Lifestyle", "Photography"];
 
 export default async function SubscriberFeed() {
