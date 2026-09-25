@@ -136,6 +136,17 @@ h3, .h3 { font-size: 17px; font-weight: 600; letter-spacing: -0.01em; }
 .card-interactive:hover { border-color: var(--sep-strong); background: var(--surface-3); }
 .card-interactive:active { transform: scale(0.985); }
 
+/* ── Shimmer skeleton ─────────────────────────────────── */
+.shimmer {
+  background: linear-gradient(90deg, var(--surface-2) 0%, var(--surface-3) 50%, var(--surface-2) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite linear;
+}
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
 /* ── Inputs ─────────────────────────────────────────────── */
 .input {
   width: 100%;

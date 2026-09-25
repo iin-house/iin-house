@@ -56,6 +56,16 @@ enum Visibility {
   PPV
 }
 
+enum CreatorCategory {
+  ART
+  MUSIC
+  FITNESS
+  TECH
+  LIFESTYLE
+  PHOTOGRAPHY
+  OTHER
+}
+
 enum VerificationStatus {
   PENDING
   VERIFIED
@@ -65,35 +75,36 @@ enum VerificationStatus {
 // ── User ────────────────────────────────────────────────────────────────────
 
 model User {
-  id            String         @id @default(cuid())
-  email         String?        @unique
-  phone         String?        @unique
-  passwordHash  String
-  role          UserRole       @default(SUBSCRIBER)
-  kycStatus     KycStatus      @default(PENDING)
-  ageVerified   Boolean        @default(false)
-  twoFAEnabled  Boolean        @default(false)
-  twoFASecret   String?
-  emailVerified Boolean        @default(false)
-  termsVersion String?
-  termsAcceptedAt DateTime?
+  id                    String    @id @default(cuid())
+  email                 String?   @unique
+  phone                 String?   @unique
+  passwordHash          String
+  role                  UserRole  @default(SUBSCRIBER)
+  kycStatus             KycStatus @default(PENDING)
+  ageVerified           Boolean   @default(false)
+  twoFAEnabled          Boolean   @default(false)
+  twoFASecret           String?
+  emailVerified         Boolean   @default(false)
+  termsVersion          String?
+  termsAcceptedAt       DateTime?
   dataExportRequestedAt DateTime?
-  deletionScheduledAt DateTime?
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
+  deletionScheduledAt   DateTime?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
 
-  creatorProfile      CreatorProfile?
-  subscriptions       Subscription[]      @relation("Subscriber")
-  messagesSent        Message[]           @relation("Sender")
-  messagesReceived    Message[]           @relation("Receiver")
-  ppvPurchases        PPVPurchase[]
-  flagsRaised         ModerationFlag[]    @relation("Flagger")
-  flagsReviewed       ModerationFlag[]    @relation("Reviewer")
-  auditLogs           AuditLog[]
-  emailVerifications  EmailVerification[]
-  passwordResets      PasswordReset[]
-  kycDocuments        KycDocument[]
-  disputes            Dispute[]
+  creatorProfile     CreatorProfile?
+  subscriptions      Subscription[]      @relation("Subscriber")
+  messagesSent       Message[]           @relation("Sender")
+  messagesReceived   Message[]           @relation("Receiver")
+  ppvPurchases       PPVPurchase[]
+  flagsRaised        ModerationFlag[]    @relation("Flagger")
+  flagsReviewed      ModerationFlag[]    @relation("Reviewer")
+  auditLogs          AuditLog[]
+  emailVerifications EmailVerification[]
+  passwordResets     PasswordReset[]
+  kycDocuments       KycDocument[]
+  disputes           Dispute[]
+  wishlistEntries    Wishlist[]          @relation("Wishlister")
 
   @@index([email])
   @@index([phone])
@@ -109,19 +120,22 @@ model CreatorProfile {
   profileImageUrl    String?
   coverImageUrl      String?
   verificationStatus VerificationStatus @default(PENDING)
+  category           CreatorCategory?
   revenueSplitPct    Decimal            @default(80)
   gstin              String?
   contractId         String?
   contract           Contract?          @relation(fields: [contractId], references: [id])
   createdAt          DateTime           @default(now())
 
-  user            User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  tiers           SubscriptionTier[]
-  posts           ContentPost[]
-  subscriptions   Subscription[]
-  payouts         Payout[]
+  user          User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tiers         SubscriptionTier[]
+  posts         ContentPost[]
+  subscriptions Subscription[]
+  payouts       Payout[]
+  wishlisters   Wishlist[]
 
   @@index([displayName])
+  @@index([category])
 }
 
 // ── Subscription Tier ───────────────────────────────────────────────────────
@@ -136,7 +150,7 @@ model SubscriptionTier {
   active           Boolean  @default(true)
   createdAt        DateTime @default(now())
 
-  creator        CreatorProfile  @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  creator       CreatorProfile @relation(fields: [creatorId], references: [id], onDelete: Cascade)
   subscriptions Subscription[]
 
   @@index([creatorId])
@@ -167,25 +181,25 @@ model Subscription {
 // ── Content Post ────────────────────────────────────────────────────────────
 
 model ContentPost {
-  id           String        @id @default(cuid())
-  creatorId    String
-  type         ContentType   @default(TEXT)
-  caption      String?
-  mediaUrl     String?
-  thumbnailUrl String?
+  id             String      @id @default(cuid())
+  creatorId      String
+  type           ContentType @default(TEXT)
+  caption        String?
+  mediaUrl       String?
+  thumbnailUrl   String?
   watermarkedUrl String?
-  durationSec  Int?
-  isPPV        Boolean       @default(false)
-  ppvPrice     Decimal?
-  visibility   Visibility    @default(PUBLIC)
-  scheduledAt  DateTime?
-  publishedAt  DateTime?
-  views        Int           @default(0)
-  createdAt    DateTime      @default(now())
+  durationSec    Int?
+  isPPV          Boolean     @default(false)
+  ppvPrice       Decimal?
+  visibility     Visibility  @default(PUBLIC)
+  scheduledAt    DateTime?
+  publishedAt    DateTime?
+  views          Int         @default(0)
+  createdAt      DateTime    @default(now())
 
-  creator    CreatorProfile    @relation(fields: [creatorId], references: [id], onDelete: Cascade)
-  ppvBuyers  PPVPurchase[]
-  flags      ModerationFlag[]
+  creator   CreatorProfile   @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  ppvBuyers PPVPurchase[]
+  flags     ModerationFlag[]
 
   @@index([creatorId, createdAt])
   @@index([creatorId, publishedAt])
@@ -194,14 +208,14 @@ model ContentPost {
 // ── PPV Purchase ────────────────────────────────────────────────────────────
 
 model PPVPurchase {
-  id           String   @id @default(cuid())
+  id           String    @id @default(cuid())
   subscriberId String
   contentId    String
   amount       Decimal
   paymentId    String?
-  refunded     Boolean  @default(false)
+  refunded     Boolean   @default(false)
   refundedAt   DateTime?
-  purchasedAt  DateTime @default(now())
+  purchasedAt  DateTime  @default(now())
 
   subscriber User        @relation(fields: [subscriberId], references: [id], onDelete: Cascade)
   content    ContentPost @relation(fields: [contentId], references: [id], onDelete: Cascade)
@@ -223,8 +237,8 @@ model Message {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
-  sender   User         @relation("Sender",    fields: [senderId],   references: [id], onDelete: Cascade)
-  receiver User         @relation("Receiver",  fields: [receiverId], references: [id], onDelete: Cascade)
+  sender   User          @relation("Sender", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver User          @relation("Receiver", fields: [receiverId], references: [id], onDelete: Cascade)
   reads    MessageRead[]
 
   @@index([senderId, receiverId])
@@ -246,12 +260,12 @@ model MessageRead {
 // ── Payout ──────────────────────────────────────────────────────────────────
 
 model Payout {
-  id          String        @id @default(cuid())
+  id          String       @id @default(cuid())
   creatorId   String
   amount      Decimal
-  currency    String        @default("INR")
-  status      PayoutStatus  @default(PENDING)
-  requestedAt DateTime      @default(now())
+  currency    String       @default("INR")
+  status      PayoutStatus @default(PENDING)
+  requestedAt DateTime     @default(now())
   processedAt DateTime?
   reference   String?
 
@@ -263,12 +277,12 @@ model Payout {
 // ── Contract ────────────────────────────────────────────────────────────────
 
 model Contract {
-  id              String   @id @default(cuid())
+  id              String    @id @default(cuid())
   documentUrl     String
   revenueSplitPct Decimal
   termsVersion    String
   signedAt        DateTime?
-  createdAt       DateTime @default(now())
+  createdAt       DateTime  @default(now())
 
   creators CreatorProfile[]
 }
@@ -276,14 +290,14 @@ model Contract {
 // ── Moderation ──────────────────────────────────────────────────────────────
 
 model ModerationFlag {
-  id          String   @id @default(cuid())
-  contentId   String
-  flaggedBy   String
-  reason      String
-  status      String   @default("OPEN")
-  reviewedBy  String?
-  reviewedAt  DateTime?
-  createdAt   DateTime @default(now())
+  id         String    @id @default(cuid())
+  contentId  String
+  flaggedBy  String
+  reason     String
+  status     String    @default("OPEN")
+  reviewedBy String?
+  reviewedAt DateTime?
+  createdAt  DateTime  @default(now())
 
   content  ContentPost @relation(fields: [contentId], references: [id], onDelete: Cascade)
   flagger  User        @relation("Flagger", fields: [flaggedBy], references: [id])
@@ -313,13 +327,13 @@ model AuditLog {
 // ── Verification & Auth ─────────────────────────────────────────────────────
 
 model EmailVerification {
-  id        String    @id @default(cuid())
-  userId    String    @unique
+  id        String   @id @default(cuid())
+  userId    String   @unique
   email     String?
-  token     String    @unique
+  token     String   @unique
   expiresAt DateTime
-  used      Boolean   @default(false)
-  createdAt DateTime  @default(now())
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
@@ -338,15 +352,15 @@ model PasswordReset {
 }
 
 model KycDocument {
-  id           String   @id @default(cuid())
+  id           String    @id @default(cuid())
   userId       String
   documentType String
   documentUrl  String
-  status       String   @default("PENDING")
+  status       String    @default("PENDING")
   reviewedBy   String?
   reviewedAt   DateTime?
   notes        String?
-  createdAt    DateTime @default(now())
+  createdAt    DateTime  @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -356,15 +370,47 @@ model KycDocument {
 // ── Dispute ─────────────────────────────────────────────────────────────────
 
 model Dispute {
-  id          String   @id @default(cuid())
+  id          String    @id @default(cuid())
   userId      String
   type        String
   description String
-  status      String   @default("OPEN")
+  status      String    @default("OPEN")
   resolvedBy  String?
   resolvedAt  DateTime?
   resolution  String?
-  createdAt   DateTime @default(now())
+  createdAt   DateTime  @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
+
+// ── Notification ────────────────────────────────────────────────────────────
+
+model Notification {
+  id        String       @id @default(cuid())
+  userId    String
+  type      String
+  title     String
+  body      String
+  link      String?
+  read      Boolean      @default(false)
+  createdAt DateTime     @default(now())
+
+  @@index([userId, read, createdAt])
+}
+
+// ── Wishlist ──────────────────────────────────────────────────────────────────
+
+model Wishlist {
+  id           String    @id @default(cuid())
+  subscriberId String
+  creatorId    String
+  createdAt    DateTime  @default(now())
+
+  subscriber  User            @relation("Wishlister", fields: [subscriberId], references: [id], onDelete: Cascade)
+  creator     CreatorProfile  @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+
+  @@unique([subscriberId, creatorId])
+  @@index([subscriberId])
+  @@index([creatorId])
+}
+
