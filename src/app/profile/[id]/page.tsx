@@ -61,6 +61,8 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
   const [selectedTier, setSelectedTier] = useState<Tier | null>(null);
   const [subscribing, setSubscribing] = useState(false);
   const [isSubscribed, setIsSubscribed] = useState(false);
+  const [isWishlisted, setIsWishlisted] = useState(false);
+  const [wishlistLoading, setWishlistLoading] = useState(false);
 
   useEffect(() => {
     fetch(`/api/profile/${params.id}`)
@@ -77,7 +79,38 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
         const subs = data.subscriptions ?? [];
         setIsSubscribed(subs.some((s: any) => s.creator?.userId === profile.creatorProfile?.userId));
       });
+
+    // Check wishlist status
+    fetch("/api/wishlist")
+      .then(r => r.ok ? r.json() : { wishlist: [] })
+      .then((data) => {
+        const wl = data.wishlist ?? [];
+        setIsWishlisted(wl.some((c: any) => c.creatorId === profile.creatorProfile?.id));
+      });
   }, [session, profile]);
+
+  const toggleWishlist = async () => {
+    if (!profile) return;
+    setWishlistLoading(true);
+    try {
+      if (isWishlisted) {
+        await fetch(`/api/wishlist?creatorId=${profile.creatorProfile.id}`, { method: "DELETE" });
+        setIsWishlisted(false);
+        toast.success("Removed from saved");
+      } else {
+        const res = await fetch("/api/wishlist", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ creatorId: profile.creatorProfile.id }),
+        });
+        if (res.ok) { setIsWishlisted(true); toast.success("Saved to wishlist"); }
+      }
+    } catch {
+      toast.error("Action failed");
+    } finally {
+      setWishlistLoading(false);
+    }
+  };
 
   const handleSubscribe = async () => {
     if (!selectedTier) return;
@@ -169,11 +202,22 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
             {creatorProfile.bio && <p style={{ fontSize: 13, color: 'var(--text-3)', marginTop: 2 }}>{creatorProfile.bio}</p>}
           </div>
           {session && (session.user as any).id !== creatorProfile.userId && (
-            isSubscribed ? (
-              <button className="btn btn-secondary btn-sm" onClick={() => router.push('/subscriber/subscriptions')}>Subscribed</button>
-            ) : (
-              <button className="btn btn-primary btn-sm" onClick={() => setShowSubscribe(true)}>Subscribe</button>
-            )
+            <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+              <button
+                onClick={() => toggleWishlist()}
+                disabled={wishlistLoading}
+                className={`btn btn-sm ${isWishlisted ? 'btn-primary' : 'btn-secondary'}`}
+                style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
+                title={isWishlisted ? 'Remove from saved' : 'Save for later'}
+              >
+                {isWishlisted ? '💖' : '🤍'} {isWishlisted ? 'Saved' : 'Save'}
+              </button>
+              {isSubscribed ? (
+                <button className="btn btn-secondary btn-sm" onClick={() => router.push('/subscriber/subscriptions')}>Subscribed</button>
+              ) : (
+                <button className="btn btn-primary btn-sm" onClick={() => setShowSubscribe(true)}>Subscribe</button>
+              )}
+            </div>
           )}
         </div>
 
@@ -203,15 +247,17 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
           ) : (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: 10 }}>
               {creatorProfile.posts.map((post) => (
-                <div key={post.id} className="card card-interactive" style={{
-                  aspectRatio: "3/4", background: post.mediaUrl || post.thumbnailUrl ? `url(${post.mediaUrl || post.thumbnailUrl}) center/cover` : palettes[Math.floor(Math.random() * palettes.length)],
-                  display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', padding: 10,
-                }}>
-                  <div style={{ background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(8px)', borderRadius: 8, padding: '8px 10px', fontSize: 11, color: '#fff' }}>
-                    {post.isPPV && <span style={{ color: '#fbbf24' }}>🔒 PPV </span>}
-                    {post.caption?.slice(0, 40)}
+                <Link key={post.id} href={`/content/${post.id}`} style={{ textDecoration: 'none' }}>
+                  <div className="card card-interactive" style={{
+                    aspectRatio: "3/4", background: post.mediaUrl || post.thumbnailUrl ? `url(${post.mediaUrl || post.thumbnailUrl}) center/cover` : palettes[Math.floor(Math.random() * palettes.length)],
+                    display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', padding: 10,
+                  }}>
+                    <div style={{ background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(8px)', borderRadius: 8, padding: '8px 10px', fontSize: 11, color: '#fff' }}>
+                      {post.isPPV && <span style={{ color: '#fbbf24' }}>🔒 PPV </span>}
+                      {post.caption?.slice(0, 40)}
+                    </div>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           )}
