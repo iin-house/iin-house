@@ -2,7 +2,7 @@
 
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { LogOut, Heart, Bell, Receipt } from "lucide-react";
+import { LogOut, Heart, Bell, Receipt, BarChart3, Settings } from "lucide-react";
 import { usePathname } from "next/navigation";
 
 export function SubscriberNav() {
@@ -14,12 +14,14 @@ export function SubscriberNav() {
     { href: "/feed", label: "Feed" },
     { href: "/content-feed", label: "Posts" },
     { href: "/subscriber/subscriptions", label: "My Subs" },
+    { href: "/subscriber/manage-subscriptions", label: "Manage" },
     { href: "/subscriber/purchases", label: "Purchases" },
     { href: "/subscriber/messages", label: "Messages" },
     { href: "/subscriber/notifications", label: "Alerts", icon: Bell },
     { href: "/subscriber/wishlist", label: "Saved", icon: Heart },
     { href: "/subscriber/billing", label: "Billing", icon: Receipt },
     { href: "/subscriber/disputes", label: "Disputes" },
+    { href: "/subscriber/analytics", label: "Insights", icon: BarChart3 },
   ];
 
   return (

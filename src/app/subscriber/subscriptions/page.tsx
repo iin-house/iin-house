@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import toast from "react-hot-toast";
 
 export default function SubscriptionsPage() {
@@ -34,7 +35,7 @@ export default function SubscriptionsPage() {
     <div style={{ minHeight: '100vh', background: 'var(--bg)' }}>
       <header className="glass-header">
         <div className="header-inner">
-          <a href="/feed" style={{ fontSize: '13px', color: 'var(--text-3)' }}>← Back</a>
+          <Link href="/feed" style={{ fontSize: '13px', color: 'var(--text-3)', textDecoration: 'none' }}>← Back</Link>
           <span className="gradient-text font-bold text-base">iin house</span>
           <div style={{ width: '40px' }} />
         </div>
@@ -48,7 +49,7 @@ export default function SubscriptionsPage() {
             <div style={{ fontSize: '48px', marginBottom: '12px' }}>📭</div>
             <p style={{ fontSize: '15px', fontWeight: 500 }}>No active subscriptions</p>
             <p style={{ fontSize: '13px', color: 'var(--text-3)', marginTop: '6px' }}>Browse creators to find your next favorite.</p>
-            <a href="/feed" className="btn btn-primary" style={{ marginTop: '16px', display: 'inline-flex' }}>Browse creators</a>
+            <Link href="/feed" className="btn btn-primary" style={{ marginTop: '16px', display: 'inline-flex', textDecoration: 'none' }}>Browse creators</Link>
           </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>

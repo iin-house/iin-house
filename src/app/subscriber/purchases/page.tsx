@@ -28,7 +28,7 @@ export default function PurchasesPage() {
     <div style={{ minHeight: '100vh', background: 'var(--bg)' }}>
       <header className="glass-header">
         <div className="header-inner">
-          <a href="/feed" style={{ fontSize: '13px', color: 'var(--text-3)' }}>← Back</a>
+          <Link href="/feed" style={{ fontSize: '13px', color: 'var(--text-3)', textDecoration: 'none' }}>← Back</Link>
           <span className="gradient-text font-bold text-base">iin house</span>
           <div style={{ width: '40px' }} />
         </div>

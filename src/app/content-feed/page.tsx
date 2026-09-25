@@ -61,7 +61,7 @@ export default function ContentFeedPage() {
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '14px' }}>
           {visiblePosts.map((post: any) => (
-            <div key={post.id} className="card card-interactive" style={{ overflow: 'hidden' }}>
+            <Link key={post.id} href={`/content/${post.id}`} className="card card-interactive" style={{ overflow: 'hidden', textDecoration: 'none' }}>
               {post.thumbnailUrl ? (
                 <div style={{ aspectRatio: '1/1', background: `url(${post.thumbnailUrl}) center/cover` }} />
               ) : post.mediaUrl ? (
@@ -80,7 +80,7 @@ export default function ContentFeedPage() {
                   {post.isPPV && <span className="badge badge-primary" style={{ fontSize: '11px' }}>₹{Number(post.ppvPrice)}</span>}
                 </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </main>
