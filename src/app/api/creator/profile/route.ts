@@ -10,6 +10,8 @@ const updateSchema = z.object({
   profileImageUrl: z.string().url().optional(),
   coverImageUrl: z.string().url().optional(),
   gstin: z.string().regex(/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}[Z]{1}[0-9A-Z]{1}$/, "Invalid GSTIN format").optional().or(z.literal("")),
+  category: z.string().max(20).optional().or(z.literal("")),
+  revenueSplitPct: z.number().min(50).max(95).optional(),
 });
 
 export async function GET(_req: NextRequest) {

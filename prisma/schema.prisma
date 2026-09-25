@@ -77,6 +77,7 @@ enum VerificationStatus {
 model User {
   id                    String    @id @default(cuid())
   email                 String?   @unique
+  name                  String?
   phone                 String?   @unique
   passwordHash          String
   role                  UserRole  @default(SUBSCRIBER)
@@ -105,6 +106,8 @@ model User {
   kycDocuments       KycDocument[]
   disputes           Dispute[]
   wishlistEntries    Wishlist[]          @relation("Wishlister")
+  referrals          Referral[]          @relation("Referrer")
+  referralUses       ReferralUse[]       @relation("Referrer")
 
   @@index([email])
   @@index([phone])
@@ -414,3 +417,33 @@ model Wishlist {
   @@index([creatorId])
 }
 
+
+// ── Referral ─────────────────────────────────────────────────────────────────
+
+model Referral {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  code        String   @unique @db.VarChar(12)
+  totalUses   Int      @default(0)
+  totalEarnings Decimal @default(0)
+  createdAt   DateTime @default(now())
+
+  user        User       @relation("Referrer", fields: [userId], references: [id], onDelete: Cascade)
+  uses        ReferralUse[]
+}
+
+model ReferralUse {
+  id          String   @id @default(cuid())
+  referralId  String?
+  referrerId  String
+  userId      String
+  reward      Decimal  @default(100)
+  createdAt   DateTime @default(now())
+
+  referrer    User        @relation("Referrer", fields: [referrerId], references: [id], onDelete: Cascade)
+  referral    Referral?   @relation(fields: [referralId], references: [id], onDelete: SetNull)
+
+  @@unique([referrerId, userId])
+  @@index([referrerId])
+  @@index([referralId])
+}

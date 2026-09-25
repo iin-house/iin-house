@@ -2,6 +2,8 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Toaster } from "react-hot-toast";
 import { Providers } from "@/components/Providers";
+import { MobileNav } from "@/components/MobileNav";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { Inter } from "next/font/google";
 
 const inter = Inter({
@@ -21,7 +23,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body className={`${inter.variable} min-h-screen bg-dark-950 text-dark-50`} style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
         <Providers>
-          {children}
+          <ErrorBoundary>
+            {children}
+            <MobileNav />
+          </ErrorBoundary>
           <Toaster position="top-right" toastOptions={{ style: { background: "#16191e", color: "#f8f9fa", border: "1px solid #2a2f37" } }} />
         </Providers>
       </body>
