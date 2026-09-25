@@ -2,6 +2,7 @@
 
 import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 import toast from "react-hot-toast";
 import { register } from "./actions";
 import { registerSchema } from "@/lib/validation";
@@ -143,7 +144,7 @@ function RegisterForm() {
       </form>
 
       <p style={{ textAlign: 'center', marginTop: '18px', fontSize: '13px', color: 'var(--text-3)' }}>
-        Already have an account? <a href="/login" className="gradient-text" style={{ fontWeight: 500 }}>Sign in</a>
+        Already have an account? <Link href="/login" className="gradient-text" style={{ fontWeight: 500 }}>Sign in</Link>
       </p>
     </>
   );

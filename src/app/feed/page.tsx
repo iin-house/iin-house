@@ -82,10 +82,10 @@ export default function SubscriberFeed() {
         <div className="header-inner">
           <Link href="/" className="font-bold text-base gradient-text">iin house</Link>
           <nav style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-            <a className="nav-tab active">Feed</a>
-            <a href="/content-feed" className="nav-tab">Posts</a>
-            <a href="/subscriber/messages" className="nav-tab">Messages</a>
-            <a href="/subscriber/subscriptions" className="nav-tab">My Subs</a>
+            <span className="nav-tab active">Feed</span>
+            <Link href="/content-feed" className="nav-tab">Posts</Link>
+            <Link href="/subscriber/messages" className="nav-tab">Messages</Link>
+            <Link href="/subscriber/subscriptions" className="nav-tab">My Subs</Link>
           </nav>
         </div>
       </header>

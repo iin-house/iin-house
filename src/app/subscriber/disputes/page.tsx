@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 type Dispute = {
   id: string;
@@ -70,7 +71,7 @@ export default function DisputesPage() {
     <div style={{ minHeight: '100vh', background: 'var(--bg)' }}>
       <header className="glass-header">
         <div className="header-inner">
-          <a href="/subscriber/subscriptions" style={{ fontSize: '13px', color: 'var(--text-3)' }}>← Back</a>
+          <Link href="/subscriber/subscriptions" style={{ fontSize: '13px', color: 'var(--text-3)', textDecoration: 'none' }}>← Back</Link>
           <span className="gradient-text font-bold text-base">iin house</span>
           <div style={{ width: '40px' }} />
         </div>
