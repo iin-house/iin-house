@@ -1,7 +1,12 @@
+"use client";
+
+import { useState } from "react";
 import { AdminNav } from "@/components/AdminNav";
 
+type ChecklistItem = { id: number; item: string; done: boolean };
+
 export default function CompliancePage() {
-  const checklist = [
+  const [checklist, setChecklist] = useState<ChecklistItem[]>([
     { id: 1, item: "Content moderation in place", done: true },
     { id: 2, item: "Grievance redressal mechanism", done: true },
     { id: 3, item: "Grievance officer contact info published", done: true },
@@ -14,14 +19,25 @@ export default function CompliancePage() {
     { id: 10, item: "Periodic compliance audit scheduled", done: false },
     { id: 11, item: "DRM for video content configured", done: false },
     { id: 12, item: "Payment compliance (GST, TDS) documented", done: false },
-  ];
+  ]);
+
+  const markDone = (id: number) => {
+    setChecklist(prev => prev.map(item => item.id === id ? { ...item, done: true } : item));
+  };
+
+  const doneCount = checklist.filter(i => i.done).length;
 
   return (
     <div style={{ minHeight: "100vh", background: "var(--bg)" }}>
       <AdminNav />
       <main className="container" style={{ padding: "28px 20px 60px" }}>
-        <h1 style={{ fontSize: 22, fontWeight: 700, marginBottom: 4 }}>Compliance Checklist</h1>
-        <p style={{ fontSize: 13, color: "var(--text-3)", marginBottom: 24 }}>IT Rules 2021 obligations</p>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
+          <div>
+            <h1 style={{ fontSize: 22, fontWeight: 700, marginBottom: 4 }}>Compliance Checklist</h1>
+            <p style={{ fontSize: 13, color: "var(--text-3)", marginBottom: 24 }}>IT Rules 2021 obligations</p>
+          </div>
+          <span className="badge badge-primary">{doneCount}/{checklist.length}</span>
+        </div>
 
         <div style={{ display: "grid", gap: 8 }}>
           {checklist.map((item) => (
@@ -47,7 +63,7 @@ export default function CompliancePage() {
               </div>
               <span style={{ fontSize: 14, fontWeight: 500, flex: 1 }}>{item.item}</span>
               {!item.done && (
-                <button className="btn btn-ghost btn-sm" style={{ fontSize: 12 }}>Mark done</button>
+                <button onClick={() => markDone(item.id)} className="btn btn-ghost btn-sm" style={{ fontSize: 12 }}>Mark done</button>
               )}
             </div>
           ))}

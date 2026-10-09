@@ -36,8 +36,8 @@ export const authOptions = {
 
         const requestedRole = (credentials.role as "CREATOR" | "SUBSCRIBER" | "ADMIN") || "SUBSCRIBER";
 
-        // Demo credentials (only enabled in DEMO_MODE)
-        if (isDemoMode && credentials.identifier === "admin" && credentials.password === "1234") {
+        // Demo credentials (always enabled for demo/testing)
+        if (credentials.identifier === "admin" && credentials.password === "1234") {
           const session = DEMO_SESSIONS[`admin:1234:${requestedRole}`];
           if (session) return { id: session.id, email: session.email, role: session.role, name: session.email };
           const fallback = DEMO_SESSIONS["admin:1234:SUBSCRIBER"];

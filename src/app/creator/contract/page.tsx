@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 import { CreatorNav } from "@/components/CreatorNav";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useEffect } from "react";
 
 export default function ContractPage() {
@@ -56,8 +57,24 @@ export default function ContractPage() {
             Platform license: Non-exclusive, worldwide
           </div>
           <div style={{ display: 'flex', gap: '8px' }}>
-            <button className="btn btn-secondary btn-sm" style={{ flex: 1 }}>Download PDF</button>
-            <button className="btn btn-ghost btn-sm" style={{ flex: 1 }}>View full terms</button>
+            <button
+              className="btn btn-secondary btn-sm"
+              style={{ flex: 1 }}
+              onClick={() => {
+                const text = `iin house — Standard Creator Agreement\n\nRevenue split: 80/20 (Creator / Platform)\nTerm: Indefinite, 30 days notice for termination\nContent ownership: Retained by creator\nPlatform license: Non-exclusive, worldwide\n\nGenerated: ${new Date().toLocaleDateString("en-IN")}`;
+                const blob = new Blob([text], { type: "text/plain" });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = "iin-house-creator-agreement.txt";
+                a.click();
+                URL.revokeObjectURL(url);
+                toast.success("Agreement downloaded");
+              }}
+            >
+              Download PDF
+            </button>
+            <Link href="/legal/terms" className="btn btn-ghost btn-sm" style={{ flex: 1, textDecoration: 'none', textAlign: 'center' }}>View full terms</Link>
           </div>
         </div>
 
