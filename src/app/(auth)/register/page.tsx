@@ -118,7 +118,7 @@ function RegisterForm() {
         </div>
         <div>
           <label htmlFor="register-email" style={{ display: 'block', fontSize: '12px', fontWeight: 600, textTransform: 'uppercase' as const, letterSpacing: '0.05em', color: 'var(--text-3)', marginBottom: '6px' }}>Email</label>
-          <input id="register-email" name="email" type="email" className="input" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} placeholder="optional" aria-invalid={!!errors.email} />
+          <input id="register-email" name="email" type="email" className="input" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} placeholder="you@example.com" aria-invalid={!!errors.email} />
           {errors.email && <p style={{ fontSize: '12px', color: 'var(--danger)', marginTop: '4px' }}>{errors.email}</p>}
         </div>
         <div>

@@ -2,7 +2,7 @@
 
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { Shield, LogOut, Settings, BarChart3, FileText } from "lucide-react";
+import { LogOut } from "lucide-react";
 import { usePathname } from "next/navigation";
 
 export function CreatorNav() {
@@ -26,7 +26,7 @@ export function CreatorNav() {
     <header className="glass-header">
       <div className="header-inner">
         <Link href="/" className="font-bold text-base gradient-text">iin house</Link>
-        <nav style={{ display: 'flex', alignItems: 'center', gap: '1px' }}>
+        <nav style={{ display: 'flex', alignItems: 'center', gap: '1px', overflowX: 'auto' }} className="scrollbar-hide">
           {items.map(item => {
             const active = pathname === item.href || pathname.startsWith(item.href + '/');
             return (
@@ -36,8 +36,8 @@ export function CreatorNav() {
             );
           })}
           <Link href="/creator/contract" className="nav-tab">Contract</Link>
-          <Link href="/api/auth/signout" className="nav-tab" style={{ color: 'var(--danger)' }}>
-            <LogOut size={14} style={{ display: 'inline', verticalAlign: 'middle' }} /> Sign out
+          <Link href="/api/auth/signout" className="nav-tab" style={{ color: 'var(--danger)' }} title="Sign out">
+            <LogOut size={14} />
           </Link>
         </nav>
       </div>

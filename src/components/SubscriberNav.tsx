@@ -2,7 +2,7 @@
 
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { LogOut, Heart, Bell, Receipt, BarChart3, Settings } from "lucide-react";
+import { LogOut, Heart, Bell, Receipt, BarChart3 } from "lucide-react";
 import { usePathname } from "next/navigation";
 
 export function SubscriberNav() {
@@ -28,7 +28,7 @@ export function SubscriberNav() {
     <header className="glass-header">
       <div className="header-inner">
         <Link href="/feed" className="font-bold text-base gradient-text">iin house</Link>
-        <nav style={{ display: 'flex', alignItems: 'center', gap: '1px' }}>
+        <nav style={{ display: 'flex', alignItems: 'center', gap: '1px', overflowX: 'auto' }} className="scrollbar-hide">
           {items.map(item => {
             const active = pathname === item.href || pathname.startsWith(item.href + '/');
             return (
@@ -39,7 +39,7 @@ export function SubscriberNav() {
             );
           })}
           <Link href="/api/auth/signout" className="nav-tab" style={{ color: 'var(--danger)' }}>
-            <LogOut size={14} style={{ display: 'inline', verticalAlign: 'middle' }} /> Sign out
+            <LogOut size={14} style={{ display: 'inline', verticalAlign: 'middle' }} />
           </Link>
         </nav>
       </div>
